@@ -1,2 +1,9 @@
-# Sports-Hub
-this repo is exclusivly made for the Senior Frontend Developer: Take-Home Assessment
+Sports Hub Assessment
+
+Setup
+
+```bash
+npm install
+cp .env.example .env   # Windows: copy .env.example .env
+npm run dev
+```
