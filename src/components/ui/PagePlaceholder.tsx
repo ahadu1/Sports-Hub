@@ -10,13 +10,10 @@ type PagePlaceholderProps = {
 export function PagePlaceholder({ title, description, className }: PagePlaceholderProps) {
   return (
     <section
-      className={cn(
-        'rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-sm)]',
-        className,
-      )}
+      className={cn('rounded-lg border border-app-border-base bg-app-surface p-6', className)}
     >
-      <h1 className="mb-2 text-xl font-semibold text-[var(--color-text)]">{title}</h1>
-      <div className="text-[var(--color-text-muted)]">{description}</div>
+      <h1 className="mb-2 text-xl font-semibold text-app-text">{title}</h1>
+      <div className="text-app-text-muted">{description}</div>
     </section>
   );
 }

@@ -24,14 +24,11 @@ export function InlineErrorState({
   return (
     <div
       role="alert"
-      className={cn(
-        'rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4',
-        'text-[var(--color-text)]',
-      )}
+      className={cn('rounded-lg border border-app-border-base bg-app-surface p-4', 'text-app-text')}
     >
       <h3 className="font-semibold">{title}</h3>
-      <p className="mt-1 text-sm text-[var(--color-text-muted)]">{message}</p>
-      <p className="mt-2 text-xs text-[var(--color-text-muted)]">
+      <p className="mt-1 text-sm text-app-text-muted">{message}</p>
+      <p className="mt-2 text-xs text-app-text-muted">
         Attempt {attempt} of {maxAttempts}
         {retryCountdownSeconds !== undefined && retryCountdownSeconds > 0
           ? ` · ${retryCountdownSeconds}s`
@@ -42,7 +39,7 @@ export function InlineErrorState({
           type="button"
           onClick={onRetry}
           className={cn(
-            'mt-3 rounded-[var(--radius-md)] bg-[var(--color-accent)] px-3 py-1.5 text-sm font-medium text-white',
+            'mt-3 rounded-lg bg-app-accent px-3 py-1.5 text-sm font-medium text-app-accent-on',
             'hover:opacity-90',
           )}
         >

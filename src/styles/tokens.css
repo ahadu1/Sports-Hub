@@ -1,11 +1,64 @@
-:root {
-  --color-background: #0f1419;
-  --color-surface: #1a2332;
-  --color-text: #e7e9ea;
-  --color-text-muted: #8b98a5;
-  --color-border: #38444d;
-  --color-accent: #1d9bf0;
-  --color-danger: #f4212e;
-  --radius-md: 0.5rem;
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.25);
+/* src/styles/tokens.css */
+
+/*
+  Source of truth:
+  - SPORTSBOOK TOKENS / PRIMITIVES = body surfaces, panels, borders, content text, semantic states
+  - GENERAL THEME / BRAND TOKENS = global navigation and brand layer
+  - WARNING is temporary for DaisyUI compatibility only until manually verified in Figma
+*/
+
+:root,
+[data-theme='sportsbook-dark'] {
+  /* Sportsbook backgrounds */
+  --app-bg-canvas: #181921;
+  --app-bg-surface: #1d1e2b;
+  --app-bg-muted: #26273b;
+  --app-bg-disabled: #374151;
+
+  /* Sportsbook borders */
+  --app-border-base: #292b41;
+  --app-border-muted: #374151;
+  --app-border-subtle: #111827;
+  --app-outline-default: #3f3f46;
+
+  /* Sportsbook text / foreground */
+  --app-text-base: #ffffff;
+  --app-text-strong: #e5e7eb;
+  --app-text-muted: #d1d5db;
+  --app-text-subtle: #6b7280;
+  --app-text-subtle-static: #6b7280;
+  --app-text-disabled: #6b7280;
+  --app-text-inverse: #111827;
+
+  /* Sportsbook semantic */
+  --app-success: #5cb176;
+  --app-danger: #ee5e52;
+
+  /* Sportsbook accent scale */
+  --app-accent-base: #c2ef00;
+  --app-accent-moderate: #d7ff28;
+  --app-accent-bold: #e1ff60;
+  --app-accent-dim: #809d00;
+  --app-accent-on: #1f2937;
+
+  /* Brand / general theme */
+  --app-brand-primary: #6d00ff;
+  --app-brand-secondary: #00ffa5;
+  --app-brand-surface: #141218;
+
+  --app-brand-on-primary: #ffffff;
+  --app-brand-on-secondary: #0f4d32;
+  --app-brand-on-surface: #e6e0e9;
+  --app-brand-on-surface-variant: #cac4d0;
+
+  --app-brand-outline: #938f99;
+  --app-brand-outline-variant: #49454f;
+
+  --app-brand-surface-container: #211f26;
+  --app-brand-surface-container-high: #2b2930;
+  --app-brand-surface-container-highest: #36343b;
+
+  /* DaisyUI compatibility only — NOT a final product semantic */
+  --app-warning-temp: #d7ff28;
+  --app-warning-temp-content: #1f2937;
 }

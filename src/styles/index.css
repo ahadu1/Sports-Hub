@@ -1,27 +1,171 @@
+/* src/styles/index.css */
 @import 'tailwindcss';
 @import './tokens.css';
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/* DaisyUI v5 config in CSS, official Tailwind v4-compatible setup */
+@plugin "daisyui" {
+  themes: false;
+  include: dropdown, menu, drawer, modal, loading, navbar;
+  logs: false;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: var(--color-background);
-  color: var(--color-text);
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+/* Single custom DaisyUI theme only */
+@plugin "daisyui/theme" {
+  name: 'sportsbook-dark';
+  default: true;
+  prefersdark: true;
+  color-scheme: dark;
+
+  /* DaisyUI base colors map to sportsbook surface system */
+  --color-base-100: var(--app-bg-canvas);
+  --color-base-200: var(--app-bg-surface);
+  --color-base-300: var(--app-bg-muted);
+  --color-base-content: var(--app-text-base);
+
+  /* Brand / navigation */
+  --color-primary: var(--app-brand-primary);
+  --color-primary-content: var(--app-brand-on-primary);
+
+  --color-secondary: var(--app-brand-secondary);
+  --color-secondary-content: var(--app-brand-on-secondary);
+
+  /* Sportsbook accent scale */
+  --color-accent: var(--app-accent-base);
+  --color-accent-content: var(--app-accent-on);
+
+  /* Neutral / helper semantic */
+  --color-neutral: var(--app-bg-surface);
+  --color-neutral-content: var(--app-text-strong);
+
+  /* DaisyUI compatibility-only semantic mappings */
+  --color-info: var(--app-text-muted);
+  --color-info-content: var(--app-text-inverse);
+
+  --color-success: var(--app-success);
+  --color-success-content: var(--app-text-inverse);
+
+  --color-warning: var(--app-warning-temp);
+  --color-warning-content: var(--app-warning-temp-content);
+
+  --color-error: var(--app-danger);
+  --color-error-content: var(--app-text-base);
+
+  /* Conservative structure values — not final Figma shape system */
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
 }
 
-#root {
-  min-height: 100vh;
+/*
+  Tailwind v4 theme variables.
+  Use inline because these variables reference CSS variables.
+*/
+@theme inline {
+  --color-app-canvas: var(--app-bg-canvas);
+  --color-app-surface: var(--app-bg-surface);
+  --color-app-muted: var(--app-bg-muted);
+  --color-app-bg-disabled: var(--app-bg-disabled);
+
+  --color-app-border-base: var(--app-border-base);
+  --color-app-border-muted: var(--app-border-muted);
+  --color-app-border-subtle: var(--app-border-subtle);
+  --color-app-outline-default: var(--app-outline-default);
+
+  --color-app-text: var(--app-text-base);
+  --color-app-text-strong: var(--app-text-strong);
+  --color-app-text-muted: var(--app-text-muted);
+  --color-app-text-subtle: var(--app-text-subtle);
+  --color-app-text-subtle-static: var(--app-text-subtle-static);
+  --color-app-text-disabled: var(--app-text-disabled);
+  --color-app-text-inverse: var(--app-text-inverse);
+
+  --color-app-success: var(--app-success);
+  --color-app-danger: var(--app-danger);
+
+  --color-app-accent: var(--app-accent-base);
+  --color-app-accent-moderate: var(--app-accent-moderate);
+  --color-app-accent-bold: var(--app-accent-bold);
+  --color-app-accent-dim: var(--app-accent-dim);
+  --color-app-accent-on: var(--app-accent-on);
+
+  --color-app-brand-primary: var(--app-brand-primary);
+  --color-app-brand-secondary: var(--app-brand-secondary);
+  --color-app-brand-surface: var(--app-brand-surface);
+  --color-app-brand-on-primary: var(--app-brand-on-primary);
+  --color-app-brand-on-secondary: var(--app-brand-on-secondary);
+  --color-app-brand-on-surface: var(--app-brand-on-surface);
+  --color-app-brand-on-surface-variant: var(--app-brand-on-surface-variant);
+  --color-app-brand-outline: var(--app-brand-outline);
+  --color-app-brand-outline-variant: var(--app-brand-outline-variant);
+
+  --color-app-brand-surface-container: var(--app-brand-surface-container);
+  --color-app-brand-surface-container-high: var(--app-brand-surface-container-high);
+  --color-app-brand-surface-container-highest: var(--app-brand-surface-container-highest);
+
+  --color-app-warning-temp: var(--app-warning-temp);
+  --color-app-warning-temp-content: var(--app-warning-temp-content);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--app-bg-canvas);
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--app-bg-canvas);
+    color: var(--app-text-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .app-panel {
+    background-color: var(--app-bg-surface);
+    border: 1px solid var(--app-border-base);
+    border-radius: 1rem;
+  }
+
+  .app-panel-muted {
+    background-color: var(--app-bg-muted);
+    border: 1px solid var(--app-border-base);
+    border-radius: 1rem;
+  }
+
+  .app-divider {
+    border-color: var(--app-border-base);
+  }
+
+  .app-chip-active {
+    background-color: var(--app-accent-base);
+    color: var(--app-accent-on);
+    border: 1px solid transparent;
+    border-radius: 9999px;
+  }
+
+  .app-chip-inactive {
+    background-color: transparent;
+    color: var(--app-text-muted);
+    border: 1px solid var(--app-border-base);
+    border-radius: 9999px;
+  }
+
+  .app-brand-bar {
+    background-color: var(--app-brand-primary);
+    color: var(--app-brand-on-primary);
+  }
 }

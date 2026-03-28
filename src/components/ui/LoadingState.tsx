@@ -9,14 +9,14 @@ type LoadingStateProps = {
 export function LoadingState({ label = copy.loading, className }: LoadingStateProps) {
   return (
     <div
-      className={cn('flex items-center gap-2 text-sm text-[var(--color-text-muted)]', className)}
+      className={cn('flex items-center gap-2 text-sm text-app-text-muted', className)}
       role="status"
       aria-live="polite"
     >
       <span
         className={cn(
-          'inline-block size-4 animate-spin rounded-full border-2 border-[var(--color-border)]',
-          'border-t-[var(--color-accent)]',
+          'inline-block size-4 animate-spin rounded-full border-2 border-app-border-base',
+          'border-t-app-accent',
         )}
         aria-hidden
       />

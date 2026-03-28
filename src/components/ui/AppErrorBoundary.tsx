@@ -31,13 +31,10 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
       return (
         <div
           role="alert"
-          className={cn(
-            'rounded-[var(--radius-md)] border border-[var(--color-danger)] bg-[var(--color-surface)] p-4',
-            'text-[var(--color-text)]',
-          )}
+          className={cn('rounded-lg border border-app-danger bg-app-surface p-4', 'text-app-text')}
         >
           <h2 className="font-semibold">{copy.errorBoundaryTitle}</h2>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">{copy.errorBoundaryMessage}</p>
+          <p className="mt-1 text-sm text-app-text-muted">{copy.errorBoundaryMessage}</p>
         </div>
       );
     }

@@ -11,7 +11,7 @@ export function MatchDetailsPage() {
       title={copy.matchPlaceholderHeading}
       description={
         <>
-          {copy.matchPlaceholderBodyPrefix} <code className="text-[var(--color-text)]">{id}</code>.
+          {copy.matchPlaceholderBodyPrefix} <code className="text-app-text">{id}</code>.
         </>
       }
     />

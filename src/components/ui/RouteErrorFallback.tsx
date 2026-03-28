@@ -23,16 +23,16 @@ export function RouteErrorFallback() {
     <div
       className={cn(
         'flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8 text-center',
-        'text-[var(--color-text)]',
+        'text-app-text',
       )}
     >
       <h1 className="text-2xl font-semibold">{copy.routeErrorTitle}</h1>
-      <p className="max-w-md text-[var(--color-text-muted)]">{copy.routeErrorMessage}</p>
+      <p className="max-w-md text-app-text-muted">{copy.routeErrorMessage}</p>
       {isDev && technicalDetail ? (
         <pre
           className={cn(
-            'max-h-40 max-w-full overflow-auto rounded-[var(--radius-md)] border border-[var(--color-border)]',
-            'bg-[var(--color-surface)] p-3 text-left text-xs text-[var(--color-text-muted)]',
+            'max-h-40 max-w-full overflow-auto rounded-lg border border-app-border-base',
+            'bg-app-surface p-3 text-left text-xs text-app-text-muted',
           )}
         >
           {technicalDetail}
@@ -43,8 +43,8 @@ export function RouteErrorFallback() {
           type="button"
           onClick={() => navigate(-1)}
           className={cn(
-            'rounded-[var(--radius-md)] border border-[var(--color-border)] px-4 py-2',
-            'text-[var(--color-text)] transition hover:bg-[var(--color-surface)]',
+            'rounded-lg border border-app-border-base px-4 py-2',
+            'text-app-text transition hover:bg-app-surface',
           )}
         >
           {copy.goBack}
@@ -52,7 +52,7 @@ export function RouteErrorFallback() {
         <Link
           to={routes.home}
           className={cn(
-            'rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 py-2 font-medium text-white',
+            'rounded-lg bg-app-accent px-4 py-2 font-medium text-app-accent-on',
             'transition hover:opacity-90',
           )}
         >
