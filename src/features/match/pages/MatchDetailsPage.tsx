@@ -1,19 +1,16 @@
-import { PagePlaceholder } from '@/components/ui/PagePlaceholder';
-import { copy } from '@/lib/constants/copy';
-import { useParams } from 'react-router-dom';
+import { MatchDetailsHeader } from '@/features/match/components/MatchDetailsHeader';
+import {
+  mockMatchDetailsHeaderEvent,
+  mockMatchDetailsHeaderUiMeta,
+} from '@/features/match/mocks/matchDetailsHeader.mock';
 
 export function MatchDetailsPage() {
-  const { eventId } = useParams();
-  const id = eventId ?? '';
-
   return (
-    <PagePlaceholder
-      title={copy.matchPlaceholderHeading}
-      description={
-        <>
-          {copy.matchPlaceholderBodyPrefix} <code className="text-app-text">{id}</code>.
-        </>
-      }
-    />
+    <div className="flex justify-center">
+      <MatchDetailsHeader
+        event={mockMatchDetailsHeaderEvent}
+        uiMeta={mockMatchDetailsHeaderUiMeta}
+      />
+    </div>
   );
 }

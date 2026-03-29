@@ -3,17 +3,17 @@ import { format, startOfDay } from 'date-fns';
 import type { CompetitionSection, FixturesPageMock } from '../types/fixtures.types';
 
 export const FIXTURES_TEAM_BADGES = {
-  arsenal: '/fixtures/teams/arsenal.png',
-  valencia: '/fixtures/teams/valencia.png',
-  realMadrid: '/fixtures/teams/real-madrid.png',
-  leicesterCity: '/fixtures/teams/leicester-city.png',
-  manchesterCity: '/fixtures/teams/manchester-city.png',
-  newcastleUnited: '/fixtures/teams/newcastle-united.png',
-  liverpool: '/fixtures/teams/liverpool.png',
-  burnley: '/fixtures/teams/burnley.png',
-  manchesterUnited: '/fixtures/teams/manchester-united.png',
-  chelsea: '/fixtures/teams/chelsea.png',
-  southampton: '/fixtures/teams/southampton.png',
+  arsenal: 'https://r2.thesportsdb.com/images/media/team/badge/uyhbfe1612467038.png',
+  valencia: 'https://r2.thesportsdb.com/images/media/team/badge/dm8l6o1655594864.png',
+  realMadrid: 'https://r2.thesportsdb.com/images/media/team/badge/vwvwrw1473502969.png',
+  leicesterCity: 'https://r2.thesportsdb.com/images/media/team/badge/xtxwtu1448813356.png',
+  manchesterCity: 'https://r2.thesportsdb.com/images/media/team/badge/vwpvry1467462651.png',
+  newcastleUnited: 'https://r2.thesportsdb.com/images/media/team/badge/lhwuiz1621593302.png',
+  liverpool: 'https://r2.thesportsdb.com/images/media/team/badge/kfaher1737969724.png',
+  burnley: 'https://r2.thesportsdb.com/images/media/team/badge/ql7nl31686893820.png',
+  manchesterUnited: 'https://r2.thesportsdb.com/images/media/team/badge/xzqdr11517660252.png',
+  chelsea: 'https://r2.thesportsdb.com/images/media/team/badge/yvwvtu1448813215.png',
+  southampton: 'https://r2.thesportsdb.com/images/media/team/badge/ggqtd01621593274.png',
 } as const;
 
 export const FIXTURES_INITIAL_DATE_ISO = format(startOfDay(new Date()), 'yyyy-MM-dd');
