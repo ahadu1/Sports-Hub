@@ -34,21 +34,14 @@ export function FixtureStatusBlock({ fixture }: FixtureStatusBlockProps) {
     <div className="relative h-[60px] w-14 shrink-0 pl-3">
       <span
         aria-hidden="true"
-        className={cn(
-          'absolute left-0 top-0 h-full w-[3px] rounded-full',
-          stripClass,
-          isInProgress && 'motion-safe:animate-fixtures-live-pulse motion-reduce:animate-none',
-        )}
+        className={cn('absolute left-0 top-0 h-full w-[3px] rounded-full', stripClass)}
       />
       <div className="flex h-full flex-col items-start justify-center">
         <span className={cn('app-type-inter-12-16-normal', labelClass)}>{label}</span>
         {isInProgress && (
           <span
             aria-hidden="true"
-            className={cn(
-              'mt-1 block h-0.5 w-4 rounded-full bg-app-brand-secondary',
-              'motion-safe:animate-fixtures-live-pulse motion-reduce:animate-none',
-            )}
+            className="app-fixtures-live-underline mt-1 block h-[2px] w-4 rounded-[100px]"
           />
         )}
       </div>
