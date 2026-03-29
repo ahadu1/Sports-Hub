@@ -5,7 +5,7 @@ export function RootLayout() {
   return (
     <div className="min-h-screen bg-app-canvas text-app-text">
       <Header />
-      <main className="mx-auto max-w-5xl px-6 py-8">
+      <main className="mx-auto max-w-5xl p-4">
         <Outlet />
       </main>
     </div>

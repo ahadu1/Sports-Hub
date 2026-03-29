@@ -5,6 +5,7 @@ import {
   PRIMARY_NAV_ITEMS,
   type HeaderAccordionSection,
 } from '@/components/header/header.constants';
+import { ChevronDownIcon, CloseIcon } from '@/components/icons';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -17,8 +18,7 @@ type HeaderDrawerProps = {
   onToggleSection: (section: HeaderAccordionSection) => void;
 };
 
-const drawerNavItemClasses =
-  "h-11 w-full rounded-xl px-4 text-left [font-family:'Poppins',sans-serif] text-[18px] leading-[27px] font-normal tracking-[0]";
+const drawerNavItemClasses = 'h-11 w-full rounded-xl px-4 text-left app-type-poppins-18-27-normal';
 
 export function HeaderDrawer({
   isOpen,
@@ -55,12 +55,7 @@ export function HeaderDrawer({
       >
         <div className="flex h-14 items-center justify-between border-b border-app-border-base bg-app-brand-primary px-4">
           <NavLink to={routes.home} onClick={onClose}>
-            <img
-              src={HEADER_ASSETS.logo}
-              alt="Sports Hub"
-              className="object-contain"
-              style={{ height: '26.1px', width: '82px' }}
-            />
+            <img src={HEADER_ASSETS.logo} alt="Sports Hub" className="app-header-brand-logo" />
           </NavLink>
 
           <button
@@ -168,40 +163,5 @@ function AccordionSection({ label, section, isOpen, onToggle, children }: Accord
 
       {isOpen ? <div className="mt-2 flex flex-col gap-2 pl-2">{children}</div> : null}
     </section>
-  );
-}
-
-function ChevronDownIcon({ isOpen }: { isOpen: boolean }) {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 20 20"
-      className={clsx('h-[18px] w-[18px] transition-transform', isOpen ? 'rotate-180' : '')}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m5 7.5 5 5 5-5" />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 6l12 12" />
-      <path d="M18 6 6 18" />
-    </svg>
   );
 }

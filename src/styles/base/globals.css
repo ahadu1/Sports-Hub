@@ -1,0 +1,19 @@
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--app-bg-canvas);
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--app-bg-canvas);
+    color: var(--app-text-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+}

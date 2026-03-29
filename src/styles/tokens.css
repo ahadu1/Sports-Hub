@@ -61,4 +61,7 @@
   /* DaisyUI compatibility only — NOT a final product semantic */
   --app-warning-temp: #d7ff28;
   --app-warning-temp-content: #1f2937;
+
+  /* Fixtures UI (calendar trigger on mobile ribbon) */
+  --app-bg-fixtures-calendar: #24252f;
 }

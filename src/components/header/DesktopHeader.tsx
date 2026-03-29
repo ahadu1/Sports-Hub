@@ -5,6 +5,7 @@ import {
   PRIMARY_NAV_ITEMS,
   type HeaderAccordionSection,
 } from '@/components/header/header.constants';
+import { ChevronDownIcon } from '@/components/icons';
 import clsx from 'clsx';
 import type { RefObject } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -18,13 +19,13 @@ type DesktopHeaderProps = {
 };
 
 const desktopNavItemClasses =
-  "relative inline-flex h-[43px] items-center whitespace-nowrap px-2 py-2 [font-family:'Poppins',sans-serif] text-[18px] leading-[27px] font-normal tracking-[0]";
+  'relative inline-flex h-[43px] items-center whitespace-nowrap px-2 py-2 app-type-poppins-18-27-normal';
 
 const desktopIconButtonClasses =
   'flex size-10 shrink-0 items-center justify-center rounded-full bg-black/15';
 
 const desktopDisclosureButtonClasses =
-  "flex h-10 items-center gap-2 rounded-full bg-black/15 px-4 text-app-brand-on-surface [font-family:'Poppins',sans-serif] text-[16px] leading-[24px] font-medium tracking-[0]";
+  'flex h-10 items-center gap-2 rounded-full bg-black/15 px-4 text-app-brand-on-surface app-type-poppins-16-24-medium';
 
 export function DesktopHeader({
   isMatchesActive,
@@ -175,22 +176,5 @@ function DesktopDisclosurePanel({ items, minWidthClass }: DesktopDisclosurePanel
         ))}
       </div>
     </div>
-  );
-}
-
-function ChevronDownIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 20 20"
-      className="h-[18px] w-[18px]"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m5 7.5 5 5 5-5" />
-    </svg>
   );
 }

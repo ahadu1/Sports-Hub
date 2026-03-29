@@ -1,0 +1,47 @@
+@theme inline {
+  --color-app-canvas: var(--app-bg-canvas);
+  --color-app-surface: var(--app-bg-surface);
+  --color-app-muted: var(--app-bg-muted);
+  --color-app-bg-disabled: var(--app-bg-disabled);
+
+  --color-app-border-base: var(--app-border-base);
+  --color-app-border-muted: var(--app-border-muted);
+  --color-app-border-subtle: var(--app-border-subtle);
+  --color-app-outline-default: var(--app-outline-default);
+
+  --color-app-text: var(--app-text-base);
+  --color-app-text-strong: var(--app-text-strong);
+  --color-app-text-muted: var(--app-text-muted);
+  --color-app-text-subtle: var(--app-text-subtle);
+  --color-app-text-subtle-static: var(--app-text-subtle-static);
+  --color-app-text-disabled: var(--app-text-disabled);
+  --color-app-text-inverse: var(--app-text-inverse);
+
+  --color-app-success: var(--app-success);
+  --color-app-danger: var(--app-danger);
+
+  --color-app-accent: var(--app-accent-base);
+  --color-app-accent-moderate: var(--app-accent-moderate);
+  --color-app-accent-bold: var(--app-accent-bold);
+  --color-app-accent-dim: var(--app-accent-dim);
+  --color-app-accent-on: var(--app-accent-on);
+
+  --color-app-brand-primary: var(--app-brand-primary);
+  --color-app-brand-secondary: var(--app-brand-secondary);
+  --color-app-brand-surface: var(--app-brand-surface);
+  --color-app-brand-on-primary: var(--app-brand-on-primary);
+  --color-app-brand-on-secondary: var(--app-brand-on-secondary);
+  --color-app-brand-on-surface: var(--app-brand-on-surface);
+  --color-app-brand-on-surface-variant: var(--app-brand-on-surface-variant);
+  --color-app-brand-outline: var(--app-brand-outline);
+  --color-app-brand-outline-variant: var(--app-brand-outline-variant);
+
+  --color-app-brand-surface-container: var(--app-brand-surface-container);
+  --color-app-brand-surface-container-high: var(--app-brand-surface-container-high);
+  --color-app-brand-surface-container-highest: var(--app-brand-surface-container-highest);
+
+  --color-app-warning-temp: var(--app-warning-temp);
+  --color-app-warning-temp-content: var(--app-warning-temp-content);
+
+  --color-app-fixtures-calendar: var(--app-bg-fixtures-calendar);
+}

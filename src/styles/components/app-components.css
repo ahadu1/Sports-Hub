@@ -1,0 +1,42 @@
+@layer components {
+  .app-panel {
+    background-color: var(--app-bg-surface);
+    border: 1px solid var(--app-border-base);
+    border-radius: 1rem;
+  }
+
+  .app-panel-muted {
+    background-color: var(--app-bg-muted);
+    border: 1px solid var(--app-border-base);
+    border-radius: 1rem;
+  }
+
+  .app-divider {
+    border-color: var(--app-border-base);
+  }
+
+  .app-chip-active {
+    background-color: var(--app-accent-base);
+    color: var(--app-accent-on);
+    border: 1px solid transparent;
+    border-radius: 9999px;
+  }
+
+  .app-chip-inactive {
+    background-color: transparent;
+    color: var(--app-text-muted);
+    border: 1px solid var(--app-border-base);
+    border-radius: 9999px;
+  }
+
+  .app-brand-bar {
+    background-color: var(--app-brand-primary);
+    color: var(--app-brand-on-primary);
+  }
+
+  .app-header-brand-logo {
+    height: 26.1px;
+    width: 82px;
+    object-fit: contain;
+  }
+}

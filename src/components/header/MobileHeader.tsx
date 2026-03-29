@@ -1,5 +1,6 @@
 import { routes } from '@/app/config/routes';
 import { HEADER_ASSETS } from '@/components/header/header.constants';
+import { ChevronDownIcon, HamburgerIcon } from '@/components/icons';
 import { NavLink } from 'react-router-dom';
 
 type MobileHeaderProps = {
@@ -19,12 +20,7 @@ export function MobileHeader({
   return (
     <header className="flex h-14 w-full items-center justify-between bg-app-brand-primary px-4 lg:hidden">
       <NavLink to={routes.home} onClick={onNavigateHome}>
-        <img
-          src={HEADER_ASSETS.logo}
-          alt="Sports Hub"
-          className="object-contain"
-          style={{ height: '26.1px', width: '82px' }}
-        />
+        <img src={HEADER_ASSETS.logo} alt="Sports Hub" className="app-header-brand-logo" />
       </NavLink>
 
       <div className="flex items-center gap-2">
@@ -49,7 +45,7 @@ export function MobileHeader({
         <button
           type="button"
           onClick={onOpenSeasonDrawer}
-          className="flex h-10 items-center gap-2 rounded-full bg-black/15 px-4 text-app-brand-on-surface [font-family:'Roboto',sans-serif] text-[12px] leading-4 font-light tracking-[0]"
+          className="flex h-10 items-center gap-2 rounded-full bg-black/15 px-4 text-app-brand-on-surface app-type-roboto-12-16-light"
         >
           <span>2024/25</span>
           <ChevronDownIcon />
@@ -65,40 +61,5 @@ export function MobileHeader({
         </button>
       </div>
     </header>
-  );
-}
-
-function ChevronDownIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 20 20"
-      className="h-[18px] w-[18px]"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m5 7.5 5 5 5-5" />
-    </svg>
-  );
-}
-
-function HamburgerIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    >
-      <path d="M4 7h16" />
-      <path d="M4 12h16" />
-      <path d="M4 17h16" />
-    </svg>
   );
 }
