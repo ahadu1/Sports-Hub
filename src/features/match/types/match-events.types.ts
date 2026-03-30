@@ -45,6 +45,9 @@ export type MatchTimelineMapContext = {
   matchState?: MatchState | undefined;
   homeScore?: number | null | undefined;
   awayScore?: number | null | undefined;
+  halftimeHomeScore?: number | null | undefined;
+  halftimeAwayScore?: number | null | undefined;
+  kickoffLabel?: string | undefined;
   highlightLatestEvent?: boolean | undefined;
 };
 

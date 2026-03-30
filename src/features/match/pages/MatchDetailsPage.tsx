@@ -54,7 +54,11 @@ export function MatchDetailsPage() {
   const selectedFixture = routeState?.fixture;
   const matchDetailsQuery = useMatchDetailsQuery(routeEventId);
   const matchDetail = matchDetailsQuery.data;
-  const matchTimelineQuery = useMatchTimeline({ eventId: routeEventId, matchDetail });
+  const matchTimelineQuery = useMatchTimeline({
+    eventId: routeEventId,
+    matchDetail,
+    selectedFixture,
+  });
   const isTimelineLoading = matchTimelineQuery.isLoading;
   const headerEvent = useMemo(
     () => mapMatchDetailsHeaderEvent(matchDetail, selectedFixture, routeEventId),

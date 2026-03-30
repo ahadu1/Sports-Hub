@@ -62,6 +62,23 @@ function parseNumericValue(value: string | number | null | undefined): number | 
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function getOptionalScoreField(
+  event: RawMatchDetailEvent,
+  fieldNames: readonly string[],
+): number | null | undefined {
+  const eventRecord = event as RawMatchDetailEvent & Record<string, unknown>;
+
+  for (const fieldName of fieldNames) {
+    const parsedValue = parseScore(eventRecord[fieldName] as string | number | null | undefined);
+
+    if (parsedValue !== null) {
+      return parsedValue;
+    }
+  }
+
+  return undefined;
+}
+
 function splitSummaryEntries(value: string | null | undefined): string[] {
   const normalized = value?.replace(/\r/g, '\n').trim();
   if (!normalized) {
@@ -131,6 +148,16 @@ function mapMatchDetail(
 ): MatchDetail {
   const homeScore = parseScore(event.intHomeScore);
   const awayScore = parseScore(event.intAwayScore);
+  const halftimeHomeScore = getOptionalScoreField(event, [
+    'intHomeScoreHalf',
+    'intHomeScoreHalfTime',
+    'intHomeHalftimeScore',
+  ]);
+  const halftimeAwayScore = getOptionalScoreField(event, [
+    'intAwayScoreHalf',
+    'intAwayScoreHalfTime',
+    'intAwayHalftimeScore',
+  ]);
   const status = event.strStatus?.trim() ?? null;
   const homeTeamName = normalizeString(event.strHomeTeam);
   const awayTeamName = normalizeString(event.strAwayTeam);
@@ -158,6 +185,8 @@ function mapMatchDetail(
     awayTeamBadge: resolveTeamBadge(event.strAwayTeamBadge, lookups.awayTeam, awayTeamName),
     homeScore,
     awayScore,
+    ...(halftimeHomeScore !== undefined ? { halftimeHomeScore } : {}),
+    ...(halftimeAwayScore !== undefined ? { halftimeAwayScore } : {}),
     status,
     state: getMatchState({ status, homeScore, awayScore }),
     summary: {

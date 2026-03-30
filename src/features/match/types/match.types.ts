@@ -42,6 +42,8 @@ export type MatchDetail = {
   awayTeamBadge: string;
   homeScore: number | null;
   awayScore: number | null;
+  halftimeHomeScore?: number | null;
+  halftimeAwayScore?: number | null;
   status: string | null;
   state: MatchState;
   summary: MatchDetailEventSummary;

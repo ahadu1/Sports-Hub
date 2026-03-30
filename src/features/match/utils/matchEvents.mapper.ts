@@ -294,6 +294,48 @@ function formatScoreLabel(
   return `${homeScore} - ${awayScore}`;
 }
 
+function formatHalftimeScoreLabel(
+  events: NormalizedTimelineEvent[],
+  context: MatchTimelineMapContext,
+): string | undefined {
+  if (context.matchState === 'halftime') {
+    return formatScoreLabel(context.homeScore, context.awayScore);
+  }
+
+  const explicitScore = formatScoreLabel(context.halftimeHomeScore, context.halftimeAwayScore);
+  if (explicitScore) {
+    return explicitScore;
+  }
+
+  const firstHalfGoals = events.filter(
+    (event) => event.eventType === 'goal' && event.sortMinute < 46,
+  );
+  const homeGoals = firstHalfGoals.filter((event) => event.side === 'home').length;
+  const awayGoals = firstHalfGoals.filter((event) => event.side === 'away').length;
+
+  return homeGoals > 0 || awayGoals > 0 ? formatScoreLabel(homeGoals, awayGoals) : undefined;
+}
+
+function getDividerScoreLabel(
+  divider: Pick<TimelineDividerItem, 'label' | 'dividerVariant'>,
+  events: NormalizedTimelineEvent[],
+  context: MatchTimelineMapContext,
+): string | undefined {
+  if (divider.dividerVariant === 'kickoff') {
+    return context.kickoffLabel;
+  }
+
+  if (divider.label === 'Half Time') {
+    return formatHalftimeScoreLabel(events, context);
+  }
+
+  if (divider.label === 'Full Time') {
+    return formatScoreLabel(context.homeScore, context.awayScore);
+  }
+
+  return undefined;
+}
+
 function getDividerLabel(entry: MatchTimelineApiEntry): TimelineDividerItem | undefined {
   const haystack = [
     normalizeString(entry.strTimeline),
@@ -342,13 +384,14 @@ function mapTimelineDividerEntry(
   entry: MatchTimelineApiEntry,
   index: number,
   context: MatchTimelineMapContext,
+  events: NormalizedTimelineEvent[],
 ): NormalizedTimelineDivider | undefined {
   const divider = getDividerLabel(entry);
   if (!divider) {
     return undefined;
   }
 
-  const score = formatScoreLabel(context.homeScore, context.awayScore);
+  const score = getDividerScoreLabel(divider, events, context);
   const sortMinute =
     getSortMinute(entry) ??
     (divider.label === 'Half Time' ? 45 : divider.label === 'Full Time' ? 90 : 0);
@@ -505,31 +548,97 @@ function createMergedEventRows(
   }));
 }
 
-function createStateDivider(
+function shouldAddSyntheticHalftime(
+  normalizedDividers: NormalizedTimelineDivider[],
+  normalizedEvents: NormalizedTimelineEvent[],
   context: MatchTimelineMapContext,
-  sortMinute: number,
-): OrderedTimelineItem | undefined {
-  if (context.matchState !== 'finished' && context.matchState !== 'halftime') {
-    return undefined;
+): boolean {
+  if (normalizedDividers.some((divider) => divider.label === 'Half Time')) {
+    return false;
   }
 
-  const score = formatScoreLabel(context.homeScore, context.awayScore);
+  if (context.matchState === 'finished' || context.matchState === 'halftime') {
+    return true;
+  }
+
+  return normalizedEvents.some((event) => event.sortMinute > 45);
+}
+
+function createSyntheticDivider(
+  divider: Pick<TimelineDividerItem, 'label' | 'dividerVariant'>,
+  context: MatchTimelineMapContext,
+  events: NormalizedTimelineEvent[],
+  sortMinute: number,
+  sourceIndex: number,
+): OrderedTimelineItem | undefined {
+  const score = getDividerScoreLabel(divider, events, context);
 
   return {
     item: {
-      id: `state-divider-${context.matchState}`,
+      id: `state-divider-${divider.label.toLowerCase().replace(/\s+/g, '-')}`,
       kind: 'divider',
-      label: context.matchState === 'finished' ? 'Full Time' : 'Half Time',
-      ...(score
-        ? {
-            dividerVariant: 'default' as const,
-            score,
-          }
-        : { dividerVariant: 'default' as const }),
+      label: divider.label,
+      dividerVariant: divider.dividerVariant,
+      ...(score ? { score } : {}),
     },
     sortMinute,
-    sourceIndex: Number.MAX_SAFE_INTEGER,
+    sourceIndex,
   };
+}
+
+function createSyntheticDividers(
+  normalizedDividers: NormalizedTimelineDivider[],
+  normalizedEvents: NormalizedTimelineEvent[],
+  context: MatchTimelineMapContext,
+  latestSortMinute: number,
+): OrderedTimelineItem[] {
+  const syntheticDividers: OrderedTimelineItem[] = [];
+  const hasKickoffDivider = normalizedDividers.some((divider) => divider.label === 'Kick Off');
+  const hasFullTimeDivider = normalizedDividers.some((divider) => divider.label === 'Full Time');
+
+  if (!hasKickoffDivider && context.kickoffLabel) {
+    const kickoffDivider = createSyntheticDivider(
+      { label: 'Kick Off', dividerVariant: 'kickoff' },
+      context,
+      normalizedEvents,
+      0,
+      Number.MIN_SAFE_INTEGER,
+    );
+
+    if (kickoffDivider) {
+      syntheticDividers.push(kickoffDivider);
+    }
+  }
+
+  if (shouldAddSyntheticHalftime(normalizedDividers, normalizedEvents, context)) {
+    const halftimeDivider = createSyntheticDivider(
+      { label: 'Half Time', dividerVariant: 'default' },
+      context,
+      normalizedEvents,
+      45.5,
+      Number.MAX_SAFE_INTEGER - 1,
+    );
+
+    if (halftimeDivider) {
+      syntheticDividers.push(halftimeDivider);
+    }
+  }
+
+  if (!hasFullTimeDivider && context.matchState === 'finished') {
+    const fullTimeDivider = createSyntheticDivider(
+      { label: 'Full Time', dividerVariant: 'default' },
+      context,
+      normalizedEvents,
+      latestSortMinute + 0.01,
+      Number.MAX_SAFE_INTEGER,
+    );
+
+    if (fullTimeDivider) {
+      syntheticDividers.push(fullTimeDivider);
+    }
+  }
+
+  return syntheticDividers;
 }
 
 function mapOrderedDivider(divider: NormalizedTimelineDivider): OrderedTimelineItem {
@@ -562,13 +671,13 @@ export function mapMatchEventsTimeline(
     : Array.isArray(payload.timeline)
       ? payload.timeline
       : [];
-  const normalizedDividers = timelineEntries
-    .map((entry, index) => mapTimelineDividerEntry(entry, index, context))
-    .filter((item): item is NormalizedTimelineDivider => item !== undefined);
-
   const normalizedEvents = timelineEntries
     .map((entry, index) => mapTimelineEntry(entry, index, context))
     .filter((item): item is NormalizedTimelineEvent => item !== undefined);
+
+  const normalizedDividers = timelineEntries
+    .map((entry, index) => mapTimelineDividerEntry(entry, index, context, normalizedEvents))
+    .filter((item): item is NormalizedTimelineDivider => item !== undefined);
 
   normalizedEvents.sort((left, right) => {
     if (right.sortMinute !== left.sortMinute) {
@@ -582,14 +691,14 @@ export function mapMatchEventsTimeline(
     ...createMergedEventRows(normalizedEvents, context),
     ...normalizedDividers.map((divider) => mapOrderedDivider(divider)),
   ];
-
-  const stateDivider = createStateDivider(context, (orderedItems[0]?.sortMinute ?? 0) + 0.01);
-  if (stateDivider && stateDivider.item.kind === 'divider') {
-    const stateDividerLabel = stateDivider.item.label;
-    if (!normalizedDividers.some((divider) => divider.label === stateDividerLabel)) {
-      orderedItems.push(stateDivider);
-    }
-  }
+  orderedItems.push(
+    ...createSyntheticDividers(
+      normalizedDividers,
+      normalizedEvents,
+      context,
+      orderedItems[0]?.sortMinute ?? 90,
+    ),
+  );
 
   return orderedItems
     .sort((left, right) => {
