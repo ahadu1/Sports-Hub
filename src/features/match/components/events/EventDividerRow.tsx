@@ -9,10 +9,10 @@ type EventDividerRowProps = {
 export function EventDividerRow({ item }: EventDividerRowProps) {
   return (
     <div className="flex w-full items-center">
-      <span aria-hidden="true" className="h-0 min-w-0 flex-1 border-t border-[#292B41]" />
+      <span aria-hidden="true" className="app-match-divider h-0 min-w-0 flex-1 border-t" />
       <div
         className={cn(
-          'mx-[10px] flex shrink-0 items-center justify-center text-[#E5E7EB]',
+          'mx-[10px] flex shrink-0 items-center justify-center text-app-text-strong',
           item.score ? 'gap-[10px]' : 'gap-0',
         )}
       >
@@ -21,7 +21,7 @@ export function EventDividerRow({ item }: EventDividerRowProps) {
           <span className="app-type-inter-12-16-normal whitespace-nowrap">{item.score}</span>
         ) : null}
       </div>
-      <span aria-hidden="true" className="h-0 min-w-0 flex-1 border-t border-[#292B41]" />
+      <span aria-hidden="true" className="app-match-divider h-0 min-w-0 flex-1 border-t" />
     </div>
   );
 }

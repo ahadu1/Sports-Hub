@@ -48,11 +48,39 @@
     font-weight: 600;
   }
 
+  .app-type-inter-16-24-semibold {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 600;
+  }
+
   .app-type-inter-20-26-semibold {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 20px;
     line-height: 26px;
     font-weight: 600;
+  }
+
+  .app-type-inter-22-28-semibold {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+  }
+
+  .app-type-inter-10-15-normal {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 10px;
+    line-height: 15px;
+    font-weight: 400;
+  }
+
+  .app-type-inter-10-15-medium {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 10px;
+    line-height: 15px;
+    font-weight: 500;
   }
 
   .app-type-poppins-18-27-normal {

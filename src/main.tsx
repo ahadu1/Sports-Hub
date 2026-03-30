@@ -2,6 +2,7 @@ import { registerAppServiceWorker } from '@/app/browser/register-service-worker'
 import '@/lib/env/env';
 import { AppProviders } from '@/app/providers/AppProviders';
 import { router } from '@/app/router';
+import { AppErrorBoundary } from '@/components/ui/AppErrorBoundary';
 import '@/styles/index.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -15,9 +16,11 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <AppProviders>
-      <RouterProvider router={router} />
-    </AppProviders>
+    <AppErrorBoundary>
+      <AppProviders>
+        <RouterProvider router={router} />
+      </AppProviders>
+    </AppErrorBoundary>
   </StrictMode>,
 );
 

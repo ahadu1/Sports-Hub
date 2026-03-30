@@ -10,7 +10,9 @@ type EventHalfRowProps = {
 };
 
 function ConnectorLine() {
-  return <span aria-hidden="true" className="h-0 w-[16px] shrink-0 border-t border-[#374151]" />;
+  return (
+    <span aria-hidden="true" className="h-0 w-[16px] shrink-0 border-t border-app-border-muted" />
+  );
 }
 
 export function EventHalfRow({ side, content }: EventHalfRowProps) {

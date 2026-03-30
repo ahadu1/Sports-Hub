@@ -39,10 +39,7 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
     <div className="flex min-w-0 items-center gap-2">
       <div className="relative flex h-4 w-4 shrink-0 items-center justify-center">
         {imageState === 'error' || !team.badgeSrc ? (
-          <span
-            aria-hidden="true"
-            className="flex h-4 w-4 items-center justify-center rounded-full bg-[#26273B] text-[8px] font-medium uppercase text-white"
-          >
+          <span aria-hidden="true" className="app-fixture-team-badge-fallback">
             {team.name.slice(0, 1)}
           </span>
         ) : (

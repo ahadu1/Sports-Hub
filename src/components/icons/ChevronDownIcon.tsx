@@ -1,6 +1,5 @@
-import clsx from 'clsx';
-
 import ChevronDownSvg from './chevron-down.svg?react';
+import { cn } from '@/lib/utils/cn';
 import type { IconSvgProps } from './types';
 
 export type ChevronDownIconProps = IconSvgProps & {
@@ -17,7 +16,7 @@ export function ChevronDownIcon({
   return (
     <ChevronDownSvg
       aria-hidden={ariaHidden}
-      className={clsx('h-[18px] w-[18px] transition-transform', isOpen && 'rotate-180', className)}
+      className={cn('h-[18px] w-[18px] transition-transform', isOpen && 'rotate-180', className)}
       {...props}
     />
   );

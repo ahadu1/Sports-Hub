@@ -37,10 +37,8 @@ export function FixturesDayPickerCalendar({
         month_caption: 'relative flex items-center justify-center pb-1',
         caption_label: 'app-type-inter-16-24-semibold text-white',
         nav: 'absolute inset-x-0 top-0 flex items-center justify-between',
-        button_previous:
-          'inline-flex h-8 w-8 items-center justify-center rounded-full border border-app-border-base bg-app-muted text-app-text transition hover:border-app-brand-secondary hover:text-app-brand-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface',
-        button_next:
-          'inline-flex h-8 w-8 items-center justify-center rounded-full border border-app-border-base bg-app-muted text-app-text transition hover:border-app-brand-secondary hover:text-app-brand-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface',
+        button_previous: 'app-fixtures-calendar-nav-button',
+        button_next: 'app-fixtures-calendar-nav-button',
         chevron: 'h-4 w-4',
         month_grid: 'w-full border-collapse',
         weekdays: 'grid grid-cols-7 gap-y-2',
@@ -49,8 +47,7 @@ export function FixturesDayPickerCalendar({
         weeks: 'grid gap-y-1',
         week: 'grid grid-cols-7',
         day: 'flex items-center justify-center p-0',
-        day_button:
-          'inline-flex h-10 w-10 items-center justify-center rounded-full text-sm text-app-text transition hover:bg-white/6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface',
+        day_button: 'app-fixtures-calendar-day-button',
         today:
           '[&>button]:border [&>button]:border-app-brand-secondary [&>button]:text-app-brand-secondary',
         selected:

@@ -1,13 +1,15 @@
+import { copy } from '@/lib/constants/copy';
 import { cn } from '@/lib/utils/cn';
 
 type InlineErrorStateProps = {
   title: string;
   message: string;
-  retryLabel: string;
-  onRetry?: () => void;
-  attempt: number;
-  maxAttempts: number;
-  retryCountdownSeconds?: number;
+  retryLabel?: string | undefined;
+  onRetry?: (() => void) | undefined;
+  attempt?: number | undefined;
+  maxAttempts?: number | undefined;
+  retryCountdownSeconds?: number | undefined;
+  className?: string | undefined;
 };
 
 export function InlineErrorState({
@@ -18,22 +20,29 @@ export function InlineErrorState({
   attempt,
   maxAttempts,
   retryCountdownSeconds,
+  className,
 }: InlineErrorStateProps) {
   const showRetry = typeof onRetry === 'function';
+  const showAttemptMeta = attempt !== undefined && maxAttempts !== undefined;
 
   return (
     <div
       role="alert"
-      className={cn('rounded-lg border border-app-border-base bg-app-surface p-4', 'text-app-text')}
+      className={cn(
+        'rounded-lg border border-app-border-base bg-app-surface p-4 text-app-text',
+        className,
+      )}
     >
       <h3 className="font-semibold">{title}</h3>
       <p className="mt-1 text-sm text-app-text-muted">{message}</p>
-      <p className="mt-2 text-xs text-app-text-muted">
-        Attempt {attempt} of {maxAttempts}
-        {retryCountdownSeconds !== undefined && retryCountdownSeconds > 0
-          ? ` · ${retryCountdownSeconds}s`
-          : null}
-      </p>
+      {showAttemptMeta ? (
+        <p className="mt-2 text-xs text-app-text-muted">
+          Attempt {attempt} of {maxAttempts}
+          {retryCountdownSeconds !== undefined && retryCountdownSeconds > 0
+            ? ` · ${retryCountdownSeconds}s`
+            : null}
+        </p>
+      ) : null}
       {showRetry ? (
         <button
           type="button"
@@ -43,7 +52,7 @@ export function InlineErrorState({
             'hover:opacity-90',
           )}
         >
-          {retryLabel}
+          {retryLabel ?? copy.retry}
         </button>
       ) : null}
     </div>

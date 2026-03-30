@@ -36,7 +36,7 @@ function EventTextStack({
         {primaryText}
       </span>
       {showSecondaryText ? (
-        <span className="app-type-inter-12-16-normal block max-w-full truncate whitespace-nowrap text-[#6B7280]">
+        <span className="app-type-inter-12-16-normal block max-w-full truncate whitespace-nowrap text-app-text-subtle">
           {secondaryText}
         </span>
       ) : null}

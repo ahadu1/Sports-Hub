@@ -1,6 +1,6 @@
 import { matchDetails } from '@/app/config/routes';
 import { cn } from '@/lib/utils/cn';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { FixtureMenuButton } from './FixtureMenuButton';
 import { FixtureScoreBlock } from './FixtureScoreBlock';
@@ -13,42 +13,29 @@ type FixtureRowProps = {
 };
 
 export function FixtureRow({ fixture }: FixtureRowProps) {
-  const navigate = useNavigate();
   const fixtureLabel = `${fixture.home.name} vs ${fixture.away.name}`;
   const isInProgress = fixture.state === 'live' || fixture.state === 'halftime';
 
-  const handleNavigate = () => {
-    navigate(matchDetails(fixture.eventId), {
-      state: {
-        fixture,
-      },
-    });
-  };
-
   return (
-    <div
-      role="link"
-      tabIndex={0}
-      aria-label={`View match details for ${fixtureLabel}`}
-      className={cn('app-interactive-fixture-row relative')}
-      onClick={handleNavigate}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          handleNavigate();
-        }
-      }}
-    >
-      <div className="relative z-10 flex w-full items-center gap-3">
+    <div className={cn('app-interactive-fixture-row relative')}>
+      <Link
+        to={matchDetails(fixture.eventId)}
+        state={{ fixture }}
+        aria-label={`View match details for ${fixtureLabel}`}
+        className="app-focus-ring-surface absolute inset-0 rounded-md"
+      />
+      <div className="pointer-events-none relative z-10 flex w-full items-center gap-3 pr-9">
         {isInProgress && (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 left-0 w-[152px] bg-[linear-gradient(90deg,rgba(0,255,165,0.10)_0%,rgba(17,24,39,0)_100%)] lg:w-[176px]"
+            className="app-fixtures-live-row-accent pointer-events-none absolute inset-y-0 left-0 w-[152px] lg:w-[176px]"
           />
         )}
         <FixtureStatusBlock fixture={fixture} />
         <FixtureTeamsBlock fixture={fixture} />
         <FixtureScoreBlock fixture={fixture} />
+      </div>
+      <div className="relative z-20 ml-auto">
         <FixtureMenuButton fixtureLabel={fixtureLabel} />
       </div>
     </div>

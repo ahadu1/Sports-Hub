@@ -39,4 +39,44 @@
     width: 82px;
     object-fit: contain;
   }
+
+  .app-state-panel {
+    @apply flex min-h-[220px] items-center justify-center rounded-lg border border-app-border-base bg-app-surface p-6 text-center;
+  }
+
+  .app-state-panel--compact {
+    @apply min-h-[120px] px-4;
+  }
+
+  .app-focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
+  }
+
+  .app-focus-ring-surface {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface;
+  }
+
+  .app-icon-button {
+    @apply inline-flex items-center justify-center rounded-full transition;
+  }
+
+  .app-icon-button-muted {
+    @apply inline-flex items-center justify-center rounded-full border border-app-border-base bg-app-muted text-app-text transition hover:border-app-brand-secondary hover:text-app-brand-secondary;
+  }
+
+  .app-icon-button-brand {
+    @apply inline-flex items-center justify-center rounded-full bg-black/15 text-white transition hover:bg-black/20;
+  }
+
+  .app-select-option-button {
+    @apply h-10 w-full rounded-xl px-3 text-left transition;
+  }
+
+  .app-select-option-button--selected {
+    @apply bg-white/8 text-app-text-strong;
+  }
+
+  .app-select-option-button--default {
+    @apply text-app-text-muted hover:bg-white/5;
+  }
 }

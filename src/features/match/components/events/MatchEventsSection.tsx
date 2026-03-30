@@ -1,7 +1,10 @@
+import { MAX_QUERY_RETRIES } from '@/app/config/app-config';
+import { InlineErrorState } from '@/components/ui/InlineErrorState';
 import { EventDividerRow } from './EventDividerRow';
 import { EventTimelineRow } from './EventTimelineRow';
 
 import { LoadingState } from '@/components/ui/LoadingState';
+import { StatePanel } from '@/components/ui/StatePanel';
 import type { TimelineItem } from '@/features/match/types/match-events.types';
 import { copy } from '@/lib/constants/copy';
 
@@ -9,23 +12,38 @@ type MatchEventsSectionProps = {
   items: TimelineItem[];
   isLoading?: boolean;
   isError?: boolean;
+  onRetry?: (() => void) | undefined;
+  retryAttempt?: number | undefined;
 };
 
 function MatchEventsState({
   message,
   isLoading = false,
+  onRetry,
+  retryAttempt,
 }: {
   message: string;
   isLoading?: boolean;
+  onRetry?: (() => void) | undefined;
+  retryAttempt?: number | undefined;
 }) {
   return (
-    <div className="flex min-h-[120px] items-center justify-center rounded-[8px] border border-[#292B41] px-4 text-center">
+    <StatePanel compact className="app-match-empty-state">
       {isLoading ? (
         <LoadingState className="justify-center" label={message} />
+      ) : onRetry ? (
+        <InlineErrorState
+          title={copy.inlineErrorTitle}
+          message={message}
+          retryLabel={copy.retry}
+          onRetry={onRetry}
+          attempt={retryAttempt}
+          maxAttempts={MAX_QUERY_RETRIES}
+        />
       ) : (
         <p className="app-type-inter-14-20-normal text-app-text-muted">{message}</p>
       )}
-    </div>
+    </StatePanel>
   );
 }
 
@@ -33,19 +51,21 @@ export function MatchEventsSection({
   items,
   isLoading = false,
   isError = false,
+  onRetry,
+  retryAttempt,
 }: MatchEventsSectionProps) {
   const hasItems = items.length > 0;
 
   return (
     <section
       aria-labelledby="match-events-title"
-      className="flex w-full flex-col gap-[16px] rounded-[8px] bg-[#1D1E2B] p-[16px]"
+      className="app-match-surface flex w-full flex-col gap-4 rounded-lg p-4"
     >
-      <h2 className="app-type-inter-14-20-medium text-white" id="match-events-title">
-        Events
+      <h2 className="app-type-inter-14-20-medium text-app-text" id="match-events-title">
+        {copy.timelineTitle}
       </h2>
       {hasItems ? (
-        <div className="flex w-full flex-col gap-[8px]">
+        <div className="flex w-full flex-col gap-2">
           {items.map((item) =>
             item.kind === 'divider' ? (
               <EventDividerRow key={item.id} item={item} />
@@ -55,11 +75,15 @@ export function MatchEventsSection({
           )}
         </div>
       ) : isError ? (
-        <MatchEventsState message={copy.inlineErrorMessage} />
+        <MatchEventsState
+          message={copy.inlineErrorMessage}
+          onRetry={onRetry}
+          retryAttempt={retryAttempt}
+        />
       ) : isLoading ? (
         <MatchEventsState isLoading message={copy.loading} />
       ) : (
-        <MatchEventsState message="No timeline events available." />
+        <MatchEventsState message={copy.timelineEmptyMessage} />
       )}
     </section>
   );

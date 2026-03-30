@@ -1,7 +1,7 @@
 import { RootLayout } from '@/app/layout/RootLayout';
 import { routes } from '@/app/config/routes';
-import { LoadingState } from '@/components/ui/LoadingState';
 import { RouteErrorFallback } from '@/components/ui/RouteErrorFallback';
+import { RouteLoadingFallback } from '@/app/router/RouteLoadingFallback';
 import { Suspense, lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -23,14 +23,6 @@ const NotFoundPage = lazy(async () => {
   return { default: module.NotFoundPage };
 });
 
-function RouteLoadingFallback() {
-  return (
-    <section className="flex min-h-[220px] items-center justify-center rounded-lg border border-app-border-base bg-app-surface p-6">
-      <LoadingState className="justify-center" />
-    </section>
-  );
-}
-
 export const router = createBrowserRouter([
   {
     path: routes.home,
@@ -46,7 +38,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'match/:eventId',
+        path: routes.matchPath,
         element: (
           <Suspense fallback={<RouteLoadingFallback />}>
             <MatchDetailsPage />

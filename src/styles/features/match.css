@@ -1,0 +1,89 @@
+@layer components {
+  .app-match-surface {
+    @apply bg-app-surface;
+  }
+
+  .app-match-surface-muted {
+    @apply bg-app-muted;
+  }
+
+  .app-match-divider {
+    @apply border-app-border-base;
+  }
+
+  .app-match-header-panel {
+    @apply flex h-[198px] w-full max-w-[707px] flex-col justify-between bg-app-surface pt-2;
+  }
+
+  .app-match-header-state {
+    @apply flex h-[198px] w-full max-w-[707px] items-center justify-center rounded-lg border border-app-border-base bg-app-surface p-6 text-center;
+  }
+
+  .app-match-back-button {
+    @apply inline-flex h-6 w-6 items-center justify-center rounded-full text-app-text transition hover:text-app-text-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
+  }
+
+  .app-match-status-pill {
+    @apply inline-flex h-[15px] items-center justify-center rounded px-1 whitespace-nowrap;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 10px;
+    line-height: 15px;
+    font-weight: 400;
+  }
+
+  .app-match-status-pill--live {
+    @apply bg-app-brand-secondary text-app-text-inverse;
+  }
+
+  .app-match-status-pill--finished {
+    @apply bg-app-danger text-app-text;
+  }
+
+  .app-match-status-pill--default {
+    @apply bg-app-bg-disabled text-app-text;
+  }
+
+  .app-match-team-badge-fallback {
+    @apply flex h-[42px] w-[42px] items-center justify-center rounded-full bg-app-muted uppercase text-app-text;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+
+  .app-match-card-counter {
+    @apply inline-flex h-[12px] w-[10px] items-center justify-center rounded-[1px] text-app-text-inverse;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 10px;
+    line-height: 15px;
+    font-weight: 500;
+  }
+
+  .app-match-card-counter--red {
+    @apply bg-app-danger;
+  }
+
+  .app-match-card-counter--yellow {
+    @apply bg-app-accent-moderate;
+  }
+
+  .app-match-minute-pill {
+    @apply inline-flex h-[19px] w-[48px] shrink-0 items-center justify-center rounded-full px-2 py-[2px] text-center;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 11px;
+    line-height: 15px;
+    font-weight: 400;
+  }
+
+  .app-match-minute-pill--active {
+    @apply border border-app-border-base bg-app-brand-secondary text-app-text-inverse;
+  }
+
+  .app-match-minute-pill--default {
+    @apply bg-app-muted text-app-text;
+  }
+
+  .app-match-empty-state {
+    @apply flex min-h-[120px] items-center justify-center rounded-lg border border-app-border-base bg-app-surface px-4 py-6 text-center;
+  }
+}

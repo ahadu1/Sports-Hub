@@ -6,7 +6,7 @@ import {
   type HeaderSelectOption,
 } from '@/components/header/header.constants';
 import { ChevronDownIcon, CloseIcon } from '@/components/icons';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils/cn';
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -45,7 +45,7 @@ export function HeaderDrawer({
 
   return (
     <div
-      className={clsx(
+      className={cn(
         'fixed inset-0 z-40 lg:hidden',
         isOpen ? 'pointer-events-auto' : 'pointer-events-none',
       )}
@@ -54,7 +54,7 @@ export function HeaderDrawer({
         type="button"
         aria-label="Close navigation menu overlay"
         onClick={onClose}
-        className={clsx(
+        className={cn(
           'fixed inset-0 bg-black/50 transition-opacity',
           isOpen ? 'opacity-100' : 'opacity-0',
         )}
@@ -64,7 +64,7 @@ export function HeaderDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
-        className={clsx(
+        className={cn(
           'fixed right-0 top-0 z-50 h-dvh w-[320px] max-w-[85vw] border-l border-app-border-base bg-app-surface transition-transform duration-300 ease-out',
           isOpen ? 'translate-x-0' : 'translate-x-full',
         )}
@@ -91,7 +91,7 @@ export function HeaderDrawer({
               const content = (
                 <>
                   <span
-                    className={clsx(
+                    className={cn(
                       'app-type-poppins-18-27-normal',
                       isActive
                         ? 'text-app-brand-secondary'
@@ -116,7 +116,7 @@ export function HeaderDrawer({
                     key={item.key}
                     type="button"
                     disabled
-                    className={clsx(drawerNavItemClasses, 'cursor-not-allowed')}
+                    className={cn(drawerNavItemClasses, 'cursor-not-allowed')}
                   >
                     {content}
                   </button>
@@ -130,7 +130,7 @@ export function HeaderDrawer({
                     to={item.to}
                     end
                     onClick={onClose}
-                    className={clsx(
+                    className={cn(
                       drawerNavItemClasses,
                       isActive && 'border-l-2 border-app-brand-secondary bg-white/5 pl-[14px]',
                     )}
@@ -167,11 +167,11 @@ export function HeaderDrawer({
                       }
                     : undefined
                 }
-                className={clsx(
-                  'h-10 rounded-lg px-3 text-left text-app-text-muted',
+                className={cn(
+                  'app-select-option-button',
                   selectedLeagueId === item.id
-                    ? 'bg-white/8 text-app-text-strong'
-                    : 'hover:bg-white/5',
+                    ? 'app-select-option-button--selected'
+                    : 'app-select-option-button--default',
                 )}
               >
                 {item.label}
@@ -198,11 +198,11 @@ export function HeaderDrawer({
                       }
                     : undefined
                 }
-                className={clsx(
-                  'h-10 rounded-lg px-3 text-left text-app-text-muted',
+                className={cn(
+                  'app-select-option-button',
                   selectedSeasonId === item.id
-                    ? 'bg-white/8 text-app-text-strong'
-                    : 'hover:bg-white/5',
+                    ? 'app-select-option-button--selected'
+                    : 'app-select-option-button--default',
                 )}
               >
                 {item.label}
@@ -238,7 +238,7 @@ function AccordionSection({
         type="button"
         aria-expanded={isInteractive ? isOpen : undefined}
         onClick={isInteractive ? () => onToggle(section) : undefined}
-        className={clsx(
+        className={cn(
           'flex h-11 w-full items-center justify-between rounded-xl border border-app-border-base bg-transparent px-4 text-app-text-strong',
           isOpen ? 'bg-white/5' : '',
         )}

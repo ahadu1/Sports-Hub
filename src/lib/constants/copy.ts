@@ -12,6 +12,7 @@ export const copy = {
 
   inlineErrorTitle: 'Something went wrong',
   inlineErrorMessage: 'We could not load this content.',
+  emptyStateTitle: 'Nothing to show yet',
 
   errorBoundaryTitle: 'Something went wrong',
   errorBoundaryMessage: 'This section failed to render. Please refresh or try again later.',
@@ -20,4 +21,9 @@ export const copy = {
   goBack: 'Go back',
   retry: 'Retry',
   loading: 'Loading…',
+  matchesHeading: 'Matches',
+  matchesEmptyTitle: 'No matches scheduled',
+  timelineTitle: 'Events',
+  timelineEmptyMessage: 'No timeline events available.',
+  matchUnavailableMessage: 'We could not load this match.',
 } as const;

@@ -6,7 +6,7 @@ import {
   type HeaderSelectOption,
 } from '@/components/header/header.constants';
 import { ChevronDownIcon } from '@/components/icons';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils/cn';
 import type { RefObject } from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -32,10 +32,10 @@ const desktopNavItemClasses =
   'relative inline-flex min-h-[43px] flex-col items-start justify-center whitespace-nowrap px-2 py-1';
 
 const desktopIconButtonClasses =
-  'flex size-10 shrink-0 items-center justify-center rounded-full bg-black/15';
+  'app-icon-button-brand app-focus-ring flex size-10 shrink-0 items-center justify-center';
 
 const desktopDisclosureButtonClasses =
-  'flex h-10 items-center gap-2 rounded-full bg-black/15 px-4 text-app-brand-on-surface app-type-poppins-16-24-medium';
+  'app-icon-button-brand app-focus-ring h-10 gap-2 px-4 text-app-brand-on-surface app-type-poppins-16-24-medium';
 
 export function DesktopHeader({
   isMatchesActive,
@@ -70,7 +70,7 @@ export function DesktopHeader({
             const content = (
               <>
                 <span
-                  className={clsx(
+                  className={cn(
                     'app-type-poppins-18-27-normal',
                     isActive
                       ? 'text-app-brand-secondary'
@@ -95,7 +95,7 @@ export function DesktopHeader({
                   key={item.key}
                   type="button"
                   disabled
-                  className={clsx(desktopNavItemClasses, 'cursor-not-allowed')}
+                  className={cn(desktopNavItemClasses, 'cursor-not-allowed')}
                 >
                   {content}
                 </button>
@@ -109,7 +109,7 @@ export function DesktopHeader({
                   to={item.to}
                   end
                   onClick={onNavigateHome}
-                  className={clsx(
+                  className={cn(
                     desktopNavItemClasses,
                     isActive &&
                       'after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-app-brand-secondary',
@@ -246,7 +246,7 @@ function DesktopDisclosurePanel({
 }: DesktopDisclosurePanelProps) {
   return (
     <div
-      className={clsx(
+      className={cn(
         'absolute right-0 top-[calc(100%+8px)] z-50 rounded-2xl border border-app-border-base bg-app-surface p-2',
         minWidthClass,
       )}
@@ -257,9 +257,11 @@ function DesktopDisclosurePanel({
             key={item.id}
             type="button"
             onClick={onSelect ? () => onSelect(item.id) : undefined}
-            className={clsx(
-              'h-10 w-full rounded-xl px-3 text-left text-app-text-strong',
-              selectedItemId === item.id ? 'bg-white/8' : 'hover:bg-white/5',
+            className={cn(
+              'app-select-option-button',
+              selectedItemId === item.id
+                ? 'app-select-option-button--selected'
+                : 'app-select-option-button--default',
             )}
           >
             {item.label}
