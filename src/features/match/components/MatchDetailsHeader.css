@@ -1,0 +1,90 @@
+@reference "../../../styles/tailwind-reference.css";
+
+@layer components {
+  .matchDetailsHeader {
+    @apply flex min-h-[198px] w-full max-w-[707px] flex-col justify-between bg-app-surface pt-2;
+  }
+
+  .matchDetailsHeader__teamsGrid {
+    @apply min-h-[5.5rem];
+  }
+
+  .matchDetailsHeader__scoreColumn {
+    @apply min-w-[5.5rem];
+  }
+
+  .matchDetailsHeader__scoreDate {
+    @apply text-center;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 11px;
+    line-height: 15px;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--app-text-strong);
+  }
+
+  .matchDetailsHeader__score {
+    @apply text-center;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0;
+    color: var(--app-text-base);
+  }
+
+  .matchDetailsHeader__backButton {
+    @apply inline-flex h-6 w-6 items-center justify-center rounded-full text-app-text transition hover:text-app-text-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
+  }
+
+  .matchDetailsHeader__statusPill {
+    @apply inline-flex h-[15px] w-fit max-w-full items-center justify-center gap-2.5 whitespace-nowrap rounded-[4px] px-[4px];
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 10px;
+    line-height: 15px;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0;
+    text-align: center;
+  }
+
+  .matchDetailsHeader__statusPill--live {
+    @apply bg-app-brand-secondary text-app-text-inverse;
+  }
+
+  .matchDetailsHeader__statusPill--finished {
+    @apply bg-app-danger;
+    color: var(--app-text-base);
+  }
+
+  .matchDetailsHeader__statusPill--default {
+    @apply bg-app-bg-disabled text-app-text;
+  }
+
+  .matchDetailsHeader__teamBadgeFallback {
+    @apply flex h-[42px] w-[42px] items-center justify-center rounded-full bg-app-muted uppercase text-app-text;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+
+  .matchDetailsHeader__cardCounter {
+    @apply inline-flex h-[12px] w-[10px] items-center justify-center rounded-[1px] text-app-text-inverse;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 10px;
+    line-height: 15px;
+    font-weight: 500;
+  }
+
+  .matchDetailsHeader__cardCounter--red {
+    @apply bg-app-danger;
+  }
+
+  .matchDetailsHeader__cardCounter--yellow {
+    @apply bg-app-accent-moderate;
+  }
+}

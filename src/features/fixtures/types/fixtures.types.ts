@@ -1,4 +1,5 @@
 import type { MatchState } from '@/features/match/types/match.types';
+import type { NormalizedKickoff } from '@/lib/datetime/kickoff';
 
 export type FixturesFilterKey = 'all' | 'live' | 'favorites';
 
@@ -26,11 +27,11 @@ export type Fixture = {
   eventId: string;
   leagueId: string;
   leagueName: string;
-  fixtureDate: string;
+  kickoff: NormalizedKickoff;
   state: FixtureState;
   visibleInFilters: FixturesFilterKey[];
   isFavorite: boolean;
-  kickoffLabel?: string;
+  kickoffLabel: string;
   liveLabel?: string;
   home: FixtureTeam;
   away: FixtureTeam;

@@ -1,89 +1,89 @@
 @layer components {
-  .app-type-inter-10-12-medium {
+  .text-tag {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 10px;
     line-height: 12px;
     font-weight: 500;
   }
 
-  .app-type-inter-11-15-normal {
+  .text-meta {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 11px;
     line-height: 15px;
     font-weight: 400;
   }
 
-  .app-type-inter-12-16-normal {
+  .text-body-sm {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 12px;
     line-height: 16px;
     font-weight: 400;
   }
 
-  .app-type-inter-12-16-semibold {
+  .text-body-sm-strong {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
   }
 
-  .app-type-inter-14-20-normal {
+  .text-body-md {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 14px;
     line-height: 20px;
     font-weight: 400;
   }
 
-  .app-type-inter-14-20-medium {
+  .text-body-md-medium {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 14px;
     line-height: 20px;
     font-weight: 500;
   }
 
-  .app-type-inter-14-20-semibold {
+  .text-body-md-strong {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 14px;
     line-height: 20px;
     font-weight: 600;
   }
 
-  .app-type-inter-16-24-semibold {
+  .text-title-sm {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 16px;
     line-height: 24px;
     font-weight: 600;
   }
 
-  .app-type-inter-20-26-semibold {
+  .text-title-md {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 20px;
     line-height: 26px;
     font-weight: 600;
   }
 
-  .app-type-inter-22-28-semibold {
+  .text-display-sm {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 22px;
     line-height: 28px;
     font-weight: 600;
   }
 
-  .app-type-inter-10-15-normal {
+  .text-caption {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 10px;
     line-height: 15px;
     font-weight: 400;
   }
 
-  .app-type-inter-10-15-medium {
+  .text-caption-strong {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 10px;
     line-height: 15px;
     font-weight: 500;
   }
 
-  .app-type-poppins-18-27-normal {
+  .text-nav {
     font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
     font-size: 18px;
     line-height: 27px;
@@ -91,7 +91,7 @@
     letter-spacing: 0;
   }
 
-  .app-type-poppins-16-24-medium {
+  .text-nav-sm {
     font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
     font-size: 16px;
     line-height: 24px;
@@ -99,7 +99,7 @@
     letter-spacing: 0;
   }
 
-  .app-type-roboto-12-16-light {
+  .text-supporting {
     font-family: Roboto, ui-sans-serif, system-ui, sans-serif;
     font-size: 12px;
     line-height: 16px;

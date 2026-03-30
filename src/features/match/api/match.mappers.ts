@@ -3,7 +3,8 @@ import type {
   teamLookupResponseSchema,
 } from '@/features/match/api/match.schemas';
 import type { MatchDetail } from '@/features/match/types/match.types';
-import { getMatchState } from '@/features/match/utils/matchStatus.utils';
+import { buildNormalizedKickoff, logKickoffDiscrepancy } from '@/lib/datetime/kickoff';
+import { getMatchState } from '@/utils/match/matchStatus.utils';
 import type { z } from 'zod';
 
 type RawMatchDetailResponse = z.infer<typeof matchDetailResponseSchema>;
@@ -161,6 +162,15 @@ function mapMatchDetail(
   const status = event.strStatus?.trim() ?? null;
   const homeTeamName = normalizeString(event.strHomeTeam);
   const awayTeamName = normalizeString(event.strAwayTeam);
+  const kickoff = buildNormalizedKickoff({
+    idEvent: event.idEvent,
+    dateEvent: event.dateEvent,
+    dateEventLocal: event.dateEventLocal,
+    strTime: event.strTime,
+    strTimeLocal: event.strTimeLocal,
+    strTimestamp: event.strTimestamp,
+  });
+  logKickoffDiscrepancy(event.idEvent, kickoff);
 
   return {
     id: normalizeString(event.idEvent) || fallbackEventId,
@@ -168,10 +178,7 @@ function mapMatchDetail(
     leagueName: normalizeString(event.strLeague),
     leagueBadge: normalizeString(event.strLeagueBadge),
     eventLabel: normalizeString(event.strEvent),
-    dateEvent: normalizeString(event.dateEvent),
-    dateEventLocal: normalizeString(event.dateEventLocal),
-    kickoffTime: normalizeString(event.strTime),
-    kickoffTimeLocal: normalizeString(event.strTimeLocal),
+    kickoff,
     season: normalizeString(event.strSeason),
     round: parseNumericValue(event.intRound),
     venueName: normalizeString(event.strVenue),

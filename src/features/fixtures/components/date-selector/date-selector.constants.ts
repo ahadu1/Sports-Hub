@@ -1,8 +1,0 @@
-export const DESKTOP_DATE_LABEL_FORMAT = 'EEE d LLL';
-export const MOBILE_DATE_TOP_LABEL_FORMAT = 'EEE';
-export const MOBILE_DATE_BOTTOM_LABEL_FORMAT = 'd LLL';
-export const MONTH_CAPTION_FORMAT = 'LLLL yyyy';
-export const EMPTY_STATE_DATE_FORMAT = 'EEEE, d LLLL yyyy';
-
-export const MOBILE_RIBBON_ITEM_COUNT = 5;
-export const MOBILE_RIBBON_CENTER_INDEX = Math.floor(MOBILE_RIBBON_ITEM_COUNT / 2);

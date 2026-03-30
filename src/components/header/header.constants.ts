@@ -3,6 +3,7 @@ import { routes } from '@/app/config/routes';
 export type HeaderSelectOption = {
   id: string;
   label: string;
+  badgeSrc?: string | undefined;
 };
 
 export type PrimaryNavItem = {
@@ -23,12 +24,9 @@ export const PRIMARY_NAV_ITEMS: readonly PrimaryNavItem[] = [
   { key: 'venues', label: 'Venues' },
 ];
 
-export const HEADER_ASSETS = {
-  logo: '/header/logo-statscore.svg',
-  globe: '/header/icon-globe.svg',
-  football: '/header/icon-football.svg',
-  leagueFlag: '/header/flag-england.svg',
-  localeFlag: '/header/flag-uk.svg',
-} as const;
+/** Wordmark in `HEADER_LOGO_SRC` (SVG ~3.33:1) */
+export const HEADER_LOGO_ALT = 'Statscore';
+
+export const HEADER_LOGO_SRC = '/header/logo-statscore.svg';
 
 export type HeaderAccordionSection = 'league' | 'season';

@@ -35,6 +35,8 @@ export type MatchTimelineApiEntry = {
 export type MatchTimelineApiPayload = {
   lookup?: MatchTimelineApiEntry[] | string | null | undefined;
   timeline?: MatchTimelineApiEntry[] | string | null | undefined;
+  message?: string | null | undefined;
+  Message?: string | null | undefined;
 };
 
 export type MatchTimelineMapContext = {

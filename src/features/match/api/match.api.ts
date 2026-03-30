@@ -4,7 +4,7 @@ import {
   teamLookupResponseSchema,
 } from '@/features/match/api/match.schemas';
 import type { MatchDetail } from '@/features/match/types/match.types';
-import { isValidMatchEventId } from '@/features/match/utils/matchEventId.utils';
+import { isValidMatchEventId } from '@/utils/match/matchEventId.utils';
 import { endpoints } from '@/lib/api/endpoints';
 import { getJson } from '@/lib/api/http-client';
 

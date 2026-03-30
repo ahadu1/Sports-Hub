@@ -1,0 +1,11 @@
+@reference "../../styles/tailwind-reference.css";
+
+@layer components {
+  .statePanel {
+    @apply flex min-h-[220px] items-center justify-center rounded-lg border border-app-border-base bg-app-surface p-6 text-center;
+  }
+
+  .statePanel--compact {
+    @apply min-h-[120px] px-4;
+  }
+}

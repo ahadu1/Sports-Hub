@@ -1,6 +1,6 @@
 import { routes } from '@/app/config/routes';
 import { copy } from '@/lib/constants/copy';
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 import { isRouteErrorResponse, Link, useNavigate, useRouteError } from 'react-router-dom';
 
 export function RouteErrorFallback() {

@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 
 import { EventIcon } from './EventIcon';
 
@@ -32,11 +32,11 @@ function EventTextStack({
         side === 'home' ? 'items-end text-right' : 'items-start text-left',
       )}
     >
-      <span className="app-type-inter-12-16-normal block max-w-full truncate whitespace-nowrap text-white">
+      <span className="text-body-sm block max-w-full truncate whitespace-nowrap text-white">
         {primaryText}
       </span>
       {showSecondaryText ? (
-        <span className="app-type-inter-12-16-normal block max-w-full truncate whitespace-nowrap text-app-text-subtle">
+        <span className="text-body-sm block max-w-full truncate whitespace-nowrap text-app-text-subtle">
           {secondaryText}
         </span>
       ) : null}

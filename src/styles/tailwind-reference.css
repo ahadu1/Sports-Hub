@@ -1,0 +1,10 @@
+/*
+  Shared Tailwind source for @reference from colocated component CSS.
+  Keeps @apply working without circular imports (those files must not @reference index.css,
+  which imports them).
+*/
+@import 'tailwindcss';
+@import './tokens.css';
+@import './foundations/theme.css';
+@import './base/globals.css';
+@import './components/typography.css';

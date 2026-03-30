@@ -23,7 +23,10 @@ export const copy = {
   loading: 'Loading…',
   matchesHeading: 'Matches',
   matchesEmptyTitle: 'No matches scheduled',
+  matchesFiltersUnavailableMessage: 'We could not load the available leagues and seasons.',
   timelineTitle: 'Events',
+  timelineMatchNotStartedMessage: 'This match has not started yet.',
+  timelineNoEventDataMessage: 'This match has no event data.',
   timelineEmptyMessage: 'No timeline events available.',
   matchUnavailableMessage: 'We could not load this match.',
 } as const;

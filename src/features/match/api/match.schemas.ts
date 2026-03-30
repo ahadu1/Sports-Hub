@@ -13,6 +13,7 @@ const matchDetailEventSchema = z
     strEvent: nullableString,
     dateEvent: nullableString,
     dateEventLocal: nullableString,
+    strTimestamp: nullableString,
     strTime: nullableString,
     strTimeLocal: nullableString,
     strSeason: nullableString,

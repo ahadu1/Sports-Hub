@@ -12,6 +12,7 @@ type RawLeagueSeasonsResponse = z.infer<typeof leagueSeasonsResponseSchema>;
 export type CompetitionOption = {
   id: string;
   label: string;
+  badgeSrc?: string | undefined;
 };
 
 function normalizeString(value: string | null | undefined): string {
@@ -27,12 +28,21 @@ function getSeasonSortValue(value: string): number {
   return match ? Number(match[1]) : Number.MIN_SAFE_INTEGER;
 }
 
+function leagueBadgeFromRaw(league: {
+  strBadge?: string | null | undefined;
+  strLeagueBadge?: string | null | undefined;
+}): string | undefined {
+  const src = normalizeString(league.strLeagueBadge) || normalizeString(league.strBadge);
+  return src || undefined;
+}
+
 export function mapLeagueListResponse(raw: RawLeagueListResponse): CompetitionOption[] {
   return (raw.all ?? raw.leagues ?? [])
     .map((league) => ({
       id: normalizeString(league.idLeague),
       label: normalizeString(league.strLeague),
       sport: normalizeString(league.strSport),
+      badgeSrc: leagueBadgeFromRaw(league),
     }))
     .filter(
       (league) =>
@@ -41,7 +51,7 @@ export function mapLeagueListResponse(raw: RawLeagueListResponse): CompetitionOp
         isUsableLeagueLabel(league.label) &&
         league.sport.toLowerCase() === 'soccer',
     )
-    .map(({ id, label }) => ({ id, label }));
+    .map(({ id, label, badgeSrc }) => (badgeSrc ? { id, label, badgeSrc } : { id, label }));
 }
 
 export function mapLeagueSeasonsResponse(raw: RawLeagueSeasonsResponse): CompetitionOption[] {
@@ -75,4 +85,18 @@ export function mapLeagueCurrentSeasonResponse(raw: RawLeagueLookupResponse): Co
   }
 
   return [{ id: currentSeason, label: currentSeason }];
+}
+
+export function mapLeagueLookupResponse(raw: RawLeagueLookupResponse): CompetitionOption | null {
+  const league = raw.lookup?.[0] ?? raw.leagues?.[0];
+  const id = normalizeString(league?.idLeague);
+  const label = normalizeString(league?.strLeague);
+
+  if (!id || !label || !isUsableLeagueLabel(label)) {
+    return null;
+  }
+
+  const badgeSrc = leagueBadgeFromRaw(league ?? {});
+
+  return badgeSrc ? { id, label, badgeSrc } : { id, label };
 }

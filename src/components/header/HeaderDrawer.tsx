@@ -1,12 +1,13 @@
 import { routes } from '@/app/config/routes';
 import {
-  HEADER_ASSETS,
+  HEADER_LOGO_ALT,
+  HEADER_LOGO_SRC,
   PRIMARY_NAV_ITEMS,
   type HeaderAccordionSection,
   type HeaderSelectOption,
 } from '@/components/header/header.constants';
 import { ChevronDownIcon, CloseIcon } from '@/components/icons';
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -70,8 +71,12 @@ export function HeaderDrawer({
         )}
       >
         <div className="flex h-14 items-center justify-between border-b border-app-border-base bg-app-brand-primary px-4">
-          <NavLink to={routes.home} onClick={onClose}>
-            <img src={HEADER_ASSETS.logo} alt="Sports Hub" className="app-header-brand-logo" />
+          <NavLink to={routes.home} onClick={onClose} className="header__logoLink">
+            <img
+              src={HEADER_LOGO_SRC}
+              alt={HEADER_LOGO_ALT}
+              className="header__logo header__logo--mobile"
+            />
           </NavLink>
 
           <button
@@ -92,7 +97,7 @@ export function HeaderDrawer({
                 <>
                   <span
                     className={cn(
-                      'app-type-poppins-18-27-normal',
+                      'text-nav',
                       isActive
                         ? 'text-app-brand-secondary'
                         : item.disabled
@@ -103,7 +108,7 @@ export function HeaderDrawer({
                     {item.label}
                   </span>
                   {item.disabledText ? (
-                    <span className="app-type-roboto-12-16-light text-app-brand-on-surface-variant">
+                    <span className="text-supporting text-app-brand-on-surface-variant">
                       {item.disabledText}
                     </span>
                   ) : null}
@@ -168,13 +173,23 @@ export function HeaderDrawer({
                     : undefined
                 }
                 className={cn(
-                  'app-select-option-button',
+                  'header__selectOption',
                   selectedLeagueId === item.id
-                    ? 'app-select-option-button--selected'
-                    : 'app-select-option-button--default',
+                    ? 'header__selectOption--selected'
+                    : 'header__selectOption--default',
                 )}
               >
-                {item.label}
+                <span className="flex min-w-0 items-center gap-2">
+                  {item.badgeSrc ? (
+                    <img
+                      src={item.badgeSrc}
+                      alt=""
+                      aria-hidden
+                      className="h-5 w-5 shrink-0 object-contain"
+                    />
+                  ) : null}
+                  <span className="truncate">{item.label}</span>
+                </span>
               </button>
             ))}
           </AccordionSection>
@@ -199,10 +214,10 @@ export function HeaderDrawer({
                     : undefined
                 }
                 className={cn(
-                  'app-select-option-button',
+                  'header__selectOption',
                   selectedSeasonId === item.id
-                    ? 'app-select-option-button--selected'
-                    : 'app-select-option-button--default',
+                    ? 'header__selectOption--selected'
+                    : 'header__selectOption--default',
                 )}
               >
                 {item.label}

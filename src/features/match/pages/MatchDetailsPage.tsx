@@ -5,12 +5,12 @@ import { StatePanel } from '@/components/ui/StatePanel';
 import type { Fixture } from '@/features/fixtures/types/fixtures.types';
 import { MatchDetailsHeader } from '@/features/match/components/MatchDetailsHeader';
 import { MatchEventsSection } from '@/features/match/components/events/MatchEventsSection';
-import { useMatchDetailsQuery } from '@/features/match/hooks/useMatchDetailsQuery';
-import { useMatchTimeline } from '@/features/match/hooks/useMatchTimeline';
+import { useMatchDetailsQuery } from '@/hooks/match/useMatchDetailsQuery';
+import { useMatchTimeline } from '@/hooks/match/useMatchTimeline';
 import {
   mapMatchDetailsHeaderEvent,
   mapMatchDetailsHeaderUiMeta,
-} from '@/features/match/utils/matchDetailsPage.utils';
+} from '@/utils/match/matchDetailsPage.utils';
 import { copy } from '@/lib/constants/copy';
 import { useMemo } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
@@ -25,7 +25,7 @@ function MatchDetailsHeaderState({
   attempt: number;
 }) {
   return (
-    <StatePanel className="app-match-header-state">
+    <StatePanel className="h-[198px] w-full max-w-[707px] rounded-lg border border-app-border-base bg-app-surface">
       {isLoading ? (
         <LoadingState className="justify-center" label={copy.loading} />
       ) : (
@@ -59,12 +59,17 @@ export function MatchDetailsPage() {
     matchDetail,
     selectedFixture,
   });
+  const timelineData = matchTimelineQuery.data;
   const isTimelineLoading = matchTimelineQuery.isLoading;
   const headerEvent = useMemo(
     () => mapMatchDetailsHeaderEvent(matchDetail, selectedFixture, routeEventId),
     [matchDetail, routeEventId, selectedFixture],
   );
-  const headerUiMeta = useMemo(() => mapMatchDetailsHeaderUiMeta(matchDetail), [matchDetail]);
+  const headerUiMeta = useMemo(
+    () => mapMatchDetailsHeaderUiMeta(matchDetail, selectedFixture),
+    [matchDetail, selectedFixture],
+  );
+  const matchNotStartedYet = headerEvent?.matchState === 'scheduled';
 
   return (
     <div className="flex justify-center">
@@ -80,15 +85,19 @@ export function MatchDetailsPage() {
             attempt={Math.max(1, matchDetailsQuery.failureCount)}
           />
         )}
-        <MatchEventsSection
-          isError={matchTimelineQuery.isError}
-          isLoading={isTimelineLoading}
-          items={matchTimelineQuery.data ?? []}
-          onRetry={() => {
-            void matchTimelineQuery.refetch();
-          }}
-          retryAttempt={Math.max(1, matchTimelineQuery.failureCount)}
-        />
+        {headerEvent?.matchState !== 'Match Postponed' ? (
+          <MatchEventsSection
+            isError={matchTimelineQuery.isError}
+            isLoading={isTimelineLoading}
+            items={timelineData?.items ?? []}
+            hasNoEventData={timelineData?.hasNoEventData ?? false}
+            matchNotStartedYet={matchNotStartedYet}
+            onRetry={() => {
+              void matchTimelineQuery.refetch();
+            }}
+            retryAttempt={Math.max(1, matchTimelineQuery.failureCount)}
+          />
+        ) : null}
       </div>
     </div>
   );

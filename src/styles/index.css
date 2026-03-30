@@ -1,11 +1,4 @@
-@import 'tailwindcss';
-@import './tokens.css';
-@import './foundations/theme.css';
-@import './base/globals.css';
-@import './components/app-components.css';
-@import './components/typography.css';
-@import './features/fixtures.css';
-@import './features/match.css';
+@import './tailwind-reference.css';
 
 /* DaisyUI v5 config in CSS, official Tailwind v4-compatible setup */
 @plugin "daisyui" {
@@ -68,56 +61,15 @@
   --noise: 0;
 }
 
-/* Live-match underline: fill L→R, pause, drain L→R, pause, fill R→L, pause, drain R→L, pause (2.8s) */
-@keyframes fixtures-live-fill-drain {
-  0% {
-    clip-path: inset(0 94% 0 0);
-  }
-  7.14% {
-    clip-path: inset(0 0 0 0);
-  }
-  25% {
-    clip-path: inset(0 0 0 0);
-  }
-  32.14% {
-    clip-path: inset(0 0 0 94%);
-  }
-  50% {
-    clip-path: inset(0 0 0 94%);
-  }
-  57.14% {
-    clip-path: inset(0 0 0 0);
-  }
-  75% {
-    clip-path: inset(0 0 0 0);
-  }
-  82.14% {
-    clip-path: inset(0 94% 0 0);
-  }
-  100% {
-    clip-path: inset(0 94% 0 0);
-  }
-}
-
-.app-fixtures-live-underline {
-  position: relative;
-}
-
-.app-fixtures-live-underline::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--app-brand-secondary);
-  box-shadow:
-    0 0 6px color-mix(in srgb, var(--app-brand-secondary) 90%, transparent),
-    0 0 14px color-mix(in srgb, var(--app-brand-secondary) 50%, transparent);
-  animation: fixtures-live-fill-drain 2.8s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .app-fixtures-live-underline::after {
-    animation: none;
-    clip-path: inset(0);
-  }
-}
+/*
+  Colocated component CSS lives next to its TSX; imported here so rules ship with the root
+  stylesheet. Styles only linked from lazy route chunks can fail to inject in the browser
+  in some Vite dev/HMR setups.
+*/
+@import '../components/header/Header.css';
+@import '../components/ui/StatePanel.css';
+@import '../features/fixtures/components/FixtureRow.css';
+@import '../features/fixtures/components/FixturesDateSelector.css';
+@import '../features/fixtures/components/FixturesFilterChips.css';
+@import '../features/match/components/MatchDetailsHeader.css';
+@import '../features/match/components/events/MatchEventsSection.css';

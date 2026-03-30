@@ -3,34 +3,35 @@ import { InlineErrorState } from '@/components/ui/InlineErrorState';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { StatePanel } from '@/components/ui/StatePanel';
 import { CompetitionCard } from '@/features/fixtures/components/CompetitionCard';
-import { FixturesDesktopDateBar } from '@/features/fixtures/components/FixturesDesktopDateBar';
+import { FixturesDateSelector } from '@/features/fixtures/components/FixturesDateSelector';
 import { FixturesFilterChips } from '@/features/fixtures/components/FixturesFilterChips';
-import { FixturesMobileDateRibbon } from '@/features/fixtures/components/FixturesMobileDateRibbon';
-import { EMPTY_STATE_DATE_FORMAT } from '@/features/fixtures/components/date-selector/date-selector.constants';
+import { useFixturesCompetition } from '@/hooks/fixtures/useFixturesCompetition';
+import { usePersistedFixturesDate } from '@/hooks/fixtures/usePersistedFixturesDate';
+import { useFixturesQuery } from '@/hooks/fixtures/useFixturesQuery';
+import { formatLocalDateLong, formatWeekdayLong } from '@/lib/datetime/kickoff';
 import {
   filterFixturesByDate,
   hasFixturesForDate,
   normalizeDate,
-} from '@/features/fixtures/components/date-selector/date-selector.utils';
-import { useFixturesCompetition } from '@/features/fixtures/context/useFixturesCompetition';
-import { usePersistedFixturesDate } from '@/features/fixtures/hooks/usePersistedFixturesDate';
-import { useFixturesQuery } from '@/features/fixtures/hooks/useFixturesQuery';
+} from '@/utils/fixtures/date-selector.utils';
 import type { FixturesFilterKey } from '@/features/fixtures/types/fixtures.types';
-import { groupFixturesByCompetition } from '@/features/fixtures/utils/fixturesPage.utils';
+import { groupFixturesByCompetition } from '@/utils/fixtures/fixturesPage.utils';
 import { copy } from '@/lib/constants/copy';
-import { addDays, format, startOfDay, startOfMonth, subDays } from 'date-fns';
+import { addDays, startOfDay, startOfMonth, subDays } from 'date-fns';
 import { useMemo, useState } from 'react';
 
 export function FixturesPage() {
   const {
     isLoading: isCompetitionLoading,
+    isError: isCompetitionError,
+    failureCount: competitionFailureCount,
+    retry: retryCompetitionQueries,
     selectedLeagueId,
     selectedSeasonId,
   } = useFixturesCompetition();
 
   const { selectedDate, setSelectedDate } = usePersistedFixturesDate();
   const [selectedFilter, setSelectedFilter] = useState<FixturesFilterKey>('all');
-  const [mobileCalendarOpen, setMobileCalendarOpen] = useState(false);
   const [visibleMonth, setVisibleMonth] = useState<Date>(() => startOfMonth(selectedDate));
 
   const fixturesQuery = useFixturesQuery(selectedLeagueId, selectedSeasonId);
@@ -79,6 +80,7 @@ export function FixturesPage() {
   );
 
   const hasFixturesOnSelectedDate = hasFixturesForDate(allSections, selectedDate);
+  const selectedDateLabel = `${formatWeekdayLong(selectedDate)}, ${formatLocalDateLong(selectedDate)}`;
 
   const syncSelectedDate = (nextDate: Date) => {
     const normalizedDate = normalizeDate(nextDate);
@@ -89,32 +91,21 @@ export function FixturesPage() {
   const isInitialLoading =
     (isCompetitionLoading && (!selectedLeagueId || !selectedSeasonId)) ||
     (fixturesQuery.isPending && allSections.length === 0);
+  const hasBlockingCompetitionError =
+    isCompetitionError && (!selectedLeagueId || !selectedSeasonId) && allSections.length === 0;
 
   return (
     <div className="-mx-6 w-auto bg-app-canvas">
       <div className="mx-auto flex max-w-[820px] flex-col gap-4 px-4 lg:w-[820px] lg:px-0">
-        <h1 className="app-type-inter-20-26-semibold text-app-text">{copy.matchesHeading}</h1>
+        <h1 className="text-title-md text-app-text">{copy.matchesHeading}</h1>
 
-        <FixturesDesktopDateBar
+        <FixturesDateSelector
           selectedDate={selectedDate}
           visibleMonth={visibleMonth}
           onPrevious={() => syncSelectedDate(startOfDay(subDays(selectedDate, 1)))}
           onNext={() => syncSelectedDate(startOfDay(addDays(selectedDate, 1)))}
           onOpenCalendar={() => setVisibleMonth(startOfMonth(selectedDate))}
           onSelectDate={syncSelectedDate}
-          onMonthChange={setVisibleMonth}
-        />
-
-        <FixturesMobileDateRibbon
-          selectedDate={selectedDate}
-          visibleMonth={visibleMonth}
-          mobileCalendarOpen={mobileCalendarOpen}
-          onSelectDate={syncSelectedDate}
-          onOpenCalendar={() => {
-            setVisibleMonth(startOfMonth(selectedDate));
-            setMobileCalendarOpen(true);
-          }}
-          onCloseCalendar={() => setMobileCalendarOpen(false)}
           onMonthChange={setVisibleMonth}
         />
 
@@ -127,6 +118,19 @@ export function FixturesPage() {
         {isInitialLoading ? (
           <StatePanel>
             <LoadingState className="justify-center" />
+          </StatePanel>
+        ) : hasBlockingCompetitionError ? (
+          <StatePanel>
+            <InlineErrorState
+              title={copy.inlineErrorTitle}
+              message={copy.matchesFiltersUnavailableMessage}
+              retryLabel={copy.retry}
+              onRetry={() => {
+                void retryCompetitionQueries();
+              }}
+              attempt={Math.max(1, competitionFailureCount)}
+              maxAttempts={MAX_QUERY_RETRIES}
+            />
           </StatePanel>
         ) : fixturesQuery.isError && allSections.length === 0 ? (
           <StatePanel>
@@ -146,13 +150,11 @@ export function FixturesPage() {
         ) : (
           <StatePanel>
             <div className="space-y-2">
-              <h2 className="app-type-inter-20-26-semibold text-app-text">
-                {copy.matchesEmptyTitle}
-              </h2>
-              <p className="app-type-inter-14-20-normal text-app-text-muted">
+              <h2 className="text-title-md text-app-text">{copy.matchesEmptyTitle}</h2>
+              <p className="text-body-md text-app-text-muted">
                 {hasFixturesOnSelectedDate
-                  ? `No matches are available in this filter for ${format(selectedDate, EMPTY_STATE_DATE_FORMAT)}.`
-                  : `There are no scheduled fixtures for ${format(selectedDate, EMPTY_STATE_DATE_FORMAT)}.`}
+                  ? `No matches are available in this filter for ${selectedDateLabel}.`
+                  : `There are no scheduled fixtures for ${selectedDateLabel}.`}
               </p>
             </div>
           </StatePanel>

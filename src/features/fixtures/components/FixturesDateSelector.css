@@ -1,0 +1,63 @@
+@reference "../../../styles/tailwind-reference.css";
+
+@layer components {
+  .fixturesDateSelector {
+    @apply flex flex-col gap-2;
+  }
+
+  .fixturesDateSelector__desktopBar {
+    @apply hidden h-14 items-center justify-between gap-6 rounded-lg bg-app-surface px-4 py-2 lg:flex;
+  }
+
+  .fixturesDateSelector__navButton {
+    @apply inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-app-text outline-none transition hover:bg-white/5 hover:text-app-brand-secondary focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface;
+  }
+
+  .fixturesDateSelector__calendarButton {
+    @apply flex items-center justify-center gap-2 text-app-text outline-none transition hover:text-app-brand-secondary focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface;
+  }
+
+  .fixturesDateSelector__popoverPanel {
+    @apply absolute left-1/2 top-[calc(100%+12px)] z-50 w-[320px] -translate-x-1/2 rounded-2xl border border-app-border-base bg-app-surface p-4 shadow-[0_18px_40px_rgba(0,0,0,0.42)];
+  }
+
+  .fixturesDateSelector__mobileRibbon {
+    @apply flex min-h-[71px] items-center gap-2 lg:hidden;
+  }
+
+  .fixturesDateSelector__mobileDates {
+    @apply flex min-w-0 flex-1 items-center justify-between gap-2;
+  }
+
+  .fixturesDateSelector__mobileDate {
+    @apply grid min-h-[39px] min-w-0 flex-1 place-items-center px-1 py-1 text-center outline-none transition hover:text-app-brand-secondary focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-canvas;
+  }
+
+  .fixturesDateSelector__mobileDate--selected {
+    @apply rounded-lg bg-app-muted px-2 py-1;
+  }
+
+  .fixturesDateSelector__calendarTrigger {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-app-fixtures-calendar text-app-brand-secondary outline-none transition hover:text-app-brand-secondary focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-canvas;
+  }
+
+  .fixturesDateSelector__dialog {
+    @apply relative z-50 lg:hidden;
+  }
+
+  .fixturesDateSelector__dialogPanel {
+    @apply flex w-full max-w-[820px] flex-col gap-4 rounded-t-3xl border border-b-0 border-app-border-base bg-app-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-12px_28px_rgba(0,0,0,0.38)];
+  }
+
+  .fixturesDateSelector__dialogClose {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-full border border-app-border-base bg-app-muted text-app-text transition hover:border-app-brand-secondary hover:text-app-brand-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface;
+  }
+
+  .fixturesDateSelector__dayPickerNavButton {
+    @apply inline-flex h-8 w-8 items-center justify-center rounded-full border border-app-border-base bg-app-muted text-app-text transition hover:border-app-brand-secondary hover:text-app-brand-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface;
+  }
+
+  .fixturesDateSelector__dayPickerDayButton {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-full text-sm text-app-text transition hover:bg-white/6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface;
+  }
+}

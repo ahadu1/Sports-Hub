@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 
 import type { FixtureDiscipline } from '../types/fixtures.types';
 
@@ -11,8 +11,10 @@ export function FixtureDisciplineIndicator({ discipline }: FixtureDisciplineIndi
     <span
       aria-label={`${discipline.card} card`}
       className={cn(
-        'app-discipline-card',
-        discipline.card === 'red' ? 'app-discipline-card--red' : 'app-discipline-card--yellow',
+        'fixtureRow__disciplineCard',
+        discipline.card === 'red'
+          ? 'fixtureRow__disciplineCard--red'
+          : 'fixtureRow__disciplineCard--yellow',
       )}
     />
   );

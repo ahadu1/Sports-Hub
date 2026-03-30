@@ -1,7 +1,6 @@
 import type { ComponentType, SVGProps } from 'react';
-import { cn } from '@/lib/utils/cn';
-import HeartIcon from '@/features/fixtures/assets/icon/icon-heart.svg?react';
-import LiveIcon from '@/features/fixtures/assets/icon/icon-live.svg?react';
+import { HeartIcon, LiveIcon } from '@/components/icons';
+import { cn } from '@/utils/cn';
 
 import type { FixturesFilterKey } from '../types/fixtures.types';
 
@@ -27,7 +26,7 @@ export function FixturesFilterChips({
   onSelectFilter,
 }: FixturesFilterChipsProps) {
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className="fixturesFilterChips">
       {FILTER_ITEMS.map(({ key, label, icon: Icon }) => {
         const isActive = selectedFilter === key;
 
@@ -37,19 +36,21 @@ export function FixturesFilterChips({
             type="button"
             aria-pressed={isActive}
             className={cn(
-              'app-fixtures-filter-chip',
-              isActive ? 'app-fixtures-filter-chip--active' : 'app-fixtures-filter-chip--inactive',
+              'fixturesFilterChips__chip',
+              isActive
+                ? 'fixturesFilterChips__chip--active'
+                : 'fixturesFilterChips__chip--inactive',
             )}
             onClick={() => onSelectFilter(key)}
           >
-            {Icon ? <Icon aria-hidden="true" className="h-4 w-4 shrink-0" /> : null}
-            <span className="app-type-inter-14-20-medium">{label}</span>
+            {Icon ? <Icon /> : null}
+            <span className="text-body-md-medium">{label}</span>
             <span
               className={cn(
-                'app-fixtures-filter-count app-type-inter-12-16-semibold',
+                'fixturesFilterChips__count text-body-sm-strong',
                 isActive
-                  ? 'app-fixtures-filter-count--active'
-                  : 'app-fixtures-filter-count--inactive',
+                  ? 'fixturesFilterChips__count--active'
+                  : 'fixturesFilterChips__count--inactive',
               )}
             >
               {chipCounts[key]}

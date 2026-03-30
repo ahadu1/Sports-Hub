@@ -28,7 +28,7 @@ function isFixture(value: unknown): value is Fixture {
     value !== null &&
     'eventId' in value &&
     'state' in value &&
-    'fixtureDate' in value
+    'kickoff' in value
   );
 }
 

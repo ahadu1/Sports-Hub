@@ -11,6 +11,7 @@ export const fixtureEventSchema = z
     strLeague: nullableString,
     dateEvent: nullableString,
     dateEventLocal: nullableString,
+    strTimestamp: nullableString,
     strTime: nullableString,
     strTimeLocal: nullableString,
     strHomeTeam: nullableString,

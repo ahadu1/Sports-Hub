@@ -1,9 +1,10 @@
 import type { MatchState } from '@/features/match/types/match.types';
+import type { NormalizedKickoff } from '@/lib/datetime/kickoff';
 
 export type MatchDetailsHeaderEvent = {
   idEvent: string;
   strLeague: string;
-  dateEvent: string;
+  kickoff: NormalizedKickoff;
   strHomeTeam: string;
   strAwayTeam: string;
   strHomeTeamBadge: string;

@@ -1,5 +1,5 @@
 import type { MatchTimelineApiPayload } from '@/features/match/types/match-events.types';
-import { isValidMatchEventId } from '@/features/match/utils/matchEventId.utils';
+import { isValidMatchEventId } from '@/utils/match/matchEventId.utils';
 import { ApiError, shouldFallbackToLegacyApi } from '@/lib/api/errors';
 import { endpoints, legacyEndpoints } from '@/lib/api/endpoints';
 import { getJson } from '@/lib/api/http-client';
@@ -28,16 +28,34 @@ const matchTimelineEntrySchema = z
   })
   .passthrough();
 
-const matchTimelineResponseSchema = z.object({
+export const matchTimelineResponseSchema = z.object({
   lookup: z.union([z.array(matchTimelineEntrySchema), z.string(), z.null()]).optional(),
   timeline: z.union([z.array(matchTimelineEntrySchema), z.string(), z.null()]).optional(),
+  message: nullableString,
+  Message: nullableString,
 });
 
-function normalizeTimelinePayload(
+function isNoDataMessage(value: string | null | undefined): boolean {
+  return value?.trim().toLowerCase() === 'no data found';
+}
+
+export function normalizeTimelinePayload(
   raw: MatchTimelineApiPayload,
   url: string,
 ): MatchTimelineApiPayload {
   const timelineData = raw.lookup ?? raw.timeline;
+  const responseMessage = raw.message ?? raw.Message;
+
+  if (
+    isNoDataMessage(responseMessage) ||
+    (typeof timelineData === 'string' && isNoDataMessage(timelineData))
+  ) {
+    return {
+      lookup: [],
+      timeline: null,
+      message: responseMessage ?? timelineData,
+    };
+  }
 
   if (typeof timelineData === 'string' && timelineData.trim().length > 0) {
     throw new ApiError('Timeline data is unavailable for the current TheSportsDB plan.', 403, url, {
@@ -46,14 +64,24 @@ function normalizeTimelinePayload(
   }
 
   if (Array.isArray(raw.lookup)) {
-    return raw;
+    return {
+      ...raw,
+      message: responseMessage,
+    };
   }
 
   if (Array.isArray(raw.timeline)) {
-    return { lookup: raw.timeline };
+    return {
+      lookup: raw.timeline,
+      message: responseMessage,
+    };
   }
 
-  return { lookup: [], timeline: raw.timeline };
+  return {
+    lookup: [],
+    timeline: raw.timeline,
+    message: responseMessage,
+  };
 }
 
 export async function fetchMatchTimeline(
@@ -79,22 +107,14 @@ export async function fetchMatchTimeline(
       throw error;
     }
 
-    try {
-      const raw = await getJson(
-        legacyEndpoints.matchTimelineById(trimmedEventId),
-        matchTimelineResponseSchema,
-        {
-          ...opts,
-          apiVersion: 'v1',
-        },
-      );
-      return normalizeTimelinePayload(raw, legacyEndpoints.matchTimelineById(trimmedEventId));
-    } catch (legacyError) {
-      if (legacyError instanceof ApiError && legacyError.status === 403) {
-        return { lookup: [] };
-      }
-
-      throw legacyError;
-    }
+    const raw = await getJson(
+      legacyEndpoints.matchTimelineById(trimmedEventId),
+      matchTimelineResponseSchema,
+      {
+        ...opts,
+        apiVersion: 'v1',
+      },
+    );
+    return normalizeTimelinePayload(raw, legacyEndpoints.matchTimelineById(trimmedEventId));
   }
 }

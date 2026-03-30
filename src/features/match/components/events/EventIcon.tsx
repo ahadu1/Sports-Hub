@@ -1,11 +1,12 @@
-import EventCornerSvg from '@/features/match/assets/icons/events/event-corner.svg';
-import EventGoalSvg from '@/features/match/assets/icons/events/event-goal.svg';
-import EventInjurySvg from '@/features/match/assets/icons/events/event-injury.svg';
-import EventOffThePostSvg from '@/features/match/assets/icons/events/event-off-the-post.svg';
-import EventRedCardSvg from '@/features/match/assets/icons/events/event-red-card.svg';
-import EventSubstitutionSvg from '@/features/match/assets/icons/events/event-substitution.svg';
-import EventYellowCardSvg from '@/features/match/assets/icons/events/event-yellow-card.svg';
-import { cn } from '@/lib/utils/cn';
+import type { ComponentType, SVGProps } from 'react';
+import EventCornerSvg from '@/features/match/assets/icons/events/event-corner.svg?react';
+import EventGoalSvg from '@/features/match/assets/icons/events/event-goal.svg?react';
+import EventInjurySvg from '@/features/match/assets/icons/events/event-injury.svg?react';
+import EventOffThePostSvg from '@/features/match/assets/icons/events/event-off-the-post.svg?react';
+import EventRedCardSvg from '@/features/match/assets/icons/events/event-red-card.svg?react';
+import EventSubstitutionSvg from '@/features/match/assets/icons/events/event-substitution.svg?react';
+import EventYellowCardSvg from '@/features/match/assets/icons/events/event-yellow-card.svg?react';
+import { cn } from '@/utils/cn';
 
 import type { MatchEventType } from '@/features/match/types/match-events.types';
 
@@ -22,10 +23,10 @@ const EVENT_ICON_COMPONENTS = {
   'red-card': EventRedCardSvg,
   injury: EventInjurySvg,
   corner: EventCornerSvg,
-} as const satisfies Record<MatchEventType, string>;
+} as const satisfies Record<MatchEventType, ComponentType<SVGProps<SVGSVGElement>>>;
 
 export function EventIcon({ eventType, className }: EventIconProps) {
-  const iconSrc = EVENT_ICON_COMPONENTS[eventType];
+  const Icon = EVENT_ICON_COMPONENTS[eventType];
 
   return (
     <span
@@ -35,7 +36,7 @@ export function EventIcon({ eventType, className }: EventIconProps) {
         className,
       )}
     >
-      <img alt="" className="h-[12px] w-[12px] shrink-0 object-contain" src={iconSrc} />
+      <Icon aria-hidden="true" className="h-[12px] w-[12px] shrink-0" />
     </span>
   );
 }

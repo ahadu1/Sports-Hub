@@ -1,11 +1,10 @@
-import { STATIC_QUERY_GC_TIME_MS, STATIC_QUERY_STALE_TIME_MS } from '@/app/config/app-config';
-import { fetchLeagueOptions, fetchLeagueSeasons } from '@/features/fixtures/api/competition.api';
 import {
   FixturesCompetitionContext,
   type FixturesCompetitionContextValue,
 } from '@/features/fixtures/context/fixturesCompetition.context';
-import { queryKeys } from '@/lib/constants/query-keys';
-import { useQuery } from '@tanstack/react-query';
+import { useLeagueOption } from '@/hooks/fixtures/useLeagueOption';
+import { useLeagueOptions } from '@/hooks/fixtures/useLeagueOptions';
+import { useLeagueSeasons } from '@/hooks/fixtures/useLeagueSeasons';
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 type FixturesCompetitionProviderProps = {
@@ -32,22 +31,12 @@ export function FixturesCompetitionProvider({ children }: FixturesCompetitionPro
   const [selectedLeagueId, setSelectedLeagueIdRaw] = useState('');
   const [selectedSeasonId, setSelectedSeasonId] = useState('');
 
-  const leaguesQuery = useQuery({
-    queryKey: queryKeys.fixtures.leagues(),
-    queryFn: ({ signal }) => fetchLeagueOptions(signal),
-    staleTime: STATIC_QUERY_STALE_TIME_MS,
-    gcTime: STATIC_QUERY_GC_TIME_MS,
-  });
+  const leaguesQuery = useLeagueOptions();
 
   const leagueOptions = useMemo(() => leaguesQuery.data ?? [], [leaguesQuery.data]);
+  const selectedLeagueQuery = useLeagueOption(selectedLeagueId);
 
-  const seasonsQuery = useQuery({
-    queryKey: queryKeys.fixtures.seasons(selectedLeagueId),
-    queryFn: ({ signal }) => fetchLeagueSeasons(selectedLeagueId, signal),
-    enabled: selectedLeagueId.length > 0,
-    staleTime: STATIC_QUERY_STALE_TIME_MS,
-    gcTime: STATIC_QUERY_GC_TIME_MS,
-  });
+  const seasonsQuery = useLeagueSeasons(selectedLeagueId);
 
   const seasonOptions = useMemo(() => seasonsQuery.data ?? [], [seasonsQuery.data]);
 
@@ -83,27 +72,67 @@ export function FixturesCompetitionProvider({ children }: FixturesCompetitionPro
     setSelectedSeasonId('');
   }, []);
 
+  const hasSeasonQuery = selectedLeagueId.length > 0;
+  const isError = leaguesQuery.isError || (hasSeasonQuery && seasonsQuery.isError);
+  const failureCount = Math.max(
+    leaguesQuery.failureCount,
+    hasSeasonQuery ? seasonsQuery.failureCount : 0,
+  );
+
+  const handleRetry = useCallback(async () => {
+    await leaguesQuery.refetch();
+
+    if (hasSeasonQuery) {
+      await seasonsQuery.refetch();
+    }
+  }, [hasSeasonQuery, leaguesQuery, seasonsQuery]);
+
   const value = useMemo<FixturesCompetitionContextValue>(
     () => ({
-      isLoading: leaguesQuery.isPending || (selectedLeagueId.length > 0 && seasonsQuery.isPending),
+      isLoading: leaguesQuery.isPending || (hasSeasonQuery && seasonsQuery.isPending),
       isLeagueLoading: leaguesQuery.isPending,
-      isSeasonLoading: selectedLeagueId.length > 0 && seasonsQuery.isPending,
+      isSeasonLoading: hasSeasonQuery && seasonsQuery.isPending,
+      isError,
+      failureCount,
       leagueOptions,
       seasonOptions,
       selectedLeagueId,
       selectedSeasonId,
-      selectedLeagueOption: leagueOptions.find((l) => l.id === selectedLeagueId) ?? null,
+      selectedLeagueOption: (() => {
+        const selectedLeagueOption = leagueOptions.find((l) => l.id === selectedLeagueId) ?? null;
+        const selectedLeagueDetails = selectedLeagueQuery.data;
+
+        if (!selectedLeagueOption) {
+          return selectedLeagueDetails ?? null;
+        }
+
+        if (!selectedLeagueDetails) {
+          return selectedLeagueOption;
+        }
+
+        return {
+          ...selectedLeagueOption,
+          label: selectedLeagueDetails.label || selectedLeagueOption.label,
+          badgeSrc: selectedLeagueDetails.badgeSrc ?? selectedLeagueOption.badgeSrc,
+        };
+      })(),
       selectedSeasonOption: seasonOptions.find((s) => s.id === selectedSeasonId) ?? null,
+      retry: handleRetry,
       setSelectedLeagueId: handleLeagueChange,
       setSelectedSeasonId,
     }),
     [
       leaguesQuery.isPending,
+      hasSeasonQuery,
       seasonsQuery.isPending,
+      isError,
+      failureCount,
       leagueOptions,
       seasonOptions,
       selectedLeagueId,
       selectedSeasonId,
+      selectedLeagueQuery.data,
+      handleRetry,
       handleLeagueChange,
     ],
   );

@@ -1,9 +1,11 @@
+import type { NormalizedKickoff } from '@/lib/datetime/kickoff';
+
 export type MatchState =
   | 'scheduled'
   | 'live'
   | 'halftime'
   | 'finished'
-  | 'postponed'
+  | 'Match Postponed'
   | 'canceled'
   | 'suspended'
   | 'abandoned'
@@ -25,10 +27,7 @@ export type MatchDetail = {
   leagueName: string;
   leagueBadge: string;
   eventLabel: string;
-  dateEvent: string;
-  dateEventLocal: string;
-  kickoffTime: string;
-  kickoffTimeLocal: string;
+  kickoff: NormalizedKickoff;
   season: string;
   round: number | null;
   venueName: string;

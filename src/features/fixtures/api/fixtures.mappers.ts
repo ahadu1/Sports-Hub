@@ -1,6 +1,11 @@
 import type { fixturesResponseSchema } from '@/features/fixtures/api/fixtures.schemas';
 import type { Fixture } from '@/features/fixtures/types/fixtures.types';
-import { getMatchState } from '@/features/match/utils/matchStatus.utils';
+import {
+  buildNormalizedKickoff,
+  getKickoffPrimaryLabel,
+  logKickoffDiscrepancy,
+} from '@/lib/datetime/kickoff';
+import { getMatchState } from '@/utils/match/matchStatus.utils';
 import type { z } from 'zod';
 
 type RawFixturesResponse = z.infer<typeof fixturesResponseSchema>;
@@ -31,18 +36,9 @@ function parseScore(value: string | number | null | undefined): number | undefin
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
-function formatKickoffLabel(
-  rawTimeLocal: string | null | undefined,
-  rawTime: string | null | undefined,
-): string {
-  const timeValue = rawTimeLocal?.trim() || rawTime?.trim() || '';
-  const match = timeValue.match(/^(\d{2}:\d{2})/);
-  return match?.[1] ?? '';
-}
-
 function getStatusAbbreviation(state: Fixture['state']): string | undefined {
   switch (state) {
-    case 'postponed':
+    case 'Match Postponed':
       return 'PST';
     case 'canceled':
       return 'CANC';
@@ -78,11 +74,19 @@ function mapFixture(event: RawFixtureEvent): Fixture | null {
   const eventId = normalizeString(event.idEvent);
   const leagueId = normalizeString(event.idLeague);
   const leagueName = normalizeString(event.strLeague);
-  const fixtureDate = normalizeString(event.dateEventLocal) || normalizeString(event.dateEvent);
   const homeTeamName = normalizeString(event.strHomeTeam);
   const awayTeamName = normalizeString(event.strAwayTeam);
+  const kickoff = buildNormalizedKickoff({
+    idEvent: event.idEvent,
+    dateEvent: event.dateEvent,
+    dateEventLocal: event.dateEventLocal,
+    strTime: event.strTime,
+    strTimeLocal: event.strTimeLocal,
+    strTimestamp: event.strTimestamp,
+  });
+  logKickoffDiscrepancy(eventId, kickoff);
 
-  if (!eventId || !leagueId || !leagueName || !fixtureDate || !homeTeamName || !awayTeamName) {
+  if (!eventId || !leagueId || !leagueName || !homeTeamName || !awayTeamName) {
     return null;
   }
 
@@ -97,9 +101,7 @@ function mapFixture(event: RawFixtureEvent): Fixture | null {
   const isFavorite = false;
 
   const kickoffLabel =
-    state === 'scheduled'
-      ? formatKickoffLabel(event.strTimeLocal, event.strTime)
-      : getStatusAbbreviation(state);
+    state === 'scheduled' ? getKickoffPrimaryLabel(kickoff) : getStatusAbbreviation(state);
 
   const liveLabel =
     state === 'live' || state === 'halftime'
@@ -112,11 +114,11 @@ function mapFixture(event: RawFixtureEvent): Fixture | null {
     eventId,
     leagueId,
     leagueName,
-    fixtureDate,
+    kickoff,
     state,
     visibleInFilters: mapVisibleInFilters(state, isFavorite),
     isFavorite,
-    ...(kickoffLabel ? { kickoffLabel } : {}),
+    kickoffLabel: kickoffLabel ?? getKickoffPrimaryLabel(kickoff),
     ...(liveLabel ? { liveLabel } : {}),
     home: {
       id: normalizeString(event.idHomeTeam) || homeTeamName,
@@ -145,8 +147,27 @@ export function mapFixturesResponse(rawResponses: RawFixturesResponse[]): Fixtur
   );
 
   return dedupedFixtures.sort((left, right) => {
-    const leftDateTime = `${left.fixtureDate}T${left.kickoffLabel ?? '00:00'}`;
-    const rightDateTime = `${right.fixtureDate}T${right.kickoffLabel ?? '00:00'}`;
-    return leftDateTime.localeCompare(rightDateTime);
+    const leftInstant = left.kickoff.kickoffInstant?.getTime();
+    const rightInstant = right.kickoff.kickoffInstant?.getTime();
+
+    if (leftInstant !== undefined && rightInstant !== undefined) {
+      return leftInstant - rightInstant;
+    }
+
+    if (leftInstant !== undefined) {
+      return -1;
+    }
+
+    if (rightInstant !== undefined) {
+      return 1;
+    }
+
+    const leftDayKey = left.kickoff.localDayKey ?? '';
+    const rightDayKey = right.kickoff.localDayKey ?? '';
+    if (leftDayKey !== rightDayKey) {
+      return leftDayKey.localeCompare(rightDayKey);
+    }
+
+    return left.eventId.localeCompare(right.eventId);
   });
 }

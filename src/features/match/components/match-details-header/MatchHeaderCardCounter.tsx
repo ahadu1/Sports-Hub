@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 
 import type { MatchDetailsHeaderCardCounter } from '@/features/match/components/match-details-header.types';
 
@@ -11,8 +11,10 @@ export function MatchHeaderCardCounter({ counter }: MatchHeaderCardCounterProps)
     <span
       aria-label={`${counter.color} cards: ${counter.value}`}
       className={cn(
-        'app-match-card-counter',
-        counter.color === 'red' ? 'app-match-card-counter--red' : 'app-match-card-counter--yellow',
+        'matchDetailsHeader__cardCounter',
+        counter.color === 'red'
+          ? 'matchDetailsHeader__cardCounter--red'
+          : 'matchDetailsHeader__cardCounter--yellow',
       )}
     >
       {counter.value}

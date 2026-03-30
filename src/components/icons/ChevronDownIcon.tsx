@@ -1,5 +1,5 @@
 import ChevronDownSvg from './chevron-down.svg?react';
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 import type { IconSvgProps } from './types';
 
 export type ChevronDownIconProps = IconSvgProps & {

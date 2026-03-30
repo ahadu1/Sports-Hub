@@ -7,6 +7,9 @@ const leagueSchema = z
     idLeague: nullableString,
     strLeague: nullableString,
     strSport: nullableString,
+    strBadge: nullableString,
+    strLogo: nullableString,
+    strLeagueBadge: nullableString,
   })
   .passthrough();
 
@@ -21,6 +24,9 @@ const leagueLookupSchema = z
     idLeague: nullableString,
     strLeague: nullableString,
     strCurrentSeason: nullableString,
+    strBadge: nullableString,
+    strLogo: nullableString,
+    strLeagueBadge: nullableString,
   })
   .passthrough();
 

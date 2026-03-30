@@ -8,7 +8,7 @@ type FixtureContextTagProps = {
 
 export function FixtureContextTag({ tag }: FixtureContextTagProps) {
   return (
-    <span className="app-fixture-context-tag app-type-inter-10-12-medium">
+    <span className="fixtureRow__contextTag text-tag">
       <CheckIcon />
       <span>{tag.label}</span>
     </span>

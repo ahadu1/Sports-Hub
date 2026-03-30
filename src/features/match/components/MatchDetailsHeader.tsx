@@ -1,12 +1,25 @@
 import { ChevronLeftIcon } from '@/components/icons';
 import { routes } from '@/app/config/routes';
+import { formatDayMonthShort, parseDayKey, type NormalizedKickoff } from '@/lib/datetime/kickoff';
 import {
   getVisibleCardCounters,
-  mapHeaderDateLabel,
   mapHeaderStatusLabel,
-} from '@/features/match/utils/matchDetailsHeader.utils';
-import { cn } from '@/lib/utils/cn';
+} from '@/utils/match/matchDetailsHeader.utils';
+import { cn } from '@/utils/cn';
 import { useNavigate } from 'react-router-dom';
+
+function formatMatchHeaderDayMonthCaps(kickoff: NormalizedKickoff): string {
+  if (kickoff.kickoffInstant) {
+    return formatDayMonthShort(kickoff.kickoffInstant).toUpperCase();
+  }
+  if (kickoff.localDayKey) {
+    const day = parseDayKey(kickoff.localDayKey);
+    if (day) {
+      return formatDayMonthShort(day).toUpperCase();
+    }
+  }
+  return kickoff.fallbackLabel ?? kickoff.localDateLabel ?? '';
+}
 
 import type {
   MatchDetailsHeaderEvent,
@@ -28,15 +41,15 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
     return [counters.home, counters.away] as const;
   })();
 
-  const dateLabel = mapHeaderDateLabel(event.dateEvent);
+  const headerDateLabel = formatMatchHeaderDayMonthCaps(event.kickoff);
   const statusLabel = mapHeaderStatusLabel(event.strStatus, event.matchState);
-  const scoreLabel = `${event.intHomeScore ?? '-'} - ${event.intAwayScore ?? '-'}`;
+  const scoreLabel = `${event.intHomeScore ?? '-'} \u2013 ${event.intAwayScore ?? '-'}`;
   const statusClassName =
     event.matchState === 'finished'
-      ? 'app-match-status-pill--finished'
+      ? 'matchDetailsHeader__statusPill--finished'
       : event.matchState === 'live' || event.matchState === 'halftime'
-        ? 'app-match-status-pill--live'
-        : 'app-match-status-pill--default';
+        ? 'matchDetailsHeader__statusPill--live'
+        : 'matchDetailsHeader__statusPill--default';
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -48,20 +61,20 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
   };
 
   return (
-    <section className="app-match-header-panel">
+    <section className="matchDetailsHeader">
       <div className="flex items-center gap-4 px-4">
         <button
           aria-label="Go back"
-          className="app-match-back-button"
+          className="matchDetailsHeader__backButton"
           type="button"
           onClick={handleBack}
         >
           <ChevronLeftIcon className="h-6 w-6" />
         </button>
-        <p className="app-type-inter-14-20-normal text-app-text">{event.strLeague}</p>
+        <p className="text-body-md text-app-text">{event.strLeague}</p>
       </div>
 
-      <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center px-4 sm:px-6">
+      <div className="matchDetailsHeader__teamsGrid grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center px-4 py-3 sm:px-6">
         <div className="flex min-w-0 justify-center">
           <div className="flex min-w-[92px] flex-col items-center gap-1">
             <div className="relative h-[42px] w-[42px] shrink-0">
@@ -81,21 +94,23 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
                 </div>
               ) : null}
             </div>
-            <p className="app-type-inter-14-20-medium w-full truncate text-center text-app-text">
+            <p className="text-body-md-medium w-full truncate text-center text-app-text">
               {event.strHomeTeam}
             </p>
           </div>
         </div>
 
-        <div className="mx-3 flex flex-col items-center justify-center text-center">
-          <span className="app-type-inter-11-15-normal whitespace-nowrap text-app-text-strong">
-            {dateLabel}
-          </span>
-          <span className="app-type-inter-22-28-semibold whitespace-nowrap text-app-text">
-            {scoreLabel}
-          </span>
+        <div className="matchDetailsHeader__scoreColumn mx-3 flex flex-col items-center justify-center gap-1 text-center">
+          {headerDateLabel ? (
+            <span className="matchDetailsHeader__scoreDate whitespace-nowrap">
+              {headerDateLabel}
+            </span>
+          ) : null}
+          <span className="matchDetailsHeader__score whitespace-nowrap">{scoreLabel}</span>
           {statusLabel ? (
-            <span className={cn('app-match-status-pill', statusClassName)}>{statusLabel}</span>
+            <span className={cn('matchDetailsHeader__statusPill', statusClassName)}>
+              {statusLabel}
+            </span>
           ) : null}
         </div>
 
@@ -118,14 +133,17 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
                 </div>
               ) : null}
             </div>
-            <p className="app-type-inter-14-20-medium w-full truncate text-center text-app-text">
+            <p className="text-body-md-medium w-full truncate text-center text-app-text">
               {event.strAwayTeam}
             </p>
           </div>
         </div>
       </div>
 
-      <MatchHeaderTabs activeTab={uiMeta.activeTab} />
+      <MatchHeaderTabs
+        activeTab={uiMeta.activeTab}
+        showEventsTab={event.matchState !== 'Match Postponed'}
+      />
     </section>
   );
 }

@@ -1,0 +1,98 @@
+@reference "../../../styles/tailwind-reference.css";
+
+@layer components {
+  .fixtureRow {
+    @apply relative flex h-[76px] cursor-pointer items-center gap-3 border-b border-app-border-base py-2 text-left outline-none transition;
+  }
+
+  .fixtureRow__link {
+    @apply absolute inset-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-surface;
+  }
+
+  .fixtureRow__liveAccent {
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--app-brand-secondary) 10%, transparent) 0%,
+      transparent 100%
+    );
+  }
+
+  .fixtureRow__statusUnderline {
+    position: relative;
+  }
+
+  .fixtureRow__statusUnderline::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--app-brand-secondary);
+    box-shadow:
+      0 0 6px color-mix(in srgb, var(--app-brand-secondary) 90%, transparent),
+      0 0 14px color-mix(in srgb, var(--app-brand-secondary) 50%, transparent);
+    animation: fixtureRowStatusPulse 2.8s linear infinite;
+  }
+
+  .fixtureRow__teamBadgeFallback {
+    @apply flex h-4 w-4 items-center justify-center rounded-full bg-app-muted text-[8px] font-medium uppercase text-app-text;
+  }
+
+  .fixtureRow__disciplineCard {
+    display: inline-block;
+    flex-shrink: 0;
+    align-self: center;
+    width: 6px;
+    height: 8px;
+    border-radius: 1px;
+    transform: rotate(9.34deg);
+  }
+
+  .fixtureRow__disciplineCard--red {
+    background-color: var(--app-danger);
+  }
+
+  .fixtureRow__disciplineCard--yellow {
+    background-color: var(--app-accent-moderate);
+  }
+
+  .fixtureRow__contextTag {
+    @apply inline-flex items-center gap-1 rounded-full bg-app-muted px-2 py-0.5 text-app-brand-secondary;
+  }
+}
+
+@keyframes fixtureRowStatusPulse {
+  0% {
+    clip-path: inset(0 94% 0 0);
+  }
+  7.14% {
+    clip-path: inset(0 0 0 0);
+  }
+  25% {
+    clip-path: inset(0 0 0 0);
+  }
+  32.14% {
+    clip-path: inset(0 0 0 94%);
+  }
+  50% {
+    clip-path: inset(0 0 0 94%);
+  }
+  57.14% {
+    clip-path: inset(0 0 0 0);
+  }
+  75% {
+    clip-path: inset(0 0 0 0);
+  }
+  82.14% {
+    clip-path: inset(0 94% 0 0);
+  }
+  100% {
+    clip-path: inset(0 94% 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fixtureRow__statusUnderline::after {
+    animation: none;
+    clip-path: inset(0);
+  }
+}

@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 import { useEffect, useState } from 'react';
 
 type MatchHeaderTeamBadgeProps = {
@@ -18,7 +18,7 @@ export function MatchHeaderTeamBadge({ alt, fallbackLabel, src }: MatchHeaderTea
 
   if (imageState === 'error' || !src) {
     return (
-      <div aria-label={alt} className="app-match-team-badge-fallback" role="img">
+      <div aria-label={alt} className="matchDetailsHeader__teamBadgeFallback" role="img">
         {fallbackLabel.slice(0, 1)}
       </div>
     );

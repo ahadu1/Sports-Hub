@@ -1,0 +1,2 @@
+export const MOBILE_RIBBON_ITEM_COUNT = 5;
+export const MOBILE_RIBBON_CENTER_INDEX = Math.floor(MOBILE_RIBBON_ITEM_COUNT / 2);

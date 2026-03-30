@@ -2,6 +2,7 @@ import {
   type CompetitionOption,
   mapLeagueCurrentSeasonResponse,
   mapLeagueListResponse,
+  mapLeagueLookupResponse,
   mapLeagueSeasonsResponse,
 } from '@/features/fixtures/api/competition.mappers';
 import {
@@ -17,22 +18,38 @@ async function fetchLeagueCurrentSeason(
   leagueId: string,
   signal?: AbortSignal,
 ): Promise<CompetitionOption[]> {
+  const raw = await fetchLeagueLookup(leagueId, signal);
+  return mapLeagueCurrentSeasonResponse(raw);
+}
+
+async function fetchLeagueLookup(leagueId: string, signal?: AbortSignal) {
   const opts = signal !== undefined ? { signal } : undefined;
 
   try {
-    const raw = await getJson(endpoints.leagueById(leagueId), leagueLookupResponseSchema, opts);
-    return mapLeagueCurrentSeasonResponse(raw);
+    return await getJson(endpoints.leagueById(leagueId), leagueLookupResponseSchema, opts);
   } catch (error) {
     if (!shouldFallbackToLegacyApi(error)) {
       throw error;
     }
 
-    const raw = await getJson(legacyEndpoints.leagueById(leagueId), leagueLookupResponseSchema, {
+    return await getJson(legacyEndpoints.leagueById(leagueId), leagueLookupResponseSchema, {
       ...opts,
       apiVersion: 'v1',
     });
-    return mapLeagueCurrentSeasonResponse(raw);
   }
+}
+
+export async function fetchLeagueOptionById(
+  leagueId: string,
+  signal?: AbortSignal,
+): Promise<CompetitionOption | null> {
+  const trimmedLeagueId = leagueId.trim();
+  if (!trimmedLeagueId) {
+    return null;
+  }
+
+  const raw = await fetchLeagueLookup(trimmedLeagueId, signal);
+  return mapLeagueLookupResponse(raw);
 }
 
 export async function fetchLeagueOptions(signal?: AbortSignal): Promise<CompetitionOption[]> {

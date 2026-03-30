@@ -42,9 +42,9 @@ function ScoreLine({ score, legScore }: ScoreLineProps) {
   return (
     <div className="flex items-end justify-end gap-1">
       {legScore !== undefined && (
-        <span className="app-type-inter-11-15-normal text-app-text-subtle">[{legScore}]</span>
+        <span className="text-meta text-app-text-subtle">[{legScore}]</span>
       )}
-      <span className="app-type-inter-12-16-semibold text-app-text">{score}</span>
+      <span className="text-body-sm-strong text-app-text">{score}</span>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { copy } from '@/lib/constants/copy';
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 
 type LoadingStateProps = {
   label?: string;

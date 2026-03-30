@@ -1,6 +1,6 @@
 import { copy } from '@/lib/constants/copy';
-import { logError } from '@/lib/utils/logger';
-import { cn } from '@/lib/utils/cn';
+import { logError } from '@/utils/logger';
+import { cn } from '@/utils/cn';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 type AppErrorBoundaryProps = {

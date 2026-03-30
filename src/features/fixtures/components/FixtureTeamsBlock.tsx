@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 import { FixtureContextTag } from './FixtureContextTag';
 import { FixtureDisciplineIndicator } from './FixtureDisciplineIndicator';
 import { useEffect, useState } from 'react';
@@ -39,7 +39,7 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
     <div className="flex min-w-0 items-center gap-2">
       <div className="relative flex h-4 w-4 shrink-0 items-center justify-center">
         {imageState === 'error' || !team.badgeSrc ? (
-          <span aria-hidden="true" className="app-fixture-team-badge-fallback">
+          <span aria-hidden="true" className="fixtureRow__teamBadgeFallback">
             {team.name.slice(0, 1)}
           </span>
         ) : (
@@ -65,7 +65,7 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
         )}
       </div>
       <div className="flex min-w-0 items-center">
-        <span className="app-type-inter-12-16-normal truncate text-app-text">{team.name}</span>
+        <span className="text-body-sm truncate text-app-text">{team.name}</span>
         {hasInlineDetails ? (
           <span className="ml-[6px] inline-flex shrink-0 items-center gap-2">
             {discipline.map((item, index) => (

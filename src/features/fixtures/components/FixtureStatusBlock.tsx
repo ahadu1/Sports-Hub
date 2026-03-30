@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 
 import type { Fixture } from '../types/fixtures.types';
 
@@ -37,11 +37,11 @@ export function FixtureStatusBlock({ fixture }: FixtureStatusBlockProps) {
         className={cn('absolute left-0 top-0 h-full w-[3px] rounded-full', stripClass)}
       />
       <div className="flex h-full flex-col items-start justify-center">
-        <span className={cn('app-type-inter-12-16-normal', labelClass)}>{label}</span>
+        <span className={cn('text-body-sm', labelClass)}>{label}</span>
         {isInProgress && (
           <span
             aria-hidden="true"
-            className="app-fixtures-live-underline mt-1 block h-[2px] w-4 rounded-[100px]"
+            className="fixtureRow__statusUnderline mt-1 block h-[2px] w-4 rounded-[100px]"
           />
         )}
       </div>

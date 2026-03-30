@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/utils/cn';
 
 import type { MatchMinuteVariant } from '@/features/match/types/match-events.types';
 
@@ -11,8 +11,10 @@ export function EventMinutePill({ minute, variant }: EventMinutePillProps) {
   return (
     <span
       className={cn(
-        'app-match-minute-pill',
-        variant === 'active' ? 'app-match-minute-pill--active' : 'app-match-minute-pill--default',
+        'matchEventsSection__minutePill',
+        variant === 'active'
+          ? 'matchEventsSection__minutePill--active'
+          : 'matchEventsSection__minutePill--default',
       )}
     >
       {minute}

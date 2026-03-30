@@ -1,0 +1,61 @@
+@reference "../../styles/tailwind-reference.css";
+
+@layer components {
+  .header {
+    @apply relative z-30 bg-app-brand-primary;
+  }
+
+  .header__logoLink {
+    @apply inline-flex shrink-0 items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-brand-primary;
+  }
+
+  .header__logo {
+    display: block;
+    object-fit: contain;
+    width: auto;
+  }
+
+  /* Match the mobile spec for the wordmark. */
+  .header__logo--mobile {
+    height: 26.1px;
+    max-width: 82px;
+  }
+
+  /* Match the desktop spec for the wordmark. */
+  .header__logo--desktop {
+    height: 60px;
+    max-width: 200px;
+  }
+
+  .header__iconButton {
+    @apply inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-black/15 text-white transition hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
+  }
+
+  .header__iconButton--mobile {
+    @apply bg-black/20;
+  }
+
+  .header__disclosureButton {
+    @apply inline-flex h-10 items-center gap-2 rounded-full bg-black/15 px-4 text-app-brand-on-surface transition hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
+  }
+
+  .header__disclosureButton--mobile {
+    @apply min-w-[140px] justify-between px-5;
+  }
+
+  .header__menuButton {
+    @apply inline-flex size-10 shrink-0 items-center justify-center rounded-full text-white transition hover:text-white/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
+  }
+
+  .header__selectOption {
+    @apply flex h-10 w-full items-center rounded-xl px-3 text-left transition;
+  }
+
+  .header__selectOption--selected {
+    @apply bg-white/8 text-app-text-strong;
+  }
+
+  .header__selectOption--default {
+    @apply text-app-text-muted hover:bg-white/5;
+  }
+}
