@@ -61,3 +61,17 @@ export function isNonRetryableClientError(error: unknown): boolean {
   }
   return false;
 }
+
+export function shouldFallbackToLegacyApi(error: unknown): boolean {
+  if (error instanceof ValidationError) {
+    return true;
+  }
+
+  if (error instanceof ApiError) {
+    return (
+      error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404
+    );
+  }
+
+  return false;
+}

@@ -1,9 +1,9 @@
 import { routes } from '@/app/config/routes';
 import {
   HEADER_ASSETS,
-  MOBILE_ACCORDION_CONTENT,
   PRIMARY_NAV_ITEMS,
   type HeaderAccordionSection,
+  type HeaderSelectOption,
 } from '@/components/header/header.constants';
 import { ChevronDownIcon } from '@/components/icons';
 import clsx from 'clsx';
@@ -13,13 +13,23 @@ import { NavLink } from 'react-router-dom';
 type DesktopHeaderProps = {
   isMatchesActive: boolean;
   openDisclosure: HeaderAccordionSection | null;
+  isLeagueLoading?: boolean;
+  isSeasonLoading?: boolean;
+  leagueOptions: readonly HeaderSelectOption[];
+  seasonOptions: readonly HeaderSelectOption[];
+  selectedLeagueId?: string | undefined;
+  selectedLeagueLabel: string;
+  selectedSeasonId?: string | undefined;
+  selectedSeasonLabel: string;
   onNavigateHome: () => void;
+  onSelectLeague?: ((leagueId: string) => void) | undefined;
+  onSelectSeason?: ((seasonId: string) => void) | undefined;
   onToggleDisclosure: (section: HeaderAccordionSection) => void;
   disclosureContainerRef: RefObject<HTMLDivElement | null>;
 };
 
 const desktopNavItemClasses =
-  'relative inline-flex h-[43px] items-center whitespace-nowrap px-2 py-2 app-type-poppins-18-27-normal';
+  'relative inline-flex min-h-[43px] flex-col items-start justify-center whitespace-nowrap px-2 py-1';
 
 const desktopIconButtonClasses =
   'flex size-10 shrink-0 items-center justify-center rounded-full bg-black/15';
@@ -30,10 +40,23 @@ const desktopDisclosureButtonClasses =
 export function DesktopHeader({
   isMatchesActive,
   openDisclosure,
+  isLeagueLoading = false,
+  isSeasonLoading = false,
+  leagueOptions,
+  seasonOptions,
+  selectedLeagueId,
+  selectedLeagueLabel,
+  selectedSeasonId,
+  selectedSeasonLabel,
   onNavigateHome,
+  onSelectLeague,
+  onSelectSeason,
   onToggleDisclosure,
   disclosureContainerRef,
 }: DesktopHeaderProps) {
+  const canSelectLeague = leagueOptions.length > 1 && onSelectLeague !== undefined;
+  const canSelectSeason = seasonOptions.length > 1 && onSelectSeason !== undefined;
+
   return (
     <header className="hidden h-[60px] w-full items-center justify-between bg-app-brand-primary px-4 lg:flex">
       <div className="flex items-center gap-8">
@@ -42,32 +65,67 @@ export function DesktopHeader({
         </NavLink>
 
         <nav aria-label="Primary navigation" className="flex items-stretch gap-0">
-          {PRIMARY_NAV_ITEMS.map((item) =>
-            item.temporary ? (
-              <button
-                key={item.key}
-                type="button"
-                className={clsx(desktopNavItemClasses, 'text-white')}
-              >
-                {item.label}
+          {PRIMARY_NAV_ITEMS.map((item) => {
+            const isActive = item.key === 'matches' && isMatchesActive;
+            const content = (
+              <>
+                <span
+                  className={clsx(
+                    'app-type-poppins-18-27-normal',
+                    isActive
+                      ? 'text-app-brand-secondary'
+                      : item.disabled
+                        ? 'text-app-brand-on-surface-variant'
+                        : 'text-white',
+                  )}
+                >
+                  {item.label}
+                </span>
+                {item.disabledText ? (
+                  <span className="app-type-roboto-12-16-light text-app-brand-on-surface-variant">
+                    {item.disabledText}
+                  </span>
+                ) : null}
+              </>
+            );
+
+            if (item.disabled) {
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  disabled
+                  className={clsx(desktopNavItemClasses, 'cursor-not-allowed')}
+                >
+                  {content}
+                </button>
+              );
+            }
+
+            if (item.to) {
+              return (
+                <NavLink
+                  key={item.key}
+                  to={item.to}
+                  end
+                  onClick={onNavigateHome}
+                  className={clsx(
+                    desktopNavItemClasses,
+                    isActive &&
+                      'after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-app-brand-secondary',
+                  )}
+                >
+                  {content}
+                </NavLink>
+              );
+            }
+
+            return (
+              <button key={item.key} type="button" className={desktopNavItemClasses}>
+                {content}
               </button>
-            ) : (
-              <NavLink
-                key={item.key}
-                to={routes.home}
-                end
-                onClick={onNavigateHome}
-                className={clsx(
-                  desktopNavItemClasses,
-                  isMatchesActive
-                    ? 'text-app-brand-secondary after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-app-brand-secondary'
-                    : 'text-white',
-                )}
-              >
-                {item.label}
-              </NavLink>
-            ),
-          )}
+            );
+          })}
         </nav>
       </div>
 
@@ -94,9 +152,10 @@ export function DesktopHeader({
           <div className="relative">
             <button
               type="button"
-              aria-expanded={openDisclosure === 'league'}
-              aria-haspopup="menu"
-              onClick={() => onToggleDisclosure('league')}
+              aria-expanded={canSelectLeague ? openDisclosure === 'league' : undefined}
+              aria-haspopup={canSelectLeague ? 'menu' : undefined}
+              aria-busy={isLeagueLoading}
+              onClick={canSelectLeague ? () => onToggleDisclosure('league') : undefined}
               className={desktopDisclosureButtonClasses}
             >
               <img
@@ -105,14 +164,24 @@ export function DesktopHeader({
                 aria-hidden="true"
                 className="h-4 w-4 object-contain"
               />
-              <span>Premier League</span>
-              <ChevronDownIcon />
+              <span className="flex items-center gap-2">
+                {isLeagueLoading ? (
+                  <span
+                    className="loading loading-spinner loading-xs text-app-brand-secondary"
+                    aria-hidden
+                  />
+                ) : null}
+                <span>{selectedLeagueLabel}</span>
+              </span>
+              {canSelectLeague ? <ChevronDownIcon isOpen={openDisclosure === 'league'} /> : null}
             </button>
 
-            {openDisclosure === 'league' ? (
+            {canSelectLeague && openDisclosure === 'league' ? (
               <DesktopDisclosurePanel
-                items={MOBILE_ACCORDION_CONTENT.league}
+                items={leagueOptions}
                 minWidthClass="min-w-[220px]"
+                selectedItemId={selectedLeagueId}
+                onSelect={onSelectLeague}
               />
             ) : null}
           </div>
@@ -120,19 +189,30 @@ export function DesktopHeader({
           <div className="relative">
             <button
               type="button"
-              aria-expanded={openDisclosure === 'season'}
-              aria-haspopup="menu"
-              onClick={() => onToggleDisclosure('season')}
+              aria-expanded={canSelectSeason ? openDisclosure === 'season' : undefined}
+              aria-haspopup={canSelectSeason ? 'menu' : undefined}
+              aria-busy={isSeasonLoading}
+              onClick={canSelectSeason ? () => onToggleDisclosure('season') : undefined}
               className={desktopDisclosureButtonClasses}
             >
-              <span>2024/25</span>
-              <ChevronDownIcon />
+              <span className="flex items-center gap-2">
+                {isSeasonLoading ? (
+                  <span
+                    className="loading loading-spinner loading-xs text-app-brand-secondary"
+                    aria-hidden
+                  />
+                ) : null}
+                <span>{selectedSeasonLabel}</span>
+              </span>
+              {canSelectSeason ? <ChevronDownIcon isOpen={openDisclosure === 'season'} /> : null}
             </button>
 
-            {openDisclosure === 'season' ? (
+            {canSelectSeason && openDisclosure === 'season' ? (
               <DesktopDisclosurePanel
-                items={MOBILE_ACCORDION_CONTENT.season}
+                items={seasonOptions}
                 minWidthClass="min-w-[160px]"
+                selectedItemId={selectedSeasonId}
+                onSelect={onSelectSeason}
               />
             ) : null}
           </div>
@@ -152,11 +232,18 @@ export function DesktopHeader({
 }
 
 type DesktopDisclosurePanelProps = {
-  items: readonly string[];
+  items: readonly HeaderSelectOption[];
   minWidthClass: string;
+  selectedItemId?: string | undefined;
+  onSelect?: ((itemId: string) => void) | undefined;
 };
 
-function DesktopDisclosurePanel({ items, minWidthClass }: DesktopDisclosurePanelProps) {
+function DesktopDisclosurePanel({
+  items,
+  minWidthClass,
+  selectedItemId,
+  onSelect,
+}: DesktopDisclosurePanelProps) {
   return (
     <div
       className={clsx(
@@ -164,14 +251,18 @@ function DesktopDisclosurePanel({ items, minWidthClass }: DesktopDisclosurePanel
         minWidthClass,
       )}
     >
-      <div className="flex flex-col gap-1">
+      <div className="flex max-h-[320px] flex-col gap-1 overflow-y-auto">
         {items.map((item) => (
           <button
-            key={item}
+            key={item.id}
             type="button"
-            className="h-10 w-full rounded-xl px-3 text-left text-app-text-strong hover:bg-white/5"
+            onClick={onSelect ? () => onSelect(item.id) : undefined}
+            className={clsx(
+              'h-10 w-full rounded-xl px-3 text-left text-app-text-strong',
+              selectedItemId === item.id ? 'bg-white/8' : 'hover:bg-white/5',
+            )}
           >
-            {item}
+            {item.label}
           </button>
         ))}
       </div>

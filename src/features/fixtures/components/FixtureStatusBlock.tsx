@@ -12,23 +12,23 @@ export function FixtureStatusBlock({ fixture }: FixtureStatusBlockProps) {
   const stripClass =
     fixture.state === 'finished'
       ? 'bg-app-danger'
-      : fixture.state === 'scheduled'
-        ? 'bg-app-bg-disabled'
-        : 'bg-app-brand-secondary';
+      : isInProgress
+        ? 'bg-app-brand-secondary'
+        : 'bg-app-bg-disabled';
 
   const labelClass =
     fixture.state === 'finished'
       ? 'text-app-danger'
-      : fixture.state === 'scheduled'
-        ? 'text-app-text'
-        : 'text-app-brand-secondary';
+      : isInProgress
+        ? 'text-app-brand-secondary'
+        : 'text-app-text';
 
   const label =
     fixture.state === 'finished'
       ? 'FT'
-      : fixture.state === 'scheduled'
-        ? fixture.kickoffLabel
-        : fixture.liveLabel;
+      : isInProgress
+        ? fixture.liveLabel
+        : (fixture.kickoffLabel ?? '');
 
   return (
     <div className="relative h-[60px] w-14 shrink-0 pl-3">

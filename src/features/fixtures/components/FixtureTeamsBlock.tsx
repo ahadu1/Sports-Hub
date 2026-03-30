@@ -1,5 +1,7 @@
+import { cn } from '@/lib/utils/cn';
 import { FixtureContextTag } from './FixtureContextTag';
 import { FixtureDisciplineIndicator } from './FixtureDisciplineIndicator';
+import { useEffect, useState } from 'react';
 import type { Fixture, FixtureTeam } from '../types/fixtures.types';
 
 type FixtureTeamsBlockProps = {
@@ -25,15 +27,46 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
   const discipline = fixture.discipline?.filter((item) => item.side === side) ?? [];
   const contextTags = fixture.contextTags?.filter((item) => item.side === side) ?? [];
   const hasInlineDetails = discipline.length > 0 || contextTags.length > 0;
+  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>(() =>
+    team.badgeSrc ? 'loading' : 'error',
+  );
+
+  useEffect(() => {
+    setImageState(team.badgeSrc ? 'loading' : 'error');
+  }, [team.badgeSrc]);
 
   return (
     <div className="flex min-w-0 items-center gap-2">
-      <img
-        src={team.badgeSrc}
-        alt=""
-        aria-hidden="true"
-        className="h-4 w-4 shrink-0 object-contain"
-      />
+      <div className="relative flex h-4 w-4 shrink-0 items-center justify-center">
+        {imageState === 'error' || !team.badgeSrc ? (
+          <span
+            aria-hidden="true"
+            className="flex h-4 w-4 items-center justify-center rounded-full bg-[#26273B] text-[8px] font-medium uppercase text-white"
+          >
+            {team.name.slice(0, 1)}
+          </span>
+        ) : (
+          <>
+            {imageState !== 'loaded' ? (
+              <span
+                aria-hidden="true"
+                className="loading loading-spinner loading-xs absolute inset-0 m-auto text-app-brand-secondary"
+              />
+            ) : null}
+            <img
+              src={team.badgeSrc}
+              alt=""
+              aria-hidden="true"
+              className={cn(
+                'h-4 w-4 shrink-0 object-contain transition-opacity',
+                imageState === 'loaded' ? 'opacity-100' : 'opacity-0',
+              )}
+              onError={() => setImageState('error')}
+              onLoad={() => setImageState('loaded')}
+            />
+          </>
+        )}
+      </div>
       <div className="flex min-w-0 items-center">
         <span className="app-type-inter-12-16-normal truncate text-app-text">{team.name}</span>
         {hasInlineDetails ? (

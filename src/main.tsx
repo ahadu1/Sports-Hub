@@ -1,4 +1,5 @@
-import '@/app/config/env';
+import { registerAppServiceWorker } from '@/app/browser/register-service-worker';
+import '@/lib/env/env';
 import { AppProviders } from '@/app/providers/AppProviders';
 import { router } from '@/app/router';
 import '@/styles/index.css';
@@ -19,3 +20,5 @@ createRoot(rootElement).render(
     </AppProviders>
   </StrictMode>,
 );
+
+registerAppServiceWorker();

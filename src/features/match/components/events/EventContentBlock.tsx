@@ -28,7 +28,7 @@ function EventTextStack({
   return (
     <div
       className={cn(
-        'flex h-[32px] min-w-0 flex-1 flex-col justify-center',
+        'flex min-w-0 flex-1 flex-col justify-center',
         side === 'home' ? 'items-end text-right' : 'items-start text-left',
       )}
     >
@@ -61,7 +61,7 @@ export function EventContentBlock({
   );
 
   return (
-    <div className="flex h-[32px] max-w-full min-w-0 items-center gap-[10px]">
+    <div className="flex max-w-full min-w-0 items-center gap-[10px]">
       {side === 'home' ? (
         <>
           {textBlock}

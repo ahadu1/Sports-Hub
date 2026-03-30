@@ -1,9 +1,16 @@
 import { CloseIcon } from '@/components/icons';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import type { MonthChangeEventHandler } from 'react-day-picker';
+import { Suspense, lazy } from 'react';
 
-import { FixturesDayPickerCalendar } from './FixturesDayPickerCalendar';
 import { getMonthCaption } from './date-selector/date-selector.utils';
+
+const FixturesDayPickerCalendar = lazy(async () => {
+  const module = await import('./FixturesDayPickerCalendar');
+
+  return { default: module.FixturesDayPickerCalendar };
+});
 
 type FixturesMobileCalendarDialogProps = {
   selectedDate: Date;
@@ -43,15 +50,23 @@ export function FixturesMobileCalendarDialog({
           </div>
 
           <div className="rounded-2xl bg-app-surface">
-            <FixturesDayPickerCalendar
-              selectedDate={selectedDate}
-              visibleMonth={visibleMonth}
-              onMonthChange={onMonthChange}
-              onSelectDate={(date) => {
-                onSelectDate(date);
-                onClose();
-              }}
-            />
+            <Suspense
+              fallback={
+                <div className="flex min-h-[320px] items-center justify-center">
+                  <LoadingState className="justify-center" label="Loading calendar" />
+                </div>
+              }
+            >
+              <FixturesDayPickerCalendar
+                selectedDate={selectedDate}
+                visibleMonth={visibleMonth}
+                onMonthChange={onMonthChange}
+                onSelectDate={(date) => {
+                  onSelectDate(date);
+                  onClose();
+                }}
+              />
+            </Suspense>
           </div>
         </DialogPanel>
       </div>

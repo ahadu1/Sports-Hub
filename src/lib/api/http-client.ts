@@ -1,26 +1,43 @@
-import { env } from '@/app/config/env';
+import { env } from '@/lib/env/env';
 import { ApiError, ValidationError } from '@/lib/api/errors';
 import type { z } from 'zod';
 
-function resolveUrl(relativePath: string): string {
-  const base = env.VITE_API_BASE_URL.endsWith('/')
-    ? env.VITE_API_BASE_URL
-    : `${env.VITE_API_BASE_URL}/`;
+type ApiVersion = 'v1' | 'v2';
+
+type GetJsonOptions = {
+  signal?: AbortSignal;
+  apiVersion?: ApiVersion;
+};
+
+function resolveBaseUrl(apiVersion: ApiVersion): string {
+  if (apiVersion === 'v1') {
+    return `${env.v1BaseUrl}/${env.apiKey}/`;
+  }
+
+  return env.v2BaseUrl.endsWith('/') ? env.v2BaseUrl : `${env.v2BaseUrl}/`;
+}
+
+function resolveUrl(relativePath: string, apiVersion: ApiVersion): string {
+  const base = resolveBaseUrl(apiVersion);
   return new URL(relativePath.replace(/^\//, ''), base).toString();
 }
 
 export async function getJson<T>(
   relativePath: string,
   schema: z.ZodType<T>,
-  options?: { signal?: AbortSignal },
+  options?: GetJsonOptions,
 ): Promise<T> {
-  const url = resolveUrl(relativePath);
+  const apiVersion = options?.apiVersion ?? 'v2';
+  const url = resolveUrl(relativePath, apiVersion);
   let response: Response;
 
   const init: RequestInit = {
     method: 'GET',
     headers: {
       Accept: 'application/json',
+      // TheSportsDB V2 docs reference X-API-KEY, but the live CORS preflight
+      // only allows X_API_KEY from the browser. Use the runtime-compatible name.
+      ...(apiVersion === 'v2' ? { X_API_KEY: env.apiKey } : {}),
     },
   };
   if (options?.signal !== undefined) {

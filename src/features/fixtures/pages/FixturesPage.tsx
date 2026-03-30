@@ -1,3 +1,4 @@
+import { LoadingState } from '@/components/ui/LoadingState';
 import { CompetitionCard } from '@/features/fixtures/components/CompetitionCard';
 import { FixturesDesktopDateBar } from '@/features/fixtures/components/FixturesDesktopDateBar';
 import { FixturesFilterChips } from '@/features/fixtures/components/FixturesFilterChips';
@@ -8,22 +9,68 @@ import {
   hasFixturesForDate,
   normalizeDate,
 } from '@/features/fixtures/components/date-selector/date-selector.utils';
-import { FIXTURES_PAGE_MOCK } from '@/features/fixtures/mocks/fixtures.mock';
-import type { FixturesFilterKey } from '@/features/fixtures/types/fixtures.types';
+import { useFixturesCompetition } from '@/features/fixtures/context/useFixturesCompetition';
+import { useFixturesQuery } from '@/features/fixtures/hooks/useFixturesQuery';
+import type {
+  CompetitionSection,
+  Fixture,
+  FixturesFilterKey,
+} from '@/features/fixtures/types/fixtures.types';
+import { copy } from '@/lib/constants/copy';
 import { addDays, format, startOfDay, startOfMonth, subDays } from 'date-fns';
 import { useMemo, useState } from 'react';
 
+let lastSelectedFixturesDate: Date | null = null;
+
+function getInitialSelectedDate(): Date {
+  return lastSelectedFixturesDate ? new Date(lastSelectedFixturesDate) : startOfDay(new Date());
+}
+
+function groupFixturesByCompetition(fixtures: Fixture[]): CompetitionSection[] {
+  const sectionsByLeague = new Map<string, CompetitionSection>();
+
+  fixtures.forEach((fixture) => {
+    const existingSection = sectionsByLeague.get(fixture.leagueId);
+
+    if (existingSection) {
+      existingSection.fixtures.push(fixture);
+      return;
+    }
+
+    sectionsByLeague.set(fixture.leagueId, {
+      id: fixture.leagueId,
+      name: fixture.leagueName,
+      fixtures: [fixture],
+    });
+  });
+
+  return Array.from(sectionsByLeague.values());
+}
+
 export function FixturesPage() {
+  const {
+    isLoading: isCompetitionLoading,
+    selectedLeagueId,
+    selectedSeasonId,
+  } = useFixturesCompetition();
+
   const [selectedFilter, setSelectedFilter] = useState<FixturesFilterKey>('all');
-  const [selectedDate, setSelectedDate] = useState<Date>(() => startOfDay(new Date()));
+  const [selectedDate, setSelectedDate] = useState<Date>(() => getInitialSelectedDate());
   const [mobileCalendarOpen, setMobileCalendarOpen] = useState(false);
   const [visibleMonth, setVisibleMonth] = useState<Date>(() =>
-    startOfMonth(startOfDay(new Date())),
+    startOfMonth(getInitialSelectedDate()),
+  );
+
+  const fixturesQuery = useFixturesQuery(selectedLeagueId, selectedSeasonId);
+
+  const allSections = useMemo(
+    () => groupFixturesByCompetition(fixturesQuery.data ?? []),
+    [fixturesQuery.data],
   );
 
   const dateFilteredSections = useMemo(
-    () => filterFixturesByDate(FIXTURES_PAGE_MOCK.sections, selectedDate),
-    [selectedDate],
+    () => filterFixturesByDate(allSections, selectedDate),
+    [allSections, selectedDate],
   );
 
   const chipCounts = useMemo(
@@ -59,13 +106,18 @@ export function FixturesPage() {
     [dateFilteredSections, selectedFilter],
   );
 
-  const hasFixturesOnSelectedDate = hasFixturesForDate(FIXTURES_PAGE_MOCK.sections, selectedDate);
+  const hasFixturesOnSelectedDate = hasFixturesForDate(allSections, selectedDate);
 
   const syncSelectedDate = (nextDate: Date) => {
     const normalizedDate = normalizeDate(nextDate);
+    lastSelectedFixturesDate = normalizedDate;
     setSelectedDate(normalizedDate);
     setVisibleMonth(startOfMonth(normalizedDate));
   };
+
+  const isInitialLoading =
+    (isCompetitionLoading && (!selectedLeagueId || !selectedSeasonId)) ||
+    (fixturesQuery.isPending && allSections.length === 0);
 
   return (
     <div className="-mx-6 w-auto bg-app-canvas">
@@ -75,8 +127,8 @@ export function FixturesPage() {
         <FixturesDesktopDateBar
           selectedDate={selectedDate}
           visibleMonth={visibleMonth}
-          onPrevious={() => setSelectedDate((prev) => startOfDay(subDays(prev, 1)))}
-          onNext={() => setSelectedDate((prev) => startOfDay(addDays(prev, 1)))}
+          onPrevious={() => syncSelectedDate(startOfDay(subDays(selectedDate, 1)))}
+          onNext={() => syncSelectedDate(startOfDay(addDays(selectedDate, 1)))}
           onOpenCalendar={() => setVisibleMonth(startOfMonth(selectedDate))}
           onSelectDate={syncSelectedDate}
           onMonthChange={setVisibleMonth}
@@ -101,7 +153,20 @@ export function FixturesPage() {
           onSelectFilter={setSelectedFilter}
         />
 
-        {filteredSections.length > 0 ? (
+        {isInitialLoading ? (
+          <section className="flex min-h-[220px] items-center justify-center rounded-lg border border-app-border-base bg-app-surface p-6 text-center">
+            <LoadingState className="justify-center" />
+          </section>
+        ) : fixturesQuery.isError && allSections.length === 0 ? (
+          <section className="flex min-h-[220px] items-center justify-center rounded-lg border border-app-border-base bg-app-surface p-6 text-center">
+            <div className="space-y-2">
+              <h2 className="app-type-inter-20-26-semibold text-white">{copy.inlineErrorTitle}</h2>
+              <p className="app-type-inter-14-20-normal text-app-text-muted">
+                {copy.inlineErrorMessage}
+              </p>
+            </div>
+          </section>
+        ) : filteredSections.length > 0 ? (
           filteredSections.map((section) => <CompetitionCard key={section.id} section={section} />)
         ) : (
           <section className="flex min-h-[220px] items-center justify-center rounded-lg border border-app-border-base bg-app-surface p-6 text-center">

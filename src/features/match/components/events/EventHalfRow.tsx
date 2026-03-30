@@ -17,12 +17,12 @@ export function EventHalfRow({ side, content }: EventHalfRowProps) {
   return (
     <div
       className={cn(
-        'flex h-[32px] min-w-0 items-center',
+        'flex min-h-[32px] min-w-0 items-center',
         side === 'home' ? 'justify-end' : 'justify-start',
       )}
     >
       {content ? (
-        <>
+        <div className="flex min-w-0 items-center gap-[4px]">
           {side === 'away' ? <ConnectorLine /> : null}
           <EventContentBlock
             eventType={content.eventType}
@@ -34,7 +34,7 @@ export function EventHalfRow({ side, content }: EventHalfRowProps) {
               : {})}
           />
           {side === 'home' ? <ConnectorLine /> : null}
-        </>
+        </div>
       ) : null}
     </div>
   );

@@ -1,3 +1,5 @@
+import type { MatchState } from '@/features/match/types/match.types';
+
 export type MatchDetailsHeaderEvent = {
   idEvent: string;
   strLeague: string;
@@ -9,6 +11,7 @@ export type MatchDetailsHeaderEvent = {
   intHomeScore: number | null;
   intAwayScore: number | null;
   strStatus: string | null;
+  matchState: MatchState;
 };
 
 export type MatchDetailsHeaderUiMeta = {

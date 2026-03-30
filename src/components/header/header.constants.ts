@@ -1,17 +1,27 @@
-export const PRIMARY_NAV_ITEMS = [
-  { key: 'live', label: 'Live', temporary: true },
-  { key: 'matches', label: 'Matches', temporary: false },
-  { key: 'standings', label: 'Standings', temporary: true },
-  { key: 'teams', label: 'Teams', temporary: true },
-  { key: 'comparison', label: 'Comparison', temporary: true },
-  { key: 'statistics', label: 'Statistics', temporary: true },
-  { key: 'venues', label: 'Venues', temporary: true },
-] as const;
+import { routes } from '@/app/config/routes';
 
-export const MOBILE_ACCORDION_CONTENT = {
-  league: ['Premier League'],
-  season: ['2024/25', '2023/24'],
-} as const;
+export type HeaderSelectOption = {
+  id: string;
+  label: string;
+};
+
+export type PrimaryNavItem = {
+  key: 'live' | 'matches' | 'standings' | 'teams' | 'comparison' | 'statistics' | 'venues';
+  label: string;
+  to?: string;
+  disabled?: boolean;
+  disabledText?: string;
+};
+
+export const PRIMARY_NAV_ITEMS: readonly PrimaryNavItem[] = [
+  { key: 'live', label: 'Live' },
+  { key: 'matches', label: 'Matches', to: routes.home },
+  { key: 'standings', label: 'Standings', disabled: true },
+  { key: 'teams', label: 'Teams' },
+  { key: 'comparison', label: 'Comparison' },
+  { key: 'statistics', label: 'Statistics' },
+  { key: 'venues', label: 'Venues' },
+];
 
 export const HEADER_ASSETS = {
   logo: '/header/logo-statscore.svg',
@@ -21,4 +31,4 @@ export const HEADER_ASSETS = {
   localeFlag: '/header/flag-uk.svg',
 } as const;
 
-export type HeaderAccordionSection = keyof typeof MOBILE_ACCORDION_CONTENT;
+export type HeaderAccordionSection = 'league' | 'season';

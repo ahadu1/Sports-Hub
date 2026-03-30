@@ -18,7 +18,11 @@ export function FixtureRow({ fixture }: FixtureRowProps) {
   const isInProgress = fixture.state === 'live' || fixture.state === 'halftime';
 
   const handleNavigate = () => {
-    navigate(matchDetails(fixture.eventId));
+    navigate(matchDetails(fixture.eventId), {
+      state: {
+        fixture,
+      },
+    });
   };
 
   return (

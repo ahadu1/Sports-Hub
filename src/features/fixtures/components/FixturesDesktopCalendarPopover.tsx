@@ -1,9 +1,16 @@
 import { CalendarIcon } from '@/components/icons';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import type { MonthChangeEventHandler } from 'react-day-picker';
+import { Suspense, lazy } from 'react';
 
-import { FixturesDayPickerCalendar } from './FixturesDayPickerCalendar';
 import { getDesktopDateLabel } from './date-selector/date-selector.utils';
+
+const FixturesDayPickerCalendar = lazy(async () => {
+  const module = await import('./FixturesDayPickerCalendar');
+
+  return { default: module.FixturesDayPickerCalendar };
+});
 
 type FixturesDesktopCalendarPopoverProps = {
   selectedDate: Date;
@@ -37,15 +44,23 @@ export function FixturesDesktopCalendarPopover({
           </PopoverButton>
 
           <PopoverPanel className="absolute left-1/2 top-[calc(100%+12px)] z-50 w-[320px] -translate-x-1/2 rounded-2xl border border-app-border-base bg-app-surface p-4 shadow-[0_18px_40px_rgba(0,0,0,0.42)]">
-            <FixturesDayPickerCalendar
-              selectedDate={selectedDate}
-              visibleMonth={visibleMonth}
-              onMonthChange={onMonthChange}
-              onSelectDate={(date) => {
-                onSelectDate(date);
-                close();
-              }}
-            />
+            <Suspense
+              fallback={
+                <div className="flex min-h-[320px] items-center justify-center">
+                  <LoadingState className="justify-center" label="Loading calendar" />
+                </div>
+              }
+            >
+              <FixturesDayPickerCalendar
+                selectedDate={selectedDate}
+                visibleMonth={visibleMonth}
+                onMonthChange={onMonthChange}
+                onSelectDate={(date) => {
+                  onSelectDate(date);
+                  close();
+                }}
+              />
+            </Suspense>
           </PopoverPanel>
         </>
       )}

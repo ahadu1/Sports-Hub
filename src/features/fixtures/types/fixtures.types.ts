@@ -1,6 +1,8 @@
+import type { MatchState } from '@/features/match/types/match.types';
+
 export type FixturesFilterKey = 'all' | 'live' | 'favorites';
 
-export type FixtureState = 'finished' | 'live' | 'halftime' | 'scheduled';
+export type FixtureState = MatchState;
 
 export type DisciplineCard = 'yellow' | 'red';
 
@@ -22,6 +24,8 @@ export type FixtureDiscipline = {
 
 export type Fixture = {
   eventId: string;
+  leagueId: string;
+  leagueName: string;
   fixtureDate: string;
   state: FixtureState;
   visibleInFilters: FixturesFilterKey[];
@@ -42,9 +46,4 @@ export type CompetitionSection = {
   id: string;
   name: string;
   fixtures: Fixture[];
-};
-
-export type FixturesPageMock = {
-  initialDateIso: string;
-  sections: CompetitionSection[];
 };

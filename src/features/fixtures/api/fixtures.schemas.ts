@@ -1,6 +1,31 @@
 import { z } from 'zod';
 
-/** Placeholder schema for future SportsDB (or other) fixtures payloads. */
+const nullableString = z.string().nullable().optional();
+
+const scoreValueSchema = z.union([z.string(), z.number()]).nullable().optional();
+
+export const fixtureEventSchema = z
+  .object({
+    idEvent: nullableString,
+    idLeague: nullableString,
+    strLeague: nullableString,
+    dateEvent: nullableString,
+    dateEventLocal: nullableString,
+    strTime: nullableString,
+    strTimeLocal: nullableString,
+    strHomeTeam: nullableString,
+    strAwayTeam: nullableString,
+    idHomeTeam: nullableString,
+    idAwayTeam: nullableString,
+    strHomeTeamBadge: nullableString,
+    strAwayTeamBadge: nullableString,
+    intHomeScore: scoreValueSchema,
+    intAwayScore: scoreValueSchema,
+    strStatus: nullableString,
+  })
+  .passthrough();
+
 export const fixturesResponseSchema = z.object({
-  events: z.array(z.record(z.unknown())).optional(),
+  schedule: z.array(fixtureEventSchema).nullable().optional(),
+  events: z.array(fixtureEventSchema).nullable().optional(),
 });

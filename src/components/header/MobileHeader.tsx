@@ -4,18 +4,24 @@ import { ChevronDownIcon, HamburgerIcon } from '@/components/icons';
 import { NavLink } from 'react-router-dom';
 
 type MobileHeaderProps = {
+  canOpenSeasonDrawer?: boolean;
+  isSeasonLoading?: boolean;
   onNavigateHome: () => void;
   onOpenDrawer: () => void;
   onOpenSeasonDrawer: () => void;
+  selectedSeasonLabel: string;
 };
 
 const mobileIconButtonClasses =
   'flex size-10 items-center justify-center rounded-full bg-black/15 shrink-0';
 
 export function MobileHeader({
+  canOpenSeasonDrawer = false,
+  isSeasonLoading = false,
   onNavigateHome,
   onOpenDrawer,
   onOpenSeasonDrawer,
+  selectedSeasonLabel,
 }: MobileHeaderProps) {
   return (
     <header className="flex h-14 w-full items-center justify-between bg-app-brand-primary px-4 lg:hidden">
@@ -44,11 +50,18 @@ export function MobileHeader({
 
         <button
           type="button"
-          onClick={onOpenSeasonDrawer}
+          aria-busy={isSeasonLoading}
+          onClick={canOpenSeasonDrawer ? onOpenSeasonDrawer : undefined}
           className="flex h-10 items-center gap-2 rounded-full bg-black/15 px-4 text-app-brand-on-surface app-type-roboto-12-16-light"
         >
-          <span>2024/25</span>
-          <ChevronDownIcon />
+          {isSeasonLoading ? (
+            <span
+              className="loading loading-spinner loading-xs text-app-brand-secondary"
+              aria-hidden
+            />
+          ) : null}
+          <span>{selectedSeasonLabel}</span>
+          {canOpenSeasonDrawer ? <ChevronDownIcon /> : null}
         </button>
 
         <button

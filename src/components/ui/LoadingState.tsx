@@ -13,13 +13,7 @@ export function LoadingState({ label = copy.loading, className }: LoadingStatePr
       role="status"
       aria-live="polite"
     >
-      <span
-        className={cn(
-          'inline-block size-4 animate-spin rounded-full border-2 border-app-border-base',
-          'border-t-app-accent',
-        )}
-        aria-hidden
-      />
+      <span className="loading loading-spinner loading-sm text-app-brand-secondary" aria-hidden />
       <span>{label}</span>
     </div>
   );

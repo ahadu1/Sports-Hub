@@ -6,7 +6,7 @@ import {
   mapHeaderStatusLabel,
 } from '@/features/match/utils/matchDetailsHeader.utils';
 import { cn } from '@/lib/utils/cn';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import type {
@@ -54,8 +54,14 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
   })();
 
   const dateLabel = mapHeaderDateLabel(event.dateEvent);
-  const statusLabel = mapHeaderStatusLabel(event.strStatus);
+  const statusLabel = mapHeaderStatusLabel(event.strStatus, event.matchState);
   const scoreLabel = `${event.intHomeScore ?? '-'} - ${event.intAwayScore ?? '-'}`;
+  const statusClassName =
+    event.matchState === 'finished'
+      ? 'bg-app-danger text-white'
+      : event.matchState === 'live' || event.matchState === 'halftime'
+        ? 'bg-app-brand-secondary text-app-text-inverse'
+        : 'bg-app-bg-disabled text-app-text';
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -115,7 +121,10 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
           </span>
           {statusLabel ? (
             <span
-              className="inline-flex h-[15px] items-center rounded-[4px] bg-[#EE5E52] px-1 text-[10px] leading-[15px] font-normal text-white"
+              className={cn(
+                'inline-flex h-[15px] items-center justify-center rounded-[4px] px-1 text-[10px] leading-[15px] font-normal',
+                statusClassName,
+              )}
               style={INTER_FONT_STYLE}
             >
               {statusLabel}
@@ -175,9 +184,15 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
 }
 
 function TeamBadge({ alt, fallbackLabel, src }: TeamBadgeProps) {
-  const [hasError, setHasError] = useState(false);
+  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>(() =>
+    src ? 'loading' : 'error',
+  );
 
-  if (hasError || !src) {
+  useEffect(() => {
+    setImageState(src ? 'loading' : 'error');
+  }, [src]);
+
+  if (imageState === 'error' || !src) {
     return (
       <div
         aria-label={alt}
@@ -191,12 +206,24 @@ function TeamBadge({ alt, fallbackLabel, src }: TeamBadgeProps) {
   }
 
   return (
-    <img
-      alt={alt}
-      className="h-[42px] w-[42px] object-contain"
-      src={src}
-      onError={() => setHasError(true)}
-    />
+    <div className="relative h-[42px] w-[42px]">
+      {imageState !== 'loaded' ? (
+        <span
+          aria-hidden="true"
+          className="loading loading-spinner loading-sm absolute inset-0 m-auto text-app-brand-secondary"
+        />
+      ) : null}
+      <img
+        alt={alt}
+        className={cn(
+          'h-[42px] w-[42px] object-contain transition-opacity',
+          imageState === 'loaded' ? 'opacity-100' : 'opacity-0',
+        )}
+        src={src}
+        onError={() => setImageState('error')}
+        onLoad={() => setImageState('loaded')}
+      />
+    </div>
   );
 }
 

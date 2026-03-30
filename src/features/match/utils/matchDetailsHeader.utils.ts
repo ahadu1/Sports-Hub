@@ -2,6 +2,7 @@ import type {
   MatchDetailsHeaderUiMeta,
   MatchDetailsHeaderVisibleCardCounters,
 } from '@/features/match/components/match-details-header.types';
+import type { MatchState } from '@/features/match/types/match.types';
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat('en-US', {
   month: 'short',
@@ -27,22 +28,30 @@ export function mapHeaderDateLabel(dateEvent: string): string {
   return `${day} ${month}`;
 }
 
-export function mapHeaderStatusLabel(strStatus: string | null): string {
-  const trimmedStatus = strStatus?.trim() ?? '';
-
-  if (!trimmedStatus) {
-    return '';
+export function mapHeaderStatusLabel(strStatus: string | null, matchState: MatchState): string {
+  switch (matchState) {
+    case 'finished':
+      return 'Finished';
+    case 'live':
+    case 'halftime':
+      return 'In Progress';
+    case 'scheduled':
+      return 'Not Started';
+    case 'postponed':
+      return 'Postponed';
+    case 'canceled':
+      return 'Canceled';
+    case 'suspended':
+      return 'Suspended';
+    case 'abandoned':
+      return 'Abandoned';
+    case 'awarded':
+      return 'Awarded';
+    case 'unknown':
+      return strStatus?.trim() ?? '';
+    default:
+      return '';
   }
-
-  if (
-    trimmedStatus === 'Match Finished' ||
-    trimmedStatus === 'Finished' ||
-    trimmedStatus === 'FT'
-  ) {
-    return 'Finished';
-  }
-
-  return trimmedStatus;
 }
 
 export function getVisibleCardCounters(
