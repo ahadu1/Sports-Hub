@@ -80,7 +80,7 @@ export function getPreferredMatchState(
     (primaryState === 'scheduled' || primaryState === 'unknown') &&
     isMatchActive(fallbackState)
   ) {
-    return fallbackState;
+    return fallbackState ?? undefined;
   }
 
   return primaryState;

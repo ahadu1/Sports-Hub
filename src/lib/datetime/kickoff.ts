@@ -499,7 +499,7 @@ export function buildNormalizedKickoff(
   const relativeDayLabel = allowRelativeLabels
     ? getRelativeDayLabel(parsed.kickoffInstant, {
         userTimeZone,
-        now: options.now,
+        ...(options.now ? { now: options.now } : {}),
       })
     : null;
 

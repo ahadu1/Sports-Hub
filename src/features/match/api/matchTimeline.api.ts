@@ -53,7 +53,7 @@ export function normalizeTimelinePayload(
     return {
       lookup: [],
       timeline: null,
-      message: responseMessage ?? timelineData,
+      message: responseMessage ?? (typeof timelineData === 'string' ? timelineData : null),
     };
   }
 
