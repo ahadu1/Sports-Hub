@@ -1,18 +1,75 @@
 import { cn } from '@/utils/cn';
 import { useImageLoadState } from '@/hooks/useImageLoadState';
+import { useEffect, useState } from 'react';
 import { FixtureContextTag } from './FixtureContextTag';
 import { FixtureDisciplineIndicator } from './FixtureDisciplineIndicator';
 import type { Fixture, FixtureTeam } from '../types/fixtures.types';
+
+const MOBILE_BREAKPOINT_MAX_WIDTH = 639;
+
+function getMobileTeamNameMaxLength(viewportWidth: number) {
+  if (viewportWidth <= 359) {
+    return 9;
+  }
+
+  if (viewportWidth <= 399) {
+    return 13;
+  }
+
+  if (viewportWidth <= 479) {
+    return 15;
+  }
+
+  return 18;
+}
 
 type FixtureTeamsBlockProps = {
   fixture: Fixture;
 };
 
 export function FixtureTeamsBlock({ fixture }: FixtureTeamsBlockProps) {
+  const [mobileTeamNameMaxLength, setMobileTeamNameMaxLength] = useState<number | null>(() => {
+    const viewportWidth = window.innerWidth;
+
+    return viewportWidth <= MOBILE_BREAKPOINT_MAX_WIDTH
+      ? getMobileTeamNameMaxLength(viewportWidth)
+      : null;
+  });
+
+  useEffect(() => {
+    const syncMobileTeamNameMaxLength = () => {
+      const viewportWidth = window.innerWidth;
+
+      if (viewportWidth > MOBILE_BREAKPOINT_MAX_WIDTH) {
+        setMobileTeamNameMaxLength(null);
+        return;
+      }
+
+      setMobileTeamNameMaxLength(getMobileTeamNameMaxLength(viewportWidth));
+    };
+
+    syncMobileTeamNameMaxLength();
+    window.addEventListener('resize', syncMobileTeamNameMaxLength);
+
+    return () => {
+      window.removeEventListener('resize', syncMobileTeamNameMaxLength);
+    };
+  }, []);
+
   return (
     <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5 sm:gap-2">
-      <TeamLine fixture={fixture} side="home" team={fixture.home} />
-      <TeamLine fixture={fixture} side="away" team={fixture.away} />
+      <TeamLine
+        fixture={fixture}
+        side="home"
+        team={fixture.home}
+        mobileTeamNameMaxLength={mobileTeamNameMaxLength}
+      />
+      <TeamLine
+        fixture={fixture}
+        side="away"
+        team={fixture.away}
+        mobileTeamNameMaxLength={mobileTeamNameMaxLength}
+      />
     </div>
   );
 }
@@ -21,13 +78,19 @@ type TeamLineProps = {
   fixture: Fixture;
   side: 'home' | 'away';
   team: FixtureTeam;
+  mobileTeamNameMaxLength: number | null;
 };
 
-function TeamLine({ fixture, side, team }: TeamLineProps) {
+function TeamLine({ fixture, side, team, mobileTeamNameMaxLength }: TeamLineProps) {
   const discipline = fixture.discipline?.filter((item) => item.side === side) ?? [];
   const contextTags = fixture.contextTags?.filter((item) => item.side === side) ?? [];
   const hasInlineDetails = discipline.length > 0 || contextTags.length > 0;
   const imageState = useImageLoadState(team.badgeSrc);
+
+  const displayTeamName =
+    mobileTeamNameMaxLength && team.name.length > mobileTeamNameMaxLength
+      ? `${team.name.slice(0, mobileTeamNameMaxLength - 1)}...`
+      : team.name;
 
   return (
     <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
@@ -57,7 +120,9 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
         )}
       </div>
       <div className="flex min-w-0 items-center">
-        <span className="text-body-sm truncate text-app-text">{team.name}</span>
+        <span className="text-body-sm truncate text-app-text" title={team.name}>
+          {displayTeamName}
+        </span>
         {hasInlineDetails ? (
           <span className="ml-1 inline-flex shrink-0 items-center gap-1.5 sm:ml-1.5 sm:gap-2">
             {discipline.map((item, index) => (

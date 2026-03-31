@@ -11,7 +11,7 @@ export function FixtureScoreBlock({ fixture }: FixtureScoreBlockProps) {
     fixture.awayLegScore !== undefined;
 
   return (
-    <div className="flex w-12 shrink-0 flex-col justify-center gap-1.5 text-right sm:w-[60px] sm:gap-2">
+    <div className="flex w-5 shrink-0 flex-col justify-center gap-1.5 text-right sm:w-12 sm:gap-2">
       {fixture.homeScore !== undefined && fixture.awayScore !== undefined ? (
         <>
           <ScoreLine
