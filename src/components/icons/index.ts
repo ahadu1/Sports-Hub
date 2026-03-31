@@ -1,3 +1,4 @@
+export { ArrowLeftIcon } from './ArrowLeftIcon';
 export { CalendarIcon } from './CalendarIcon';
 export { CheckIcon } from './CheckIcon';
 export { ChevronDownIcon, type ChevronDownIconProps } from './ChevronDownIcon';
@@ -9,6 +10,7 @@ export { GlobeIcon } from './GlobeIcon';
 export { HeartIcon } from './HeartIcon';
 export { HamburgerIcon } from './HamburgerIcon';
 export { LiveIcon } from './LiveIcon';
+export { LogoSmallIcon } from './LogoSmallIcon';
 export { MoreVerticalIcon } from './MoreVerticalIcon';
 export { UkFlagIcon } from './UkFlagIcon';
 export type { IconSvgProps } from './types';

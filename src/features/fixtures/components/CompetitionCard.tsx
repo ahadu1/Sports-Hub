@@ -8,7 +8,7 @@ type CompetitionCardProps = {
 
 export function CompetitionCard({ section }: CompetitionCardProps) {
   return (
-    <section className="space-y-2 rounded-lg border-b border-app-border-base bg-app-surface p-4">
+    <section className="space-y-2 rounded-lg border-b border-app-border-base bg-app-surface p-3 sm:p-4">
       <CompetitionHeader title={section.name} />
       <div>
         {section.fixtures.map((fixture, index) => (

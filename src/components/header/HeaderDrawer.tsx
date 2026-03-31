@@ -83,7 +83,7 @@ export function HeaderDrawer({
             type="button"
             aria-label="Close navigation menu"
             onClick={onClose}
-            className="flex size-10 items-center justify-center rounded-full text-white"
+            className="flex size-8 items-center justify-center rounded-full text-white"
           >
             <CloseIcon />
           </button>

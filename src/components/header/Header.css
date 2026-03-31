@@ -21,10 +21,17 @@
     max-width: 82px;
   }
 
-  /* Match the desktop spec for the wordmark. */
+  /* Slightly compact at smaller desktop widths to avoid page overflow. */
   .header__logo--desktop {
-    height: 60px;
-    max-width: 200px;
+    height: 52px;
+    max-width: 164px;
+  }
+
+  @media (min-width: 1280px) {
+    .header__logo--desktop {
+      height: 60px;
+      max-width: 200px;
+    }
   }
 
   .header__iconButton {
@@ -32,7 +39,7 @@
   }
 
   .header__iconButton--mobile {
-    @apply bg-black/20;
+    @apply inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-black/15 text-white transition hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
   }
 
   .header__disclosureButton {

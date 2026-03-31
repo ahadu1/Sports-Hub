@@ -31,7 +31,7 @@ export function FixtureStatusBlock({ fixture }: FixtureStatusBlockProps) {
         : (fixture.kickoffLabel ?? '');
 
   return (
-    <div className="relative h-[60px] w-14 shrink-0 pl-3">
+    <div className="relative h-14 w-12 shrink-0 pl-2.5 sm:h-[60px] sm:w-14 sm:pl-3">
       <span
         aria-hidden="true"
         className={cn('absolute left-0 top-0 h-full w-[3px] rounded-full', stripClass)}

@@ -23,11 +23,11 @@ export function FixtureRow({ fixture }: FixtureRowProps) {
         aria-label={`View match details for ${fixtureLabel}`}
         className="fixtureRow__link"
       />
-      <div className="pointer-events-none relative z-10 flex w-full items-center gap-3 pr-9">
+      <div className="pointer-events-none relative z-10 flex w-full items-center gap-2 pr-8 sm:gap-3 sm:pr-9">
         {isInProgress && (
           <span
             aria-hidden="true"
-            className="fixtureRow__liveAccent pointer-events-none absolute inset-y-0 left-0 w-[152px] lg:w-[176px]"
+            className="fixtureRow__liveAccent pointer-events-none absolute inset-y-0 left-0 w-[136px] sm:w-[152px] lg:w-[176px]"
           />
         )}
         <FixtureStatusBlock fixture={fixture} />

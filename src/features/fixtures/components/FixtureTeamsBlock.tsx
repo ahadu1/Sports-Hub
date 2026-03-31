@@ -10,7 +10,7 @@ type FixtureTeamsBlockProps = {
 
 export function FixtureTeamsBlock({ fixture }: FixtureTeamsBlockProps) {
   return (
-    <div className="flex min-w-0 flex-1 flex-col justify-center gap-2">
+    <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5 sm:gap-2">
       <TeamLine fixture={fixture} side="home" team={fixture.home} />
       <TeamLine fixture={fixture} side="away" team={fixture.away} />
     </div>
@@ -30,7 +30,7 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
   const imageState = useImageLoadState(team.badgeSrc);
 
   return (
-    <div className="flex min-w-0 items-center gap-2">
+    <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
       <div className="relative flex h-4 w-4 shrink-0 items-center justify-center">
         {imageState === 'error' || !team.badgeSrc ? (
           <span aria-hidden="true" className="fixtureRow__teamBadgeFallback">
@@ -59,7 +59,7 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
       <div className="flex min-w-0 items-center">
         <span className="text-body-sm truncate text-app-text">{team.name}</span>
         {hasInlineDetails ? (
-          <span className="ml-1.5 inline-flex shrink-0 items-center gap-2">
+          <span className="ml-1 inline-flex shrink-0 items-center gap-1.5 sm:ml-1.5 sm:gap-2">
             {discipline.map((item, index) => (
               <FixtureDisciplineIndicator
                 key={`${team.id}-${item.card}-${index}`}

@@ -1,4 +1,4 @@
-import { ChevronLeftIcon } from '@/components/icons';
+import { ArrowLeftIcon } from '@/components/icons';
 import { routes } from '@/app/config/routes';
 import {
   asValidDate,
@@ -68,14 +68,14 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
 
   return (
     <section className="matchDetailsHeader">
-      <div className="flex items-center gap-4 px-4">
+      <div className="flex min-h-10 items-center gap-4 px-4 py-2 sm:py-0">
         <button
           aria-label="Go back"
           className="matchDetailsHeader__backButton"
           type="button"
           onClick={handleBack}
         >
-          <ChevronLeftIcon className="h-6 w-6" />
+          <ArrowLeftIcon className="h-6 w-6" />
         </button>
         <p className="text-body-md text-app-text">{event.strLeague}</p>
       </div>

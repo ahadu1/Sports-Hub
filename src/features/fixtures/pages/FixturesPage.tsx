@@ -97,7 +97,7 @@ export function FixturesPage() {
     isCompetitionError && (!selectedLeagueId || !selectedSeasonId) && allSections.length === 0;
 
   return (
-    <div className="-mx-6 w-auto bg-app-canvas">
+    <div className="-mx-4 w-auto bg-app-canvas lg:mx-0">
       <div className="mx-auto flex max-w-[820px] flex-col gap-4 px-4 lg:w-[820px] lg:px-0">
         <h1 className="text-title-md text-app-text">{copy.matchesHeading}</h1>
 

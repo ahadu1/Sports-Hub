@@ -1,6 +1,6 @@
 import { HeaderDrawer } from '@/components/header/HeaderDrawer';
 import { type HeaderAccordionSection } from '@/components/header/header.constants';
-import { ChevronDownIcon, HamburgerIcon } from '@/components/icons';
+import { ChevronDownIcon, HamburgerIcon, LogoSmallIcon } from '@/components/icons';
 import { useFixturesCompetition } from '@/hooks/fixtures/useFixturesCompetition';
 import { useHeaderBehaviorEffects, useHeaderRouteMatch } from '@/hooks/header/header.hooks';
 import { useMatchDetailsQuery } from '@/hooks/match/useMatchDetailsQuery';
@@ -85,10 +85,7 @@ export function Header() {
 
   useHeaderBehaviorEffects({
     isDrawerOpen,
-    openDesktopDisclosure,
-    disclosureContainerRef,
     setIsDrawerOpen,
-    setOpenDesktopDisclosure,
   });
 
   useEffect(() => {
@@ -192,29 +189,34 @@ export function Header() {
       <header className="header">
         <div className="flex h-14 items-center justify-between px-4 lg:hidden">
           <NavLink to={routes.home} onClick={handleNavigateHome} className="header__logoLink">
-            <img
-              src={HEADER_ASSETS.logo}
-              alt={HEADER_LOGO_ALT}
-              className="header__logo header__logo--mobile"
-            />
+            <span className="sr-only">{HEADER_LOGO_ALT}</span>
+            <LogoSmallIcon aria-hidden="true" className="header__logo header__logo--mobile" />
           </NavLink>
 
-          <div className="flex items-center gap-4">
-            <button type="button" aria-label="Open global options" className="header__iconButton">
-              <img
-                src={HEADER_ASSETS.globe}
-                alt=""
-                aria-hidden="true"
-                className="h-6 w-6 max-h-full max-w-full object-contain"
-              />
-            </button>
-
-            <button type="button" aria-label="Open sports options" className="header__iconButton">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Open sports options"
+              className="header__iconButton--mobile"
+            >
               <img
                 src={HEADER_ASSETS.football}
                 alt=""
                 aria-hidden="true"
-                className="h-6 w-6 max-h-full max-w-full object-contain"
+                className="h-4 w-4 max-h-full max-w-full object-contain"
+              />
+            </button>
+
+            <button
+              type="button"
+              aria-label="Open global options"
+              className="header__iconButton--mobile"
+            >
+              <img
+                src={HEADER_ASSETS.globe}
+                alt=""
+                aria-hidden="true"
+                className="h-4 w-4 max-h-full max-w-full object-contain"
               />
             </button>
 
@@ -232,7 +234,7 @@ export function Header() {
                     ? handleToggleMobileLeagueDisclosure
                     : undefined
                 }
-                className="header__iconButton"
+                className="header__iconButton--mobile"
               >
                 {isHomeLeagueLoading ? (
                   <span
@@ -244,7 +246,7 @@ export function Header() {
                     src={selectedLeagueBadgeSrc}
                     alt=""
                     aria-hidden="true"
-                    className="h-6 w-6 max-h-full max-w-full object-contain"
+                    className="h-4 w-4 max-h-full max-w-full object-contain"
                   />
                 )}
               </button>
@@ -279,15 +281,15 @@ export function Header() {
               type="button"
               aria-label="Open navigation menu"
               onClick={handleOpenDrawer}
-              className="flex size-10 items-center justify-center rounded-full text-white"
+              className="flex size-8 items-center justify-center rounded-full text-white"
             >
               <HamburgerIcon />
             </button>
           </div>
         </div>
 
-        <div className="hidden h-[60px] w-full items-center justify-between px-4 lg:flex">
-          <div className="flex items-center gap-8">
+        <div className="hidden h-[60px] w-full items-center justify-between gap-4 px-4 lg:flex">
+          <div className="flex min-w-0 items-center gap-3 xl:gap-8">
             <NavLink to={routes.home} onClick={handleNavigateHome} className="header__logoLink">
               <img
                 src={HEADER_ASSETS.logo}
@@ -295,7 +297,10 @@ export function Header() {
                 className="header__logo header__logo--desktop"
               />
             </NavLink>
-            <nav aria-label="Primary navigation" className="flex items-stretch gap-1">
+            <nav
+              aria-label="Primary navigation"
+              className="flex min-w-0 items-stretch gap-0 xl:gap-1"
+            >
               {PRIMARY_NAV_ITEMS.map((item) => {
                 const isActive = item.key === 'matches' && isMatchesActive;
                 const content = (
@@ -342,7 +347,7 @@ export function Header() {
             </nav>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-2 xl:gap-4">
             <button type="button" aria-label="Open global options" className="header__iconButton">
               <img
                 src={HEADER_ASSETS.globe}
@@ -361,7 +366,7 @@ export function Header() {
               />
             </button>
 
-            <div ref={disclosureContainerRef} className="flex items-center gap-4">
+            <div ref={disclosureContainerRef} className="flex items-center gap-2 xl:gap-4">
               <div className="relative">
                 <button
                   type="button"
@@ -377,7 +382,7 @@ export function Header() {
                       ? () => handleToggleDesktopDisclosure('league')
                       : undefined
                   }
-                  className="header__disclosureButton text-nav-sm"
+                  className="header__disclosureButton max-w-[150px] px-3 text-nav-sm xl:max-w-none xl:px-4"
                 >
                   <img
                     src={selectedLeagueBadgeSrc}
@@ -385,14 +390,14 @@ export function Header() {
                     aria-hidden="true"
                     className="h-4 w-4 shrink-0 object-contain"
                   />
-                  <span className="flex items-center gap-2">
+                  <span className="flex min-w-0 items-center gap-2">
                     {isHomeLeagueLoading ? (
                       <span
                         className="loading loading-spinner loading-xs text-app-brand-secondary"
                         aria-hidden
                       />
                     ) : null}
-                    <span>{selectedLeagueLabel}</span>
+                    <span className="truncate">{selectedLeagueLabel}</span>
                   </span>
                   {!isMatchRoute && leagueOptions.length > 1 ? (
                     <ChevronDownIcon isOpen={openDesktopDisclosure === 'league'} />
@@ -424,16 +429,16 @@ export function Header() {
                       ? () => handleToggleDesktopDisclosure('season')
                       : undefined
                   }
-                  className="header__disclosureButton text-nav-sm"
+                  className="header__disclosureButton max-w-[104px] px-3 text-nav-sm xl:max-w-none xl:px-4"
                 >
-                  <span className="flex items-center gap-2">
+                  <span className="flex min-w-0 items-center gap-2">
                     {isHomeSeasonLoading ? (
                       <span
                         className="loading loading-spinner loading-xs text-app-brand-secondary"
                         aria-hidden
                       />
                     ) : null}
-                    <span>{selectedSeasonLabel}</span>
+                    <span className="truncate">{selectedSeasonLabel}</span>
                   </span>
                   {seasonOptions.length > 1 && !isMatchRoute ? (
                     <ChevronDownIcon isOpen={openDesktopDisclosure === 'season'} />

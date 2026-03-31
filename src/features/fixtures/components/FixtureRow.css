@@ -60,6 +60,14 @@
   }
 }
 
+@media (max-width: 639px) {
+  @layer components {
+    .fixtureRow {
+      @apply h-[72px] gap-2 py-1.5;
+    }
+  }
+}
+
 @keyframes fixtureRowStatusPulse {
   0% {
     clip-path: inset(0 94% 0 0);

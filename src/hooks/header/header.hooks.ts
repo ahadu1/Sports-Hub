@@ -1,14 +1,10 @@
 import { routes } from '@/app/config/routes';
-import type { HeaderAccordionSection } from '@/components/header/header.constants';
 import { useEffect, type RefObject } from 'react';
 import { matchPath } from 'react-router-dom';
 
 type HeaderBehaviorEffectsParams = {
   isDrawerOpen: boolean;
-  openDesktopDisclosure: HeaderAccordionSection | null;
-  disclosureContainerRef: RefObject<HTMLDivElement | null>;
   setIsDrawerOpen: (isOpen: boolean) => void;
-  setOpenDesktopDisclosure: (section: HeaderAccordionSection | null) => void;
 };
 
 export function useHeaderRouteMatch(pathname: string) {
@@ -24,10 +20,7 @@ export function useHeaderRouteMatch(pathname: string) {
 
 export function useHeaderBehaviorEffects({
   isDrawerOpen,
-  openDesktopDisclosure,
-  disclosureContainerRef,
   setIsDrawerOpen,
-  setOpenDesktopDisclosure,
 }: HeaderBehaviorEffectsParams) {
   useEffect(() => {
     if (!isDrawerOpen) {
@@ -43,13 +36,14 @@ export function useHeaderBehaviorEffects({
   }, [isDrawerOpen]);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') {
-        return;
-      }
+    if (!isDrawerOpen) {
+      return;
+    }
 
-      setIsDrawerOpen(false);
-      setOpenDesktopDisclosure(null);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsDrawerOpen(false);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -57,29 +51,7 @@ export function useHeaderBehaviorEffects({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [setIsDrawerOpen, setOpenDesktopDisclosure]);
-
-  useEffect(() => {
-    if (!openDesktopDisclosure) {
-      return;
-    }
-
-    const handlePointerDown = (event: MouseEvent) => {
-      if (
-        disclosureContainerRef.current &&
-        event.target instanceof Node &&
-        !disclosureContainerRef.current.contains(event.target)
-      ) {
-        setOpenDesktopDisclosure(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handlePointerDown);
-
-    return () => {
-      document.removeEventListener('mousedown', handlePointerDown);
-    };
-  }, [disclosureContainerRef, openDesktopDisclosure, setOpenDesktopDisclosure]);
+  }, [isDrawerOpen, setIsDrawerOpen]);
 
   useEffect(() => {
     if (!isDrawerOpen) {
@@ -104,4 +76,38 @@ export function useHeaderBehaviorEffects({
       mediaQuery.removeEventListener('change', handleMediaChange);
     };
   }, [isDrawerOpen, setIsDrawerOpen]);
+}
+
+type ClickOutsideDismissParams = {
+  ref: RefObject<HTMLElement | null>;
+  isActive: boolean;
+  onDismiss: () => void;
+};
+
+export function useClickOutsideDismiss({ ref, isActive, onDismiss }: ClickOutsideDismissParams) {
+  useEffect(() => {
+    if (!isActive) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (ref.current && event.target instanceof Node && !ref.current.contains(event.target)) {
+        onDismiss();
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onDismiss();
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isActive, onDismiss, ref]);
 }

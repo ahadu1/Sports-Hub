@@ -96,11 +96,11 @@ export function FixturesDateSelector({
                 )}
                 onClick={() => onSelectDate(date)}
               >
-                <span className="flex flex-col items-center justify-center text-center">
-                  <span className={cn('text-body-sm', toneClass)}>
+                <span className="fixturesDateSelector__mobileDateLabels">
+                  <span className={cn('fixturesDateSelector__mobileDateTopText', toneClass)}>
                     {getMobileDateTopLabel(date, selectedDate)}
                   </span>
-                  <span className={cn('text-body-sm', toneClass)}>
+                  <span className={cn('fixturesDateSelector__mobileDateBottomText', toneClass)}>
                     {getMobileDateBottomLabel(date)}
                   </span>
                 </span>

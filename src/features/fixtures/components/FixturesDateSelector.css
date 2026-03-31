@@ -33,6 +33,29 @@
     @apply grid min-h-[39px] min-w-0 flex-1 place-items-center px-1 py-1 text-center outline-none transition hover:text-app-brand-secondary focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-canvas;
   }
 
+  .fixturesDateSelector__mobileDateLabels {
+    @apply flex flex-col items-center justify-center text-center;
+    gap: 0;
+  }
+
+  .fixturesDateSelector__mobileDateTopText {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-align: center;
+  }
+
+  .fixturesDateSelector__mobileDateBottomText {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 10px;
+    line-height: 15px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-align: center;
+  }
+
   .fixturesDateSelector__mobileDate--selected {
     @apply rounded-lg bg-app-muted px-2 py-1;
   }
