@@ -1,6 +1,5 @@
+import { nullableString } from '@/lib/api/schemas';
 import { z } from 'zod';
-
-const nullableString = z.string().nullable().optional();
 
 const leagueSchema = z
   .object({

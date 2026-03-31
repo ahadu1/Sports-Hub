@@ -3,21 +3,15 @@ import type {
   leagueListResponseSchema,
   leagueSeasonsResponseSchema,
 } from '@/features/fixtures/api/competition.schemas';
+import { normalizeString } from '@/lib/normalize';
+import type { SelectOption } from '@/lib/select-option';
 import type { z } from 'zod';
 
 type RawLeagueLookupResponse = z.infer<typeof leagueLookupResponseSchema>;
 type RawLeagueListResponse = z.infer<typeof leagueListResponseSchema>;
 type RawLeagueSeasonsResponse = z.infer<typeof leagueSeasonsResponseSchema>;
 
-export type CompetitionOption = {
-  id: string;
-  label: string;
-  badgeSrc?: string | undefined;
-};
-
-function normalizeString(value: string | null | undefined): string {
-  return value?.trim() ?? '';
-}
+export type CompetitionOption = SelectOption;
 
 function isUsableLeagueLabel(label: string): boolean {
   return !normalizeString(label).startsWith('_');

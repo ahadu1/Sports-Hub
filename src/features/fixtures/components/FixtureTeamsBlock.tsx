@@ -1,7 +1,7 @@
 import { cn } from '@/utils/cn';
+import { useImageLoadState } from '@/hooks/useImageLoadState';
 import { FixtureContextTag } from './FixtureContextTag';
 import { FixtureDisciplineIndicator } from './FixtureDisciplineIndicator';
-import { useEffect, useState } from 'react';
 import type { Fixture, FixtureTeam } from '../types/fixtures.types';
 
 type FixtureTeamsBlockProps = {
@@ -27,13 +27,7 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
   const discipline = fixture.discipline?.filter((item) => item.side === side) ?? [];
   const contextTags = fixture.contextTags?.filter((item) => item.side === side) ?? [];
   const hasInlineDetails = discipline.length > 0 || contextTags.length > 0;
-  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>(() =>
-    team.badgeSrc ? 'loading' : 'error',
-  );
-
-  useEffect(() => {
-    setImageState(team.badgeSrc ? 'loading' : 'error');
-  }, [team.badgeSrc]);
+  const imageState = useImageLoadState(team.badgeSrc);
 
   return (
     <div className="flex min-w-0 items-center gap-2">
@@ -58,8 +52,6 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
                 'h-4 w-4 shrink-0 object-contain transition-opacity',
                 imageState === 'loaded' ? 'opacity-100' : 'opacity-0',
               )}
-              onError={() => setImageState('error')}
-              onLoad={() => setImageState('loaded')}
             />
           </>
         )}

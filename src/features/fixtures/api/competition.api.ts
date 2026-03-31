@@ -10,9 +10,8 @@ import {
   leagueListResponseSchema,
   leagueSeasonsResponseSchema,
 } from '@/features/fixtures/api/competition.schemas';
-import { shouldFallbackToLegacyApi } from '@/lib/api/errors';
 import { endpoints, legacyEndpoints } from '@/lib/api/endpoints';
-import { getJson } from '@/lib/api/http-client';
+import { getJsonWithLegacyFallback } from '@/lib/api/http-client';
 
 async function fetchLeagueCurrentSeason(
   leagueId: string,
@@ -24,19 +23,12 @@ async function fetchLeagueCurrentSeason(
 
 async function fetchLeagueLookup(leagueId: string, signal?: AbortSignal) {
   const opts = signal !== undefined ? { signal } : undefined;
-
-  try {
-    return await getJson(endpoints.leagueById(leagueId), leagueLookupResponseSchema, opts);
-  } catch (error) {
-    if (!shouldFallbackToLegacyApi(error)) {
-      throw error;
-    }
-
-    return await getJson(legacyEndpoints.leagueById(leagueId), leagueLookupResponseSchema, {
-      ...opts,
-      apiVersion: 'v1',
-    });
-  }
+  return getJsonWithLegacyFallback(
+    endpoints.leagueById(leagueId),
+    legacyEndpoints.leagueById(leagueId),
+    leagueLookupResponseSchema,
+    opts,
+  );
 }
 
 export async function fetchLeagueOptionById(
@@ -54,21 +46,13 @@ export async function fetchLeagueOptionById(
 
 export async function fetchLeagueOptions(signal?: AbortSignal): Promise<CompetitionOption[]> {
   const opts = signal !== undefined ? { signal } : undefined;
-
-  try {
-    const raw = await getJson(endpoints.allLeagues(), leagueListResponseSchema, opts);
-    return mapLeagueListResponse(raw);
-  } catch (error) {
-    if (!shouldFallbackToLegacyApi(error)) {
-      throw error;
-    }
-
-    const raw = await getJson(legacyEndpoints.allLeagues(), leagueListResponseSchema, {
-      ...opts,
-      apiVersion: 'v1',
-    });
-    return mapLeagueListResponse(raw);
-  }
+  const raw = await getJsonWithLegacyFallback(
+    endpoints.allLeagues(),
+    legacyEndpoints.allLeagues(),
+    leagueListResponseSchema,
+    opts,
+  );
+  return mapLeagueListResponse(raw);
 }
 
 export async function fetchLeagueSeasons(
@@ -80,38 +64,16 @@ export async function fetchLeagueSeasons(
     return [];
   }
 
-  const opts = signal !== undefined ? { signal } : undefined;
-
-  try {
-    const raw = await getJson(
-      endpoints.leagueSeasons(trimmedLeagueId),
-      leagueSeasonsResponseSchema,
-      opts,
-    );
-    const seasons = mapLeagueSeasonsResponse(raw);
-    if (seasons.length > 0) {
-      return seasons;
-    }
-
-    return fetchLeagueCurrentSeason(trimmedLeagueId, signal);
-  } catch (error) {
-    if (!shouldFallbackToLegacyApi(error)) {
-      throw error;
-    }
-
-    const raw = await getJson(
-      legacyEndpoints.leagueSeasons(trimmedLeagueId),
-      leagueSeasonsResponseSchema,
-      {
-        ...opts,
-        apiVersion: 'v1',
-      },
-    );
-    const seasons = mapLeagueSeasonsResponse(raw);
-    if (seasons.length > 0) {
-      return seasons;
-    }
-
-    return fetchLeagueCurrentSeason(trimmedLeagueId, signal);
+  const raw = await getJsonWithLegacyFallback(
+    endpoints.leagueSeasons(trimmedLeagueId),
+    legacyEndpoints.leagueSeasons(trimmedLeagueId),
+    leagueSeasonsResponseSchema,
+    signal !== undefined ? { signal } : undefined,
+  );
+  const seasons = mapLeagueSeasonsResponse(raw);
+  if (seasons.length > 0) {
+    return seasons;
   }
+
+  return fetchLeagueCurrentSeason(trimmedLeagueId, signal);
 }

@@ -1,4 +1,4 @@
-import type { CompetitionOption } from '@/features/fixtures/api/competition.mappers';
+import { type CompetitionOption } from '@/features/fixtures/api/competition.mappers';
 import { createContext } from 'react';
 
 export type FixturesCompetitionContextValue = {

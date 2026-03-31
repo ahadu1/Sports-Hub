@@ -1,5 +1,5 @@
+import { useImageLoadState } from '@/hooks/useImageLoadState';
 import { cn } from '@/utils/cn';
-import { useEffect, useState } from 'react';
 
 type MatchHeaderTeamBadgeProps = {
   alt: string;
@@ -8,13 +8,7 @@ type MatchHeaderTeamBadgeProps = {
 };
 
 export function MatchHeaderTeamBadge({ alt, fallbackLabel, src }: MatchHeaderTeamBadgeProps) {
-  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>(() =>
-    src ? 'loading' : 'error',
-  );
-
-  useEffect(() => {
-    setImageState(src ? 'loading' : 'error');
-  }, [src]);
+  const imageState = useImageLoadState(src);
 
   if (imageState === 'error' || !src) {
     return (
@@ -39,8 +33,6 @@ export function MatchHeaderTeamBadge({ alt, fallbackLabel, src }: MatchHeaderTea
           imageState === 'loaded' ? 'opacity-100' : 'opacity-0',
         )}
         src={src}
-        onError={() => setImageState('error')}
-        onLoad={() => setImageState('loaded')}
       />
     </div>
   );

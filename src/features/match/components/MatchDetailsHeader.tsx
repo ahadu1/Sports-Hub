@@ -1,6 +1,11 @@
 import { ChevronLeftIcon } from '@/components/icons';
 import { routes } from '@/app/config/routes';
-import { formatDayMonthShort, parseDayKey, type NormalizedKickoff } from '@/lib/datetime/kickoff';
+import {
+  asValidDate,
+  formatDayMonthShort,
+  parseDayKey,
+  type NormalizedKickoff,
+} from '@/lib/datetime/kickoff';
 import {
   getVisibleCardCounters,
   mapHeaderStatusLabel,
@@ -9,8 +14,9 @@ import { cn } from '@/utils/cn';
 import { useNavigate } from 'react-router-dom';
 
 function formatMatchHeaderDayMonthCaps(kickoff: NormalizedKickoff): string {
-  if (kickoff.kickoffInstant) {
-    return formatDayMonthShort(kickoff.kickoffInstant).toUpperCase();
+  const kickoffInstant = asValidDate(kickoff.kickoffInstant);
+  if (kickoffInstant) {
+    return formatDayMonthShort(kickoffInstant).toUpperCase();
   }
   if (kickoff.localDayKey) {
     const day = parseDayKey(kickoff.localDayKey);

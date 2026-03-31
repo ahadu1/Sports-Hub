@@ -5,6 +5,7 @@ import {
   mapMatchDetailsHeaderUiMeta,
 } from '@/utils/match/matchDetailsPage.utils';
 import type { Fixture } from '@/features/fixtures/types/fixtures.types';
+import type { TimelineItem } from '@/features/match/types/match-events.types';
 import type { MatchDetail } from '@/features/match/types/match.types';
 
 const matchDetail: MatchDetail = {
@@ -86,6 +87,39 @@ const selectedFixture: Fixture = {
   awayScore: 1,
 };
 
+const timelineItems: TimelineItem[] = [
+  {
+    id: 'home-yellow',
+    kind: 'event',
+    minute: "15'",
+    minuteVariant: 'default',
+    home: {
+      side: 'home',
+      eventType: 'yellow-card',
+      primaryText: 'Home Player',
+      showSecondaryText: false,
+    },
+  },
+  {
+    id: 'away-double',
+    kind: 'event',
+    minute: "60'",
+    minuteVariant: 'default',
+    away: {
+      side: 'away',
+      eventType: 'yellow-card',
+      primaryText: 'Away Player',
+      showSecondaryText: false,
+    },
+    home: {
+      side: 'home',
+      eventType: 'red-card',
+      primaryText: 'Home Sent Off',
+      showSecondaryText: false,
+    },
+  },
+];
+
 describe('matchDetailsPage.utils', () => {
   it('prefers fetched match details over route fixture state', () => {
     const result = mapMatchDetailsHeaderEvent(matchDetail, selectedFixture, '42');
@@ -127,6 +161,28 @@ describe('matchDetailsPage.utils', () => {
       homeRedCards: 0,
       awayYellowCards: 2,
       awayRedCards: 1,
+    });
+  });
+
+  it('uses timeline card counts when summary fields are empty', () => {
+    const emptySummaryMatch: MatchDetail = {
+      ...matchDetail,
+      summary: {
+        homeGoalDetails: [],
+        awayGoalDetails: [],
+        homeYellowCardDetails: [],
+        awayYellowCardDetails: [],
+        homeRedCardDetails: [],
+        awayRedCardDetails: [],
+      },
+    };
+
+    expect(mapMatchDetailsHeaderUiMeta(emptySummaryMatch, timelineItems)).toEqual({
+      activeTab: 'events',
+      homeYellowCards: 1,
+      homeRedCards: 1,
+      awayYellowCards: 1,
+      awayRedCards: 0,
     });
   });
 

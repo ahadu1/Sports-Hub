@@ -5,6 +5,7 @@ import {
   getKickoffPrimaryLabel,
   logKickoffDiscrepancy,
 } from '@/lib/datetime/kickoff';
+import { normalizeString, parseNumber } from '@/lib/normalize';
 import { getMatchState } from '@/utils/match/matchStatus.utils';
 import type { z } from 'zod';
 
@@ -13,28 +14,6 @@ type RawFixtureCollection = NonNullable<
   RawFixturesResponse['schedule'] | RawFixturesResponse['events']
 >;
 type RawFixtureEvent = NonNullable<RawFixtureCollection[number]>;
-
-function normalizeString(value: string | null | undefined): string {
-  return value?.trim() ?? '';
-}
-
-function parseScore(value: string | number | null | undefined): number | undefined {
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value !== 'string') {
-    return undefined;
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return undefined;
-  }
-
-  const parsed = Number(trimmed);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
 
 function getStatusAbbreviation(state: Fixture['state']): string | undefined {
   switch (state) {
@@ -90,8 +69,8 @@ function mapFixture(event: RawFixtureEvent): Fixture | null {
     return null;
   }
 
-  const homeScore = parseScore(event.intHomeScore);
-  const awayScore = parseScore(event.intAwayScore);
+  const homeScore = parseNumber(event.intHomeScore) ?? undefined;
+  const awayScore = parseNumber(event.intAwayScore) ?? undefined;
   const rawStatus = normalizeString(event.strStatus);
   const state = getMatchState({
     status: rawStatus,

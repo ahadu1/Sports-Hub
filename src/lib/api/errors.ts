@@ -1,11 +1,4 @@
-export class AppError extends Error {
-  constructor(message: string, cause?: unknown) {
-    super(message, cause !== undefined ? { cause } : undefined);
-    this.name = 'AppError';
-  }
-}
-
-export class ApiError extends AppError {
+export class ApiError extends Error {
   readonly details: string | undefined;
 
   constructor(
@@ -14,17 +7,17 @@ export class ApiError extends AppError {
     public readonly url: string,
     options?: { details?: string; cause?: unknown },
   ) {
-    super(message, options?.cause);
+    super(message, options?.cause !== undefined ? { cause: options.cause } : undefined);
     this.name = 'ApiError';
     this.details = options?.details;
   }
 }
 
-export class ValidationError extends AppError {
+export class ValidationError extends Error {
   readonly zodIssues: unknown | undefined;
 
   constructor(message: string, zodIssues?: unknown, cause?: unknown) {
-    super(message, cause);
+    super(message, cause !== undefined ? { cause } : undefined);
     this.name = 'ValidationError';
     this.zodIssues = zodIssues;
   }

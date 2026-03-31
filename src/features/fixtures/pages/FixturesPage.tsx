@@ -6,9 +6,11 @@ import { CompetitionCard } from '@/features/fixtures/components/CompetitionCard'
 import { FixturesDateSelector } from '@/features/fixtures/components/FixturesDateSelector';
 import { FixturesFilterChips } from '@/features/fixtures/components/FixturesFilterChips';
 import { useFixturesCompetition } from '@/hooks/fixtures/useFixturesCompetition';
+import { useVisibleFixtureDiscipline } from '@/hooks/fixtures/useVisibleFixtureDiscipline';
 import { usePersistedFixturesDate } from '@/hooks/fixtures/usePersistedFixturesDate';
 import { useFixturesQuery } from '@/hooks/fixtures/useFixturesQuery';
 import { formatLocalDateLong, formatWeekdayLong } from '@/lib/datetime/kickoff';
+import { addCalendarDays, startOfLocalDay, startOfLocalMonth } from '@/lib/datetime/date';
 import {
   filterFixturesByDate,
   hasFixturesForDate,
@@ -17,7 +19,6 @@ import {
 import type { FixturesFilterKey } from '@/features/fixtures/types/fixtures.types';
 import { groupFixturesByCompetition } from '@/utils/fixtures/fixturesPage.utils';
 import { copy } from '@/lib/constants/copy';
-import { addDays, startOfDay, startOfMonth, subDays } from 'date-fns';
 import { useMemo, useState } from 'react';
 
 export function FixturesPage() {
@@ -32,7 +33,7 @@ export function FixturesPage() {
 
   const { selectedDate, setSelectedDate } = usePersistedFixturesDate();
   const [selectedFilter, setSelectedFilter] = useState<FixturesFilterKey>('all');
-  const [visibleMonth, setVisibleMonth] = useState<Date>(() => startOfMonth(selectedDate));
+  const [visibleMonth, setVisibleMonth] = useState<Date>(() => startOfLocalMonth(selectedDate));
 
   const fixturesQuery = useFixturesQuery(selectedLeagueId, selectedSeasonId);
 
@@ -78,6 +79,7 @@ export function FixturesPage() {
         .filter((section) => section.fixtures.length > 0),
     [dateFilteredSections, selectedFilter],
   );
+  const visibleSections = useVisibleFixtureDiscipline(filteredSections);
 
   const hasFixturesOnSelectedDate = hasFixturesForDate(allSections, selectedDate);
   const selectedDateLabel = `${formatWeekdayLong(selectedDate)}, ${formatLocalDateLong(selectedDate)}`;
@@ -85,7 +87,7 @@ export function FixturesPage() {
   const syncSelectedDate = (nextDate: Date) => {
     const normalizedDate = normalizeDate(nextDate);
     setSelectedDate(normalizedDate);
-    setVisibleMonth(startOfMonth(normalizedDate));
+    setVisibleMonth(startOfLocalMonth(normalizedDate));
   };
 
   const isInitialLoading =
@@ -102,9 +104,9 @@ export function FixturesPage() {
         <FixturesDateSelector
           selectedDate={selectedDate}
           visibleMonth={visibleMonth}
-          onPrevious={() => syncSelectedDate(startOfDay(subDays(selectedDate, 1)))}
-          onNext={() => syncSelectedDate(startOfDay(addDays(selectedDate, 1)))}
-          onOpenCalendar={() => setVisibleMonth(startOfMonth(selectedDate))}
+          onPrevious={() => syncSelectedDate(startOfLocalDay(addCalendarDays(selectedDate, -1)))}
+          onNext={() => syncSelectedDate(startOfLocalDay(addCalendarDays(selectedDate, 1)))}
+          onOpenCalendar={() => setVisibleMonth(startOfLocalMonth(selectedDate))}
           onSelectDate={syncSelectedDate}
           onMonthChange={setVisibleMonth}
         />
@@ -145,8 +147,8 @@ export function FixturesPage() {
               maxAttempts={MAX_QUERY_RETRIES}
             />
           </StatePanel>
-        ) : filteredSections.length > 0 ? (
-          filteredSections.map((section) => <CompetitionCard key={section.id} section={section} />)
+        ) : visibleSections.length > 0 ? (
+          visibleSections.map((section) => <CompetitionCard key={section.id} section={section} />)
         ) : (
           <StatePanel>
             <div className="space-y-2">

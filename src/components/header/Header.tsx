@@ -1,12 +1,6 @@
 import { HeaderDrawer } from '@/components/header/HeaderDrawer';
 import { type HeaderAccordionSection } from '@/components/header/header.constants';
-import {
-  ChevronDownIcon,
-  FootballIcon,
-  GlobeIcon,
-  HamburgerIcon,
-  UkFlagIcon,
-} from '@/components/icons';
+import { ChevronDownIcon, HamburgerIcon } from '@/components/icons';
 import { useFixturesCompetition } from '@/hooks/fixtures/useFixturesCompetition';
 import { useHeaderBehaviorEffects, useHeaderRouteMatch } from '@/hooks/header/header.hooks';
 import { useMatchDetailsQuery } from '@/hooks/match/useMatchDetailsQuery';
@@ -14,8 +8,8 @@ import { cn } from '@/utils/cn';
 import { formatSeasonLabel } from '@/utils/header/header.utils';
 import { routes } from '@/app/config/routes';
 import {
+  HEADER_ASSETS,
   HEADER_LOGO_ALT,
-  HEADER_LOGO_SRC,
   PRIMARY_NAV_ITEMS,
   type HeaderSelectOption,
 } from '@/components/header/header.constants';
@@ -60,7 +54,8 @@ export function Header() {
           },
         ]
       : [];
-  const selectedLeagueBadgeSrc = matchLeagueOption[0]?.badgeSrc ?? selectedLeagueOption?.badgeSrc;
+  const selectedLeagueBadgeSrc =
+    matchLeagueOption[0]?.badgeSrc ?? selectedLeagueOption?.badgeSrc ?? HEADER_ASSETS.leagueFlag;
   const homeSeasonOptions = fixturesSeasonOptions.map((season) => ({
     id: season.id,
     label: formatSeasonLabel(season.label),
@@ -198,23 +193,29 @@ export function Header() {
         <div className="flex h-14 items-center justify-between px-4 lg:hidden">
           <NavLink to={routes.home} onClick={handleNavigateHome} className="header__logoLink">
             <img
-              src={HEADER_LOGO_SRC}
+              src={HEADER_ASSETS.logo}
               alt={HEADER_LOGO_ALT}
               className="header__logo header__logo--mobile"
             />
           </NavLink>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              aria-label="Open sports options"
-              className="header__iconButton header__iconButton--mobile"
-            >
-              <FootballIcon className="h-6 w-6" />
+            <button type="button" aria-label="Open global options" className="header__iconButton">
+              <img
+                src={HEADER_ASSETS.globe}
+                alt=""
+                aria-hidden="true"
+                className="h-6 w-6 max-h-full max-w-full object-contain"
+              />
             </button>
 
-            <button type="button" aria-label="Open global options" className="header__iconButton">
-              <GlobeIcon className="h-6 w-6" />
+            <button type="button" aria-label="Open sports options" className="header__iconButton">
+              <img
+                src={HEADER_ASSETS.football}
+                alt=""
+                aria-hidden="true"
+                className="h-6 w-6 max-h-full max-w-full object-contain"
+              />
             </button>
 
             <div ref={mobileLeagueDisclosureRef} className="relative">
@@ -239,9 +240,11 @@ export function Header() {
                     aria-hidden
                   />
                 ) : (
-                  <HeaderLeagueBadge
+                  <img
                     src={selectedLeagueBadgeSrc}
-                    className="h-4 w-4 max-h-full max-w-full object-contain"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-6 w-6 max-h-full max-w-full object-contain"
                   />
                 )}
               </button>
@@ -260,7 +263,7 @@ export function Header() {
               type="button"
               aria-busy={isHomeSeasonLoading}
               onClick={seasonOptions.length > 0 ? handleOpenSeasonDrawer : undefined}
-              className="header__disclosureButton header__disclosureButton--mobile app-type-poppins-16-24-medium"
+              className="header__disclosureButton app-type-roboto-12-16-light"
             >
               {isHomeSeasonLoading ? (
                 <span
@@ -276,9 +279,9 @@ export function Header() {
               type="button"
               aria-label="Open navigation menu"
               onClick={handleOpenDrawer}
-              className="header__menuButton"
+              className="flex size-10 items-center justify-center rounded-full text-white"
             >
-              <HamburgerIcon className="h-8 w-8" />
+              <HamburgerIcon />
             </button>
           </div>
         </div>
@@ -287,12 +290,11 @@ export function Header() {
           <div className="flex items-center gap-8">
             <NavLink to={routes.home} onClick={handleNavigateHome} className="header__logoLink">
               <img
-                src={HEADER_LOGO_SRC}
+                src={HEADER_ASSETS.logo}
                 alt={HEADER_LOGO_ALT}
                 className="header__logo header__logo--desktop"
               />
             </NavLink>
-
             <nav aria-label="Primary navigation" className="flex items-stretch gap-0">
               {PRIMARY_NAV_ITEMS.map((item) => {
                 const isActive = item.key === 'matches' && isMatchesActive;
@@ -350,11 +352,21 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <button type="button" aria-label="Open global options" className="header__iconButton">
-              <GlobeIcon className="h-6 w-6" />
+              <img
+                src={HEADER_ASSETS.globe}
+                alt=""
+                aria-hidden="true"
+                className="h-6 w-6 max-h-full max-w-full object-contain"
+              />
             </button>
 
             <button type="button" aria-label="Open sports options" className="header__iconButton">
-              <FootballIcon className="h-6 w-6" />
+              <img
+                src={HEADER_ASSETS.football}
+                alt=""
+                aria-hidden="true"
+                className="h-6 w-6 max-h-full max-w-full object-contain"
+              />
             </button>
 
             <div ref={disclosureContainerRef} className="flex items-center gap-2">
@@ -373,10 +385,12 @@ export function Header() {
                       ? () => handleToggleDesktopDisclosure('league')
                       : undefined
                   }
-                  className="header__disclosureButton text-nav-sm"
+                  className="header__disclosureButton app-type-poppins-16-24-medium"
                 >
-                  <HeaderLeagueBadge
+                  <img
                     src={selectedLeagueBadgeSrc}
+                    alt=""
+                    aria-hidden="true"
                     className="h-4 w-4 shrink-0 object-contain"
                   />
                   <span className="flex items-center gap-2">
@@ -418,7 +432,7 @@ export function Header() {
                       ? () => handleToggleDesktopDisclosure('season')
                       : undefined
                   }
-                  className="header__disclosureButton text-nav-sm"
+                  className="header__disclosureButton app-type-poppins-16-24-medium"
                 >
                   <span className="flex items-center gap-2">
                     {isHomeSeasonLoading ? (
@@ -446,7 +460,12 @@ export function Header() {
             </div>
 
             <button type="button" aria-label="Open locale options" className="header__iconButton">
-              <UkFlagIcon className="h-6 w-6" />
+              <img
+                src={HEADER_ASSETS.localeFlag}
+                alt=""
+                aria-hidden="true"
+                className="h-6 w-6 max-h-full max-w-full object-contain"
+              />
             </button>
           </div>
         </div>
@@ -482,7 +501,7 @@ function HeaderNavItemContent({
     <>
       <span
         className={cn(
-          'text-nav',
+          'app-type-poppins-18-27-normal',
           isActive
             ? 'text-app-brand-secondary'
             : item.disabled
@@ -493,40 +512,10 @@ function HeaderNavItemContent({
         {item.label}
       </span>
       {item.disabledText ? (
-        <span className="text-supporting text-app-brand-on-surface-variant">
+        <span className="app-type-roboto-12-16-light text-app-brand-on-surface-variant">
           {item.disabledText}
         </span>
       ) : null}
-    </>
-  );
-}
-
-function HeaderLeagueBadge({ src, className }: { src?: string | undefined; className: string }) {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'error'>(
-    src ? 'loading' : 'idle',
-  );
-
-  useEffect(() => {
-    setStatus(src ? 'loading' : 'idle');
-  }, [src]);
-
-  if (!src) {
-    return null;
-  }
-
-  return (
-    <>
-      {status === 'loading' ? (
-        <span className="loading loading-spinner loading-xs text-app-brand-secondary" aria-hidden />
-      ) : null}
-      <img
-        src={src}
-        alt=""
-        aria-hidden="true"
-        onLoad={() => setStatus('loaded')}
-        onError={() => setStatus('error')}
-        className={cn(className, status === 'loaded' ? '' : 'hidden')}
-      />
     </>
   );
 }

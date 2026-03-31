@@ -1,9 +1,9 @@
-import { addDays, startOfDay } from 'date-fns';
 import {
   MOBILE_RIBBON_CENTER_INDEX,
   MOBILE_RIBBON_ITEM_COUNT,
 } from '@/utils/fixtures/date-selector.constants';
 import type { CompetitionSection } from '@/features/fixtures/types/fixtures.types';
+import { addCalendarDays, startOfLocalDay } from '@/lib/datetime/date';
 import {
   formatDayMonthShort,
   formatMonthCaption,
@@ -12,7 +12,7 @@ import {
 } from '@/lib/datetime/kickoff';
 
 export function normalizeDate(date: Date): Date {
-  return startOfDay(date);
+  return startOfLocalDay(date);
 }
 
 export function isSameCalendarDay(a: Date, b: Date): boolean {
@@ -34,7 +34,7 @@ export function getDesktopDateLabel(selectedDate: Date): string {
 
 export function getMobileRibbonDates(selectedDate: Date): Date[] {
   return Array.from({ length: MOBILE_RIBBON_ITEM_COUNT }, (_, index) =>
-    normalizeDate(addDays(selectedDate, index - MOBILE_RIBBON_CENTER_INDEX)),
+    normalizeDate(addCalendarDays(selectedDate, index - MOBILE_RIBBON_CENTER_INDEX)),
   );
 }
 

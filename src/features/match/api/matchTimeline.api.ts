@@ -1,13 +1,10 @@
 import type { MatchTimelineApiPayload } from '@/features/match/types/match-events.types';
 import { isValidMatchEventId } from '@/utils/match/matchEventId.utils';
-import { ApiError, shouldFallbackToLegacyApi } from '@/lib/api/errors';
+import { nullableString, scoreValueSchema } from '@/lib/api/schemas';
+import { ApiError } from '@/lib/api/errors';
 import { endpoints, legacyEndpoints } from '@/lib/api/endpoints';
-import { getJson } from '@/lib/api/http-client';
+import { getJsonWithLegacyFallback } from '@/lib/api/http-client';
 import { z } from 'zod';
-
-const nullableString = z.string().nullable().optional();
-
-const timelineValueSchema = z.union([z.string(), z.number()]).nullable().optional();
 
 const matchTimelineEntrySchema = z
   .object({
@@ -22,8 +19,8 @@ const matchTimelineEntrySchema = z
     strPlayerOut: nullableString,
     strAssist: nullableString,
     strTeam: nullableString,
-    intTime: timelineValueSchema,
-    intTimeExtra: timelineValueSchema,
+    intTime: scoreValueSchema,
+    intTimeExtra: scoreValueSchema,
     strTime: nullableString,
   })
   .passthrough();
@@ -93,28 +90,14 @@ export async function fetchMatchTimeline(
     throw new Error('Match timeline requires a valid numeric eventId.');
   }
 
-  const opts = signal !== undefined ? { signal } : undefined;
+  const v2Path = endpoints.matchTimelineById(trimmedEventId);
+  const v1Path = legacyEndpoints.matchTimelineById(trimmedEventId);
+  const raw = await getJsonWithLegacyFallback(
+    v2Path,
+    v1Path,
+    matchTimelineResponseSchema,
+    signal !== undefined ? { signal } : undefined,
+  );
 
-  try {
-    const raw = await getJson(
-      endpoints.matchTimelineById(trimmedEventId),
-      matchTimelineResponseSchema,
-      opts,
-    );
-    return normalizeTimelinePayload(raw, endpoints.matchTimelineById(trimmedEventId));
-  } catch (error) {
-    if (!shouldFallbackToLegacyApi(error)) {
-      throw error;
-    }
-
-    const raw = await getJson(
-      legacyEndpoints.matchTimelineById(trimmedEventId),
-      matchTimelineResponseSchema,
-      {
-        ...opts,
-        apiVersion: 'v1',
-      },
-    );
-    return normalizeTimelinePayload(raw, legacyEndpoints.matchTimelineById(trimmedEventId));
-  }
+  return normalizeTimelinePayload(raw, v2Path);
 }

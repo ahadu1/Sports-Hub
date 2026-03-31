@@ -66,8 +66,8 @@ export function MatchDetailsPage() {
     [matchDetail, routeEventId, selectedFixture],
   );
   const headerUiMeta = useMemo(
-    () => mapMatchDetailsHeaderUiMeta(matchDetail, selectedFixture),
-    [matchDetail, selectedFixture],
+    () => mapMatchDetailsHeaderUiMeta(matchDetail, timelineData?.items ?? [], selectedFixture),
+    [matchDetail, selectedFixture, timelineData?.items],
   );
   const matchNotStartedYet = headerEvent?.matchState === 'scheduled';
 

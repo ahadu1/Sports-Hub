@@ -7,6 +7,7 @@ import {
 import type { Fixture } from '@/features/fixtures/types/fixtures.types';
 import type { TimelineItem } from '@/features/match/types/match-events.types';
 import type { MatchDetail } from '@/features/match/types/match.types';
+import { asValidDate } from '@/lib/datetime/kickoff';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import type { Query } from '@tanstack/react-query';
 import type { PersistedClient } from '@tanstack/react-query-persist-client';
@@ -64,6 +65,25 @@ function getPersistableFinishedFixtures(data: unknown): Fixture[] {
   return data.filter(isFixture).filter((fixture) => fixture.state === 'finished');
 }
 
+function reviveKickoffDate<T extends { kickoff: unknown }>(value: T): T {
+  if (typeof value.kickoff !== 'object' || value.kickoff === null) {
+    return value;
+  }
+
+  const kickoff = value.kickoff as Record<string, unknown>;
+  if (!('kickoffInstant' in kickoff)) {
+    return value;
+  }
+
+  return {
+    ...value,
+    kickoff: {
+      ...kickoff,
+      kickoffInstant: asValidDate(kickoff.kickoffInstant),
+    },
+  } as T;
+}
+
 function getFinishedMatchEventIds(queries: readonly DehydratedQuery[]): Set<string> {
   return new Set(
     queries.flatMap((query) => {
@@ -88,7 +108,7 @@ function sanitizePersistedQueries(queries: readonly DehydratedQuery[]): Dehydrat
 
   return queries.flatMap((query) => {
     if (isQueryKeyPrefix(query.queryKey, 'fixtures', 'list')) {
-      const fixtures = getPersistableFinishedFixtures(query.state.data);
+      const fixtures = getPersistableFinishedFixtures(query.state.data).map(reviveKickoffDate);
 
       if (fixtures.length === 0) {
         return [];
@@ -114,7 +134,15 @@ function sanitizePersistedQueries(queries: readonly DehydratedQuery[]): Dehydrat
         return [];
       }
 
-      return [query];
+      return [
+        {
+          ...query,
+          state: {
+            ...query.state,
+            data: reviveKickoffDate(detail),
+          },
+        },
+      ];
     }
 
     if (isQueryKeyPrefix(query.queryKey, 'match', 'timeline')) {

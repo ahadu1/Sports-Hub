@@ -9,6 +9,7 @@ import type {
   TimelineEventItem,
   TimelineItem,
 } from '@/features/match/types/match-events.types';
+import { normalizeOptionalString as normalizeString } from '@/lib/normalize';
 
 type NormalizedTimelineEvent = {
   id: string;
@@ -31,11 +32,6 @@ type OrderedTimelineItem = {
   sortMinute: number;
   sourceIndex: number;
 };
-
-function normalizeString(value: string | null | undefined): string | undefined {
-  const trimmed = value?.trim();
-  return trimmed ? trimmed : undefined;
-}
 
 function isGenericSubstitutionLabel(value: string | undefined): boolean {
   return value !== undefined && /^substitution(?:\s+\d+)?$/i.test(value);

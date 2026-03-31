@@ -4,13 +4,10 @@ import {
   teamLookupResponseSchema,
 } from '@/features/match/api/match.schemas';
 import type { MatchDetail } from '@/features/match/types/match.types';
+import { normalizeString } from '@/lib/normalize';
 import { isValidMatchEventId } from '@/utils/match/matchEventId.utils';
 import { endpoints } from '@/lib/api/endpoints';
 import { getJson } from '@/lib/api/http-client';
-
-function normalizeString(value: string | null | undefined): string {
-  return value?.trim() ?? '';
-}
 
 async function fetchTeamLookup(teamName: string, signal?: AbortSignal) {
   const trimmedTeamName = teamName.trim();

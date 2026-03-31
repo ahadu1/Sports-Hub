@@ -1,12 +1,12 @@
 import { normalizeDate } from '@/utils/fixtures/date-selector.utils';
 import { logError } from '@/utils/logger';
-import { startOfDay } from 'date-fns';
+import { startOfLocalDay } from '@/lib/datetime/date';
 import { useCallback, useState } from 'react';
 
 const FIXTURES_DATE_STORAGE_KEY = 'sports-hub:selected-fixtures-date';
 
 function getDefaultSelectedDate(): Date {
-  return startOfDay(new Date());
+  return startOfLocalDay(new Date());
 }
 
 function readPersistedFixturesDate(): Date {

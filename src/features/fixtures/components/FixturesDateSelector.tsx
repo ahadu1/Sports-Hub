@@ -9,17 +9,8 @@ import {
   getMobileRibbonDates,
   isSameCalendarDay,
 } from '@/utils/fixtures/date-selector.utils';
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-} from '@headlessui/react';
 import type { MonthChangeEventHandler } from 'react-day-picker';
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useEffect, useId, useRef, useState, type RefObject } from 'react';
 
 const FixturesDayPickerCalendar = lazy(async () => {
   const module = await import('./FixturesDayPickerCalendar');
@@ -46,8 +37,18 @@ export function FixturesDateSelector({
   onSelectDate,
   onMonthChange,
 }: FixturesDateSelectorProps) {
+  const desktopCalendarId = useId();
+  const mobileCalendarTitleId = useId();
+  const desktopCalendarRef = useRef<HTMLDivElement>(null);
   const [mobileCalendarOpen, setMobileCalendarOpen] = useState(false);
+  const [desktopCalendarOpen, setDesktopCalendarOpen] = useState(false);
   const ribbonDates = getMobileRibbonDates(selectedDate);
+
+  useDismissibleLayer({
+    containerRef: desktopCalendarRef,
+    isOpen: desktopCalendarOpen,
+    onDismiss: () => setDesktopCalendarOpen(false),
+  });
 
   return (
     <div className="fixturesDateSelector">
@@ -59,11 +60,16 @@ export function FixturesDateSelector({
         />
         <div className="flex flex-1 items-center justify-center">
           <DesktopCalendar
+            calendarId={desktopCalendarId}
             selectedDate={selectedDate}
             visibleMonth={visibleMonth}
+            isOpen={desktopCalendarOpen}
             onOpen={onOpenCalendar}
+            onToggle={() => setDesktopCalendarOpen((current) => !current)}
+            onClose={() => setDesktopCalendarOpen(false)}
             onSelectDate={onSelectDate}
             onMonthChange={onMonthChange}
+            containerRef={desktopCalendarRef}
           />
         </div>
         <ArrowButton ariaLabel="Show next fixtures date" direction="right" onClick={onNext} />
@@ -118,6 +124,7 @@ export function FixturesDateSelector({
       </div>
 
       <MobileCalendarDialog
+        dialogTitleId={mobileCalendarTitleId}
         selectedDate={selectedDate}
         visibleMonth={visibleMonth}
         isOpen={mobileCalendarOpen}
@@ -127,6 +134,44 @@ export function FixturesDateSelector({
       />
     </div>
   );
+}
+
+type UseDismissibleLayerOptions = {
+  containerRef: RefObject<HTMLElement | null>;
+  isOpen: boolean;
+  onDismiss: () => void;
+};
+
+function useDismissibleLayer({ containerRef, isOpen, onDismiss }: UseDismissibleLayerOptions) {
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        event.target instanceof Node &&
+        !containerRef.current.contains(event.target)
+      ) {
+        onDismiss();
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onDismiss();
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [containerRef, isOpen, onDismiss]);
 }
 
 type ArrowButtonProps = {
@@ -153,52 +198,72 @@ function ArrowButton({ ariaLabel, direction, onClick }: ArrowButtonProps) {
 }
 
 type DesktopCalendarProps = {
+  calendarId: string;
   selectedDate: Date;
   visibleMonth: Date;
+  isOpen: boolean;
   onOpen: () => void;
+  onToggle: () => void;
+  onClose: () => void;
   onSelectDate: (date: Date) => void;
   onMonthChange: MonthChangeEventHandler;
+  containerRef: RefObject<HTMLDivElement | null>;
 };
 
 function DesktopCalendar({
+  calendarId,
   selectedDate,
   visibleMonth,
+  isOpen,
   onOpen,
+  onToggle,
+  onClose,
   onSelectDate,
   onMonthChange,
+  containerRef,
 }: DesktopCalendarProps) {
   return (
-    <Popover className="relative">
-      {({ close }) => (
-        <>
-          <PopoverButton
-            type="button"
-            className="fixturesDateSelector__calendarButton"
-            aria-label={`Choose fixtures date, currently ${getDesktopDateLabel(selectedDate)}`}
-            onClick={onOpen}
-          >
-            <CalendarIcon className="h-6 w-6" />
-            <span className="text-body-md-strong">{getDesktopDateLabel(selectedDate)}</span>
-          </PopoverButton>
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        className="fixturesDateSelector__calendarButton"
+        aria-label={`Choose fixtures date, currently ${getDesktopDateLabel(selectedDate)}`}
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        aria-controls={calendarId}
+        onClick={() => {
+          onOpen();
+          onToggle();
+        }}
+      >
+        <CalendarIcon className="h-6 w-6" />
+        <span className="text-body-md-strong">{getDesktopDateLabel(selectedDate)}</span>
+      </button>
 
-          <PopoverPanel className="fixturesDateSelector__popoverPanel">
-            <CalendarContent
-              selectedDate={selectedDate}
-              visibleMonth={visibleMonth}
-              onMonthChange={onMonthChange}
-              onSelectDate={(date) => {
-                onSelectDate(date);
-                close();
-              }}
-            />
-          </PopoverPanel>
-        </>
-      )}
-    </Popover>
+      {isOpen ? (
+        <div
+          id={calendarId}
+          role="dialog"
+          aria-modal="false"
+          className="fixturesDateSelector__popoverPanel"
+        >
+          <CalendarContent
+            selectedDate={selectedDate}
+            visibleMonth={visibleMonth}
+            onMonthChange={onMonthChange}
+            onSelectDate={(date) => {
+              onSelectDate(date);
+              onClose();
+            }}
+          />
+        </div>
+      ) : null}
+    </div>
   );
 }
 
 type MobileCalendarDialogProps = {
+  dialogTitleId: string;
   selectedDate: Date;
   visibleMonth: Date;
   isOpen: boolean;
@@ -208,6 +273,7 @@ type MobileCalendarDialogProps = {
 };
 
 function MobileCalendarDialog({
+  dialogTitleId,
   selectedDate,
   visibleMonth,
   isOpen,
@@ -215,16 +281,61 @@ function MobileCalendarDialog({
   onSelectDate,
   onMonthChange,
 }: MobileCalendarDialogProps) {
+  useEffect(() => {
+    if (!isOpen || typeof document === 'undefined') {
+      return;
+    }
+
+    const { body } = document;
+    const previousOverflow = body.style.overflow;
+    body.style.overflow = 'hidden';
+
+    return () => {
+      body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) {
+    return null;
+  }
+
   return (
-    <Dialog open={isOpen} onClose={onClose} className="fixturesDateSelector__dialog">
-      <DialogBackdrop className="fixed inset-0 bg-black/70 backdrop-blur-[1px]" />
+    <div
+      className="fixturesDateSelector__dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={dialogTitleId}
+    >
+      <div
+        className="fixed inset-0 bg-black/70 backdrop-blur-[1px]"
+        onClick={onClose}
+        aria-hidden="true"
+      />
 
       <div className="fixed inset-0 flex items-end justify-center">
-        <DialogPanel className="fixturesDateSelector__dialogPanel">
+        <div className="fixturesDateSelector__dialogPanel">
           <div className="flex items-center justify-between gap-3">
-            <DialogTitle className="text-title-sm text-white">
+            <h2 id={dialogTitleId} className="text-title-sm text-white">
               {getMonthCaption(visibleMonth)}
-            </DialogTitle>
+            </h2>
             <button
               type="button"
               aria-label="Close fixtures calendar"
@@ -246,9 +357,9 @@ function MobileCalendarDialog({
               }}
             />
           </div>
-        </DialogPanel>
+        </div>
       </div>
-    </Dialog>
+    </div>
   );
 }
 

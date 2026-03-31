@@ -1,5 +1,5 @@
 import { env } from '@/lib/env/env';
-import { ApiError, ValidationError } from '@/lib/api/errors';
+import { ApiError, ValidationError, shouldFallbackToLegacyApi } from '@/lib/api/errors';
 import type { z } from 'zod';
 
 type ApiVersion = 'v1' | 'v2';
@@ -91,4 +91,24 @@ export async function getJson<T>(
   }
 
   return parsed.data;
+}
+
+export async function getJsonWithLegacyFallback<T>(
+  relativePath: string,
+  legacyRelativePath: string,
+  schema: z.ZodType<T>,
+  options?: Omit<GetJsonOptions, 'apiVersion'>,
+): Promise<T> {
+  try {
+    return await getJson(relativePath, schema, options);
+  } catch (error) {
+    if (!shouldFallbackToLegacyApi(error)) {
+      throw error;
+    }
+
+    return getJson(legacyRelativePath, schema, {
+      ...options,
+      apiVersion: 'v1',
+    });
+  }
 }

@@ -1,3 +1,5 @@
+import { normalizeNullableString as normalizeString } from '@/lib/normalize';
+
 export type KickoffParseSource = 'timestamp' | 'utc_date_time' | 'local_date_time' | 'unparseable';
 
 export type ParsedKickoff = {
@@ -60,28 +62,11 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 const TIME_PATTERN = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/;
 
-const DAY_KEY_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
-const DATE_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
-const TIME_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
-const DATE_TIME_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
-const MONTH_YEAR_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
-const WEEKDAY_SHORT_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
-const DAY_MONTH_SHORT_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
-const WEEKDAY_LONG_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
-const DATE_LONG_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
+const FORMATTER_CACHE = new Map<string, Intl.DateTimeFormat>();
 
-function normalizeString(value: string | null | undefined): string | null {
-  const trimmed = value?.trim() ?? '';
-  return trimmed ? trimmed : null;
-}
-
-function getFormatter(
-  cache: Map<string, Intl.DateTimeFormat>,
-  timeZone: string,
-  options: Intl.DateTimeFormatOptions,
-): Intl.DateTimeFormat {
+function getFormatter(timeZone: string, options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat {
   const key = `${timeZone}:${JSON.stringify(options)}`;
-  const cached = cache.get(key);
+  const cached = FORMATTER_CACHE.get(key);
   if (cached) {
     return cached;
   }
@@ -90,7 +75,7 @@ function getFormatter(
     ...options,
     timeZone,
   });
-  cache.set(key, formatter);
+  FORMATTER_CACHE.set(key, formatter);
   return formatter;
 }
 
@@ -174,6 +159,19 @@ function parseTimestamp(value: string | null): Date | null {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
+export function asValidDate(value: unknown): Date | null {
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
+
+  if (typeof value === 'string' || typeof value === 'number') {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  return null;
+}
+
 function parseUtcDateTime(dateValue: string | null, timeValue: string | null): Date | null {
   const dateParts = parseDateParts(dateValue);
   const timeParts = parseTimeParts(timeValue);
@@ -216,7 +214,7 @@ export function getUserTimeZone(): string {
 }
 
 export function getLocalDayKey(date: Date, timeZone = getUserTimeZone()): string {
-  const formatter = getFormatter(DAY_KEY_FORMATTERS, timeZone, {
+  const formatter = getFormatter(timeZone, {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -238,7 +236,7 @@ export function parseDayKey(dayKey: string): Date | null {
 }
 
 export function formatLocalDate(date: Date, timeZone = getUserTimeZone()): string {
-  return getFormatter(DATE_FORMATTERS, timeZone, {
+  return getFormatter(timeZone, {
     weekday: 'short',
     day: '2-digit',
     month: 'short',
@@ -246,7 +244,7 @@ export function formatLocalDate(date: Date, timeZone = getUserTimeZone()): strin
 }
 
 export function formatLocalTime(date: Date, timeZone = getUserTimeZone()): string {
-  return getFormatter(TIME_FORMATTERS, timeZone, {
+  return getFormatter(timeZone, {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
@@ -254,7 +252,7 @@ export function formatLocalTime(date: Date, timeZone = getUserTimeZone()): strin
 }
 
 export function formatLocalDateTime(date: Date, timeZone = getUserTimeZone()): string {
-  return getFormatter(DATE_TIME_FORMATTERS, timeZone, {
+  return getFormatter(timeZone, {
     weekday: 'short',
     day: '2-digit',
     month: 'short',
@@ -265,33 +263,33 @@ export function formatLocalDateTime(date: Date, timeZone = getUserTimeZone()): s
 }
 
 export function formatMonthCaption(date: Date, timeZone = getUserTimeZone()): string {
-  return getFormatter(MONTH_YEAR_FORMATTERS, timeZone, {
+  return getFormatter(timeZone, {
     month: 'long',
     year: 'numeric',
   }).format(date);
 }
 
 export function formatWeekdayShort(date: Date, timeZone = getUserTimeZone()): string {
-  return getFormatter(WEEKDAY_SHORT_FORMATTERS, timeZone, {
+  return getFormatter(timeZone, {
     weekday: 'short',
   }).format(date);
 }
 
 export function formatDayMonthShort(date: Date, timeZone = getUserTimeZone()): string {
-  return getFormatter(DAY_MONTH_SHORT_FORMATTERS, timeZone, {
+  return getFormatter(timeZone, {
     day: 'numeric',
     month: 'short',
   }).format(date);
 }
 
 export function formatWeekdayLong(date: Date, timeZone = getUserTimeZone()): string {
-  return getFormatter(WEEKDAY_LONG_FORMATTERS, timeZone, {
+  return getFormatter(timeZone, {
     weekday: 'long',
   }).format(date);
 }
 
 export function formatLocalDateLong(date: Date, timeZone = getUserTimeZone()): string {
-  return getFormatter(DATE_LONG_FORMATTERS, timeZone, {
+  return getFormatter(timeZone, {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

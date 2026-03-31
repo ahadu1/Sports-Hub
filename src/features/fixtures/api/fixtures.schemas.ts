@@ -1,8 +1,5 @@
+import { nullableString, scoreValueSchema } from '@/lib/api/schemas';
 import { z } from 'zod';
-
-const nullableString = z.string().nullable().optional();
-
-const scoreValueSchema = z.union([z.string(), z.number()]).nullable().optional();
 
 export const fixtureEventSchema = z
   .object({

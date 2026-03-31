@@ -1,10 +1,11 @@
 import { routes } from '@/app/config/routes';
+import type { SelectOption } from '@/lib/select-option';
+import englandFlagIconSrc from '../icons/flag-england.svg';
+import footballIconSrc from '../icons/football.svg';
+import globeIconSrc from '../icons/globe.svg';
+import ukFlagIconSrc from '../icons/uk-flag.svg';
 
-export type HeaderSelectOption = {
-  id: string;
-  label: string;
-  badgeSrc?: string | undefined;
-};
+export type HeaderSelectOption = SelectOption;
 
 export type PrimaryNavItem = {
   key: 'live' | 'matches' | 'standings' | 'teams' | 'comparison' | 'statistics' | 'venues';
@@ -28,5 +29,13 @@ export const PRIMARY_NAV_ITEMS: readonly PrimaryNavItem[] = [
 export const HEADER_LOGO_ALT = 'Statscore';
 
 export const HEADER_LOGO_SRC = '/header/logo-statscore.svg';
+
+export const HEADER_ASSETS = {
+  football: footballIconSrc,
+  globe: globeIconSrc,
+  leagueFlag: englandFlagIconSrc,
+  localeFlag: ukFlagIconSrc,
+  logo: HEADER_LOGO_SRC,
+} as const;
 
 export type HeaderAccordionSection = 'league' | 'season';

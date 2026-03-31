@@ -4,6 +4,7 @@ import type {
 } from '@/features/match/api/match.schemas';
 import type { MatchDetail } from '@/features/match/types/match.types';
 import { buildNormalizedKickoff, logKickoffDiscrepancy } from '@/lib/datetime/kickoff';
+import { normalizeString, parseNumber } from '@/lib/normalize';
 import { getMatchState } from '@/utils/match/matchStatus.utils';
 import type { z } from 'zod';
 
@@ -23,46 +24,6 @@ type MatchTeamLookups = {
   awayTeam?: RawTeamLookupResponse | null | undefined;
 };
 
-function normalizeString(value: string | null | undefined): string {
-  return value?.trim() ?? '';
-}
-
-function parseScore(value: string | number | null | undefined): number | null {
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value !== 'string') {
-    return null;
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return null;
-  }
-
-  const parsed = Number(trimmed);
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-function parseNumericValue(value: string | number | null | undefined): number | null {
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value !== 'string') {
-    return null;
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return null;
-  }
-
-  const parsed = Number(trimmed);
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
 function getOptionalScoreField(
   event: RawMatchDetailEvent,
   fieldNames: readonly string[],
@@ -70,7 +31,7 @@ function getOptionalScoreField(
   const eventRecord = event as RawMatchDetailEvent & Record<string, unknown>;
 
   for (const fieldName of fieldNames) {
-    const parsedValue = parseScore(eventRecord[fieldName] as string | number | null | undefined);
+    const parsedValue = parseNumber(eventRecord[fieldName] as string | number | null | undefined);
 
     if (parsedValue !== null) {
       return parsedValue;
@@ -147,8 +108,8 @@ function mapMatchDetail(
   fallbackEventId: string,
   lookups: MatchTeamLookups,
 ): MatchDetail {
-  const homeScore = parseScore(event.intHomeScore);
-  const awayScore = parseScore(event.intAwayScore);
+  const homeScore = parseNumber(event.intHomeScore);
+  const awayScore = parseNumber(event.intAwayScore);
   const halftimeHomeScore = getOptionalScoreField(event, [
     'intHomeScoreHalf',
     'intHomeScoreHalfTime',
@@ -180,7 +141,7 @@ function mapMatchDetail(
     eventLabel: normalizeString(event.strEvent),
     kickoff,
     season: normalizeString(event.strSeason),
-    round: parseNumericValue(event.intRound),
+    round: parseNumber(event.intRound),
     venueName: normalizeString(event.strVenue),
     venueCity: normalizeString(event.strCity),
     venueCountry: normalizeString(event.strCountry),

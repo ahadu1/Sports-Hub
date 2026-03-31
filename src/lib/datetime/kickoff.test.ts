@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  asValidDate,
   buildNormalizedKickoff,
   getKickoffPrimaryLabel,
   getLocalDayKey,
@@ -161,5 +162,16 @@ describe('kickoff parser and normalizer', () => {
   it('produces stable local day keys for selected-date comparisons', () => {
     const parsedDate = new Date('2026-03-30T08:30:00Z');
     expect(getLocalDayKey(parsedDate, 'UTC')).toBe('2026-03-30');
+  });
+
+  it('revives persisted ISO date strings into valid Date instances', () => {
+    const revived = asValidDate('2026-03-30T20:00:00.000Z');
+
+    expect(revived).toBeInstanceOf(Date);
+    expect(revived?.toISOString()).toBe('2026-03-30T20:00:00.000Z');
+  });
+
+  it('returns null for invalid persisted date values', () => {
+    expect(asValidDate('not-a-real-date')).toBeNull();
   });
 });

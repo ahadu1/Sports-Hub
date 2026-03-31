@@ -20,7 +20,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.9",
     "@tanstack/query-sync-storage-persister": "^5.95.2",
     "@tanstack/react-query": "^5.62.8",
     "@tanstack/react-query-devtools": "^5.62.8",
