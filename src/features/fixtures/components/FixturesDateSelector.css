@@ -22,11 +22,44 @@
   }
 
   .fixturesDateSelector__mobileRibbon {
-    @apply flex min-h-[71px] items-center gap-2 lg:hidden;
+    @apply -mx-4 flex min-h-[71px] w-[calc(100%+2rem)] items-center lg:mx-0 lg:hidden;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .fixturesDateSelector__mobileRibbon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 57px;
+    background: linear-gradient(90deg, #181921 0%, rgba(24, 25, 33, 0) 50%, #181921 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .fixturesDateSelector__mobileRibbon::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(24, 25, 33, 0.55) 0%,
+      rgba(24, 25, 33, 0) 14%,
+      rgba(24, 25, 33, 0) 86%,
+      rgba(24, 25, 33, 0.4) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
   }
 
   .fixturesDateSelector__mobileDates {
-    @apply flex min-w-0 flex-1 items-center justify-between gap-2;
+    @apply flex min-w-0 w-full items-center justify-between gap-2;
+    position: relative;
+    z-index: 1;
+    width: calc(100% + 36px);
   }
 
   .fixturesDateSelector__mobileDate {
@@ -62,6 +95,11 @@
 
   .fixturesDateSelector__calendarTrigger {
     @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-app-fixtures-calendar text-app-brand-secondary outline-none transition hover:text-app-brand-secondary focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-app-canvas;
+    position: absolute;
+    right: 2px;
+    top: 6px;
+    z-index: 3;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
   }
 
   .fixturesDateSelector__dialog {

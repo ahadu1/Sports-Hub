@@ -1,8 +1,11 @@
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon, CloseIcon } from '@/components/icons';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { MOBILE_RIBBON_ITEM_COUNT } from '@/utils/fixtures/date-selector.constants';
 import { cn } from '@/utils/cn';
 import {
   getDesktopDateLabel,
+  getMobileRibbonCenterIndex,
+  getMobileRibbonItemCount,
   getMobileDateBottomLabel,
   getMobileDateTopLabel,
   getMonthCaption,
@@ -40,15 +43,45 @@ export function FixturesDateSelector({
   const desktopCalendarId = useId();
   const mobileCalendarTitleId = useId();
   const desktopCalendarRef = useRef<HTMLDivElement>(null);
+  const mobileDatesRef = useRef<HTMLDivElement>(null);
   const [mobileCalendarOpen, setMobileCalendarOpen] = useState(false);
   const [desktopCalendarOpen, setDesktopCalendarOpen] = useState(false);
-  const ribbonDates = getMobileRibbonDates(selectedDate);
+  const [mobileRibbonItemCount, setMobileRibbonItemCount] = useState(MOBILE_RIBBON_ITEM_COUNT);
+  const mobileRibbonCenterIndex = getMobileRibbonCenterIndex(mobileRibbonItemCount);
+  const ribbonDates = getMobileRibbonDates(
+    selectedDate,
+    mobileRibbonItemCount,
+    mobileRibbonCenterIndex,
+  );
 
   useDismissibleLayer({
     containerRef: desktopCalendarRef,
     isOpen: desktopCalendarOpen,
     onDismiss: () => setDesktopCalendarOpen(false),
   });
+
+  useEffect(() => {
+    const mobileDatesElement = mobileDatesRef.current;
+    if (!mobileDatesElement) {
+      return;
+    }
+
+    const updateRibbonDatesCount = () => {
+      const nextCount = getMobileRibbonItemCount(mobileDatesElement.clientWidth);
+      setMobileRibbonItemCount((currentCount) =>
+        currentCount === nextCount ? currentCount : nextCount,
+      );
+    };
+
+    updateRibbonDatesCount();
+
+    const resizeObserver = new ResizeObserver(updateRibbonDatesCount);
+    resizeObserver.observe(mobileDatesElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   return (
     <div className="fixturesDateSelector">
@@ -76,14 +109,10 @@ export function FixturesDateSelector({
       </div>
 
       <div className="fixturesDateSelector__mobileRibbon">
-        <div className="fixturesDateSelector__mobileDates">
-          {ribbonDates.map((date, index) => {
+        <div ref={mobileDatesRef} className="fixturesDateSelector__mobileDates">
+          {ribbonDates.map((date) => {
             const isSelected = isSameCalendarDay(date, selectedDate);
-            const toneClass = isSelected
-              ? 'text-app-brand-secondary'
-              : index === 0 || index === ribbonDates.length - 1
-                ? 'text-app-text-subtle'
-                : 'text-app-text';
+            const labelToneClass = isSelected ? 'text-app-brand-secondary' : 'text-app-text';
 
             return (
               <button
@@ -97,10 +126,12 @@ export function FixturesDateSelector({
                 onClick={() => onSelectDate(date)}
               >
                 <span className="fixturesDateSelector__mobileDateLabels">
-                  <span className={cn('fixturesDateSelector__mobileDateTopText', toneClass)}>
+                  <span className={cn('fixturesDateSelector__mobileDateTopText', labelToneClass)}>
                     {getMobileDateTopLabel(date, selectedDate)}
                   </span>
-                  <span className={cn('fixturesDateSelector__mobileDateBottomText', toneClass)}>
+                  <span
+                    className={cn('fixturesDateSelector__mobileDateBottomText', labelToneClass)}
+                  >
                     {getMobileDateBottomLabel(date)}
                   </span>
                 </span>

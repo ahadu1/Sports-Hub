@@ -1,6 +1,8 @@
 import {
-  MOBILE_RIBBON_CENTER_INDEX,
+  MOBILE_RIBBON_GAP_PX,
+  MOBILE_RIBBON_MIN_DATE_WIDTH_PX,
   MOBILE_RIBBON_ITEM_COUNT,
+  MOBILE_RIBBON_SELECTED_POSITION_RATIO,
 } from '@/utils/fixtures/date-selector.constants';
 import type { CompetitionSection } from '@/features/fixtures/types/fixtures.types';
 import { addCalendarDays, startOfLocalDay } from '@/lib/datetime/date';
@@ -32,9 +34,37 @@ export function getDesktopDateLabel(selectedDate: Date): string {
   return `${formatWeekdayShort(normalizedDate)} ${formatDayMonthShort(normalizedDate)}`.toUpperCase();
 }
 
-export function getMobileRibbonDates(selectedDate: Date): Date[] {
-  return Array.from({ length: MOBILE_RIBBON_ITEM_COUNT }, (_, index) =>
-    normalizeDate(addCalendarDays(selectedDate, index - MOBILE_RIBBON_CENTER_INDEX)),
+export function getMobileRibbonItemCount(containerWidth: number): number {
+  const normalizedWidth = Number.isFinite(containerWidth) ? Math.max(0, containerWidth) : 0;
+  const count = Math.floor(
+    (normalizedWidth + MOBILE_RIBBON_GAP_PX) /
+      (MOBILE_RIBBON_MIN_DATE_WIDTH_PX + MOBILE_RIBBON_GAP_PX),
+  );
+
+  return Math.max(MOBILE_RIBBON_ITEM_COUNT, count);
+}
+
+export function getMobileRibbonCenterIndex(itemCount: number): number {
+  if (itemCount <= 1) {
+    return 0;
+  }
+
+  return Math.min(
+    itemCount - 1,
+    Math.max(0, Math.floor(itemCount * MOBILE_RIBBON_SELECTED_POSITION_RATIO)),
+  );
+}
+
+export function getMobileRibbonDates(
+  selectedDate: Date,
+  itemCount: number,
+  centerIndex: number,
+): Date[] {
+  const totalItems = Math.max(1, itemCount);
+  const selectedIndex = Math.min(totalItems - 1, Math.max(0, centerIndex));
+
+  return Array.from({ length: totalItems }, (_, index) =>
+    normalizeDate(addCalendarDays(selectedDate, index - selectedIndex)),
   );
 }
 
