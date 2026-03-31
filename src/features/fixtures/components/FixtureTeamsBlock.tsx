@@ -59,7 +59,7 @@ function TeamLine({ fixture, side, team }: TeamLineProps) {
       <div className="flex min-w-0 items-center">
         <span className="text-body-sm truncate text-app-text">{team.name}</span>
         {hasInlineDetails ? (
-          <span className="ml-[6px] inline-flex shrink-0 items-center gap-2">
+          <span className="ml-1.5 inline-flex shrink-0 items-center gap-2">
             {discipline.map((item, index) => (
               <FixtureDisciplineIndicator
                 key={`${team.id}-${item.card}-${index}`}

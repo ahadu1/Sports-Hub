@@ -49,6 +49,27 @@ function mapVisibleInFilters(
   return filters;
 }
 
+function getPenaltyContextTags(
+  rawStatus: string,
+  homeScore: number | undefined,
+  awayScore: number | undefined,
+): Fixture['contextTags'] | undefined {
+  if (rawStatus !== 'PEN' || homeScore === undefined || awayScore === undefined) {
+    return undefined;
+  }
+
+  if (homeScore === awayScore) {
+    return undefined;
+  }
+
+  return [
+    {
+      side: homeScore > awayScore ? 'home' : 'away',
+      label: 'PEN',
+    },
+  ];
+}
+
 function mapFixture(event: RawFixtureEvent): Fixture | null {
   const eventId = normalizeString(event.idEvent);
   const leagueId = normalizeString(event.idLeague);
@@ -88,6 +109,7 @@ function mapFixture(event: RawFixtureEvent): Fixture | null {
         ? 'HT'
         : rawStatus || 'LIVE'
       : undefined;
+  const contextTags = getPenaltyContextTags(rawStatus, homeScore, awayScore);
 
   return {
     eventId,
@@ -111,6 +133,7 @@ function mapFixture(event: RawFixtureEvent): Fixture | null {
     },
     ...(homeScore !== undefined ? { homeScore } : {}),
     ...(awayScore !== undefined ? { awayScore } : {}),
+    ...(contextTags ? { contextTags } : {}),
   };
 }
 

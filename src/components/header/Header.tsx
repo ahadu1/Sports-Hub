@@ -199,7 +199,7 @@ export function Header() {
             />
           </NavLink>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <button type="button" aria-label="Open global options" className="header__iconButton">
               <img
                 src={HEADER_ASSETS.globe}
@@ -263,7 +263,7 @@ export function Header() {
               type="button"
               aria-busy={isHomeSeasonLoading}
               onClick={seasonOptions.length > 0 ? handleOpenSeasonDrawer : undefined}
-              className="header__disclosureButton app-type-roboto-12-16-light"
+              className="header__disclosureButton text-supporting"
             >
               {isHomeSeasonLoading ? (
                 <span
@@ -295,7 +295,7 @@ export function Header() {
                 className="header__logo header__logo--desktop"
               />
             </NavLink>
-            <nav aria-label="Primary navigation" className="flex items-stretch gap-0">
+            <nav aria-label="Primary navigation" className="flex items-stretch gap-1">
               {PRIMARY_NAV_ITEMS.map((item) => {
                 const isActive = item.key === 'matches' && isMatchesActive;
                 const content = (
@@ -312,7 +312,7 @@ export function Header() {
                       key={item.key}
                       type="button"
                       disabled
-                      className="relative inline-flex min-h-[43px] cursor-not-allowed flex-col items-start justify-center whitespace-nowrap px-2 py-1"
+                      className="header__navItem header__navItem--disabled"
                     >
                       {content}
                     </button>
@@ -326,11 +326,7 @@ export function Header() {
                       to={item.to}
                       end
                       onClick={handleNavigateHome}
-                      className={cn(
-                        'relative inline-flex min-h-[43px] flex-col items-start justify-center whitespace-nowrap px-2 py-1',
-                        isActive &&
-                          'after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-app-brand-secondary',
-                      )}
+                      className={cn('header__navItem', isActive && 'header__navItem--active')}
                     >
                       {content}
                     </NavLink>
@@ -338,11 +334,7 @@ export function Header() {
                 }
 
                 return (
-                  <button
-                    key={item.key}
-                    type="button"
-                    className="relative inline-flex min-h-[43px] flex-col items-start justify-center whitespace-nowrap px-2 py-1"
-                  >
+                  <button key={item.key} type="button" className="header__navItem">
                     {content}
                   </button>
                 );
@@ -350,7 +342,7 @@ export function Header() {
             </nav>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <button type="button" aria-label="Open global options" className="header__iconButton">
               <img
                 src={HEADER_ASSETS.globe}
@@ -369,7 +361,7 @@ export function Header() {
               />
             </button>
 
-            <div ref={disclosureContainerRef} className="flex items-center gap-2">
+            <div ref={disclosureContainerRef} className="flex items-center gap-4">
               <div className="relative">
                 <button
                   type="button"
@@ -385,7 +377,7 @@ export function Header() {
                       ? () => handleToggleDesktopDisclosure('league')
                       : undefined
                   }
-                  className="header__disclosureButton app-type-poppins-16-24-medium"
+                  className="header__disclosureButton text-nav-sm"
                 >
                   <img
                     src={selectedLeagueBadgeSrc}
@@ -432,7 +424,7 @@ export function Header() {
                       ? () => handleToggleDesktopDisclosure('season')
                       : undefined
                   }
-                  className="header__disclosureButton app-type-poppins-16-24-medium"
+                  className="header__disclosureButton text-nav-sm"
                 >
                   <span className="flex items-center gap-2">
                     {isHomeSeasonLoading ? (
@@ -501,7 +493,7 @@ function HeaderNavItemContent({
     <>
       <span
         className={cn(
-          'app-type-poppins-18-27-normal',
+          'text-nav',
           isActive
             ? 'text-app-brand-secondary'
             : item.disabled
@@ -512,7 +504,7 @@ function HeaderNavItemContent({
         {item.label}
       </span>
       {item.disabledText ? (
-        <span className="app-type-roboto-12-16-light text-app-brand-on-surface-variant">
+        <span className="text-supporting text-app-brand-on-surface-variant">
           {item.disabledText}
         </span>
       ) : null}

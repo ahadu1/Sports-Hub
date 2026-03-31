@@ -245,8 +245,10 @@ function getEventTexts(
       const primaryText = detail ?? player ?? eventLabel ?? timelineLabel;
       return primaryText !== undefined ? { primaryText } : {};
     }
-    case 'yellow-card':
-    case 'red-card':
+    case 'yellow-card': {
+      const primaryText = player ?? detail ?? eventLabel ?? timelineLabel;
+      return primaryText !== undefined ? { primaryText } : {};
+    }
     case 'injury':
     case 'off-the-post': {
       const primaryText = player ?? detail ?? eventLabel ?? timelineLabel;
@@ -257,6 +259,13 @@ function getEventTexts(
       return {
         ...(primaryText !== undefined ? { primaryText } : {}),
         ...(secondaryText !== undefined ? { secondaryText } : {}),
+      };
+    }
+    case 'red-card': {
+      const primaryText = player ?? detail ?? eventLabel ?? timelineLabel;
+      return {
+        ...(primaryText !== undefined ? { primaryText } : {}),
+        secondaryText: 'Sent Off',
       };
     }
     default:
@@ -439,10 +448,7 @@ function mapTimelineEntry(
   };
 }
 
-function createMergedEventRows(
-  events: NormalizedTimelineEvent[],
-  context: MatchTimelineMapContext,
-): OrderedTimelineItem[] {
+function createMergedEventRows(events: NormalizedTimelineEvent[]): OrderedTimelineItem[] {
   const collapsedEvents: NormalizedTimelineEvent[] = [];
   const pendingSubstitutions = new Map<string, NormalizedTimelineEvent>();
 
@@ -521,7 +527,7 @@ function createMergedEventRows(
         id: event.id,
         kind: 'event',
         minute: event.minute,
-        minuteVariant: 'default',
+        minuteVariant: event.eventType === 'goal' ? 'active' : 'default',
         ...(event.side === 'home'
           ? { home: mapSideContent(event) }
           : { away: mapSideContent(event) }),
@@ -531,11 +537,6 @@ function createMergedEventRows(
     });
     mergeIndexByKey.set(mergeKey, rows.length - 1);
   });
-
-  const firstEventRow = rows[0]?.item;
-  if (firstEventRow && context.highlightLatestEvent) {
-    firstEventRow.minuteVariant = 'active';
-  }
 
   return rows.map((row) => ({
     item: row.item,
@@ -684,7 +685,7 @@ export function mapMatchEventsTimeline(
   });
 
   const orderedItems = [
-    ...createMergedEventRows(normalizedEvents, context),
+    ...createMergedEventRows(normalizedEvents),
     ...normalizedDividers.map((divider) => mapOrderedDivider(divider)),
   ];
   orderedItems.push(

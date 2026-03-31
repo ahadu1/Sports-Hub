@@ -35,6 +35,46 @@ function createGoalEntry({
   };
 }
 
+function createCardEntry({
+  id,
+  teamId,
+  minute,
+  player,
+}: {
+  id: string;
+  teamId: string;
+  minute: number;
+  player: string;
+}): MatchTimelineApiEntry {
+  return {
+    idTimeline: id,
+    idTeam: teamId,
+    strEvent: 'Red Card',
+    strPlayer: player,
+    intTime: minute,
+  };
+}
+
+function createYellowCardEntry({
+  id,
+  teamId,
+  minute,
+  player,
+}: {
+  id: string;
+  teamId: string;
+  minute: number;
+  player: string;
+}): MatchTimelineApiEntry {
+  return {
+    idTimeline: id,
+    idTeam: teamId,
+    strEvent: 'Yellow Card',
+    strPlayer: player,
+    intTime: minute,
+  };
+}
+
 function createDividerEntry({
   id,
   label,
@@ -176,5 +216,69 @@ describe('mapMatchEventsTimeline', () => {
     expect(getDividerCount(items, 'Half Time')).toBe(1);
     expect(getDividerByLabel(items, 'Kick Off')).toMatchObject({ score: '13:00' });
     expect(getDividerByLabel(items, 'Half Time')).toMatchObject({ score: '1 - 0' });
+  });
+
+  it('uses the highlighted minute pill only for goal events', () => {
+    const payload: MatchTimelineApiPayload = {
+      timeline: [
+        createCardEntry({ id: 'red-66', teamId: 'home', minute: 66, player: 'Defender' }),
+        createGoalEntry({ id: 'goal-55', teamId: 'away', minute: 55, player: 'Striker' }),
+      ],
+    };
+
+    const items = mapMatchEventsTimeline(payload, {
+      ...baseContext,
+      matchState: 'live',
+      kickoffLabel: '13:00',
+    });
+
+    const redCardEvent = items.find((item) => item.kind === 'event' && item.minute === "66'");
+    const goalEvent = items.find((item) => item.kind === 'event' && item.minute === "55'");
+
+    expect(redCardEvent).toMatchObject({ kind: 'event', minuteVariant: 'default' });
+    expect(goalEvent).toMatchObject({ kind: 'event', minuteVariant: 'active' });
+  });
+
+  it('labels red-card events as sent off', () => {
+    const payload: MatchTimelineApiPayload = {
+      timeline: [createCardEntry({ id: 'red-66', teamId: 'home', minute: 66, player: 'Van Dijk' })],
+    };
+
+    const items = mapMatchEventsTimeline(payload, {
+      ...baseContext,
+      matchState: 'live',
+      kickoffLabel: '13:00',
+    });
+
+    expect(items.find((item) => item.kind === 'event' && item.minute === "66'")).toMatchObject({
+      kind: 'event',
+      home: {
+        primaryText: 'Van Dijk',
+        secondaryText: 'Sent Off',
+        showSecondaryText: true,
+      },
+    });
+  });
+
+  it('shows only the player name for yellow-card events', () => {
+    const payload: MatchTimelineApiPayload = {
+      timeline: [
+        createYellowCardEntry({ id: 'yellow-52', teamId: 'away', minute: 52, player: 'Saliba' }),
+      ],
+    };
+
+    const items = mapMatchEventsTimeline(payload, {
+      ...baseContext,
+      matchState: 'live',
+      kickoffLabel: '13:00',
+    });
+
+    expect(items.find((item) => item.kind === 'event' && item.minute === "52'")).toMatchObject({
+      kind: 'event',
+      away: {
+        primaryText: 'Saliba',
+        showSecondaryText: false,
+      },
+    });
   });
 });

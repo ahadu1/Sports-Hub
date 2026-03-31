@@ -24,7 +24,7 @@ export function EventHalfRow({ side, content }: EventHalfRowProps) {
       )}
     >
       {content ? (
-        <div className="flex min-w-0 items-center gap-[4px]">
+        <div className="flex min-w-0 items-center gap-1">
           {side === 'away' ? <ConnectorLine /> : null}
           <EventContentBlock
             eventType={content.eventType}

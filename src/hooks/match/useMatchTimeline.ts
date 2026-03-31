@@ -17,11 +17,7 @@ import type {
 import type { MatchDetail } from '@/features/match/types/match.types';
 import { isValidMatchEventId } from '@/utils/match/matchEventId.utils';
 import { mapMatchEventsTimeline } from '@/utils/match/matchEvents.mapper';
-import {
-  getMatchRefetchInterval,
-  getPreferredMatchState,
-  isMatchActive,
-} from '@/utils/match/matchStatus.utils';
+import { getMatchRefetchInterval, getPreferredMatchState } from '@/utils/match/matchStatus.utils';
 import { queryKeys } from '@/lib/constants/query-keys';
 import { queryOptions, useQuery } from '@tanstack/react-query';
 
@@ -57,7 +53,6 @@ function getMatchTimelineMapContext(
         matchDetail.kickoff.localTimeLabel ??
         selectedFixture?.kickoff.localTimeLabel ??
         selectedFixture?.kickoffLabel,
-      highlightLatestEvent: isMatchActive(preferredMatchState),
     };
   }
 
@@ -70,7 +65,6 @@ function getMatchTimelineMapContext(
     homeScore: selectedFixture?.homeScore,
     awayScore: selectedFixture?.awayScore,
     kickoffLabel: selectedFixture?.kickoffLabel,
-    highlightLatestEvent: isMatchActive(selectedFixture?.state),
   };
 }
 

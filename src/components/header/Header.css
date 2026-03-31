@@ -47,6 +47,18 @@
     @apply inline-flex size-10 shrink-0 items-center justify-center rounded-full text-white transition hover:text-white/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
   }
 
+  .header__navItem {
+    @apply relative inline-flex min-h-[43px] flex-col items-start justify-center whitespace-nowrap px-2 py-1;
+  }
+
+  .header__navItem--active {
+    @apply after:absolute after:bottom-0 after:left-2 after:right-2 after:h-[2px] after:w-auto after:bg-app-brand-secondary;
+  }
+
+  .header__navItem--disabled {
+    @apply cursor-not-allowed;
+  }
+
   .header__selectOption {
     @apply flex h-10 w-full items-center rounded-xl px-3 text-left transition;
   }

@@ -9,8 +9,42 @@
     @apply flex min-h-[120px] items-center justify-center rounded-lg border border-app-border-base bg-app-surface px-4 py-6 text-center;
   }
 
+  .matchEventsSection__cornerMoment {
+    @apply inline-flex w-fit items-center gap-2 text-app-text-strong;
+  }
+
+  .matchEventsSection__cornerLabel {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0;
+    color: var(--app-text-base);
+  }
+
+  .matchEventsSection__cornerIcon {
+    @apply h-[12px] w-[12px];
+  }
+
+  .matchEventsSection__cornerConnector {
+    @apply h-0 w-4 shrink-0 border-t border-app-border-muted;
+  }
+
+  .matchEventsSection__cornerMinute {
+    @apply inline-flex min-w-[52px] items-center justify-center rounded-full px-3 py-1 text-center;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0;
+    background: var(--app-bg-muted);
+    color: var(--app-text-base);
+  }
+
   .matchEventsSection__minutePill {
-    @apply inline-flex h-[19px] w-[48px] shrink-0 items-center justify-center rounded-full px-2 py-[2px] text-center;
+    @apply inline-flex h-[19px] w-[48px] shrink-0 items-center justify-center rounded-full px-2 py-0.5 text-center;
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 11px;
     line-height: 15px;
@@ -18,7 +52,9 @@
   }
 
   .matchEventsSection__minutePill--active {
-    @apply border border-app-border-base bg-app-brand-secondary text-app-text-inverse;
+    @apply bg-app-brand-secondary;
+    border: 0.5px solid var(--app-bg-muted);
+    color: #000000;
   }
 
   .matchEventsSection__minutePill--default {

@@ -90,7 +90,7 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
                 src={event.strHomeTeamBadge}
               />
               {homeCounters.length > 0 ? (
-                <div className="absolute -right-[16px] top-px flex items-center gap-[2px]">
+                <div className="absolute -right-4 top-px flex items-center gap-0.5">
                   {homeCounters.map((counter) => (
                     <MatchHeaderCardCounter
                       key={`${event.strHomeTeam}-${counter.color}`}
@@ -129,7 +129,7 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
                 src={event.strAwayTeamBadge}
               />
               {awayCounters.length > 0 ? (
-                <div className="absolute -left-[30px] top-px flex items-center gap-[2px]">
+                <div className="absolute -left-[30px] top-px flex items-center gap-0.5">
                   {awayCounters.map((counter) => (
                     <MatchHeaderCardCounter
                       key={`${event.strAwayTeam}-${counter.color}`}

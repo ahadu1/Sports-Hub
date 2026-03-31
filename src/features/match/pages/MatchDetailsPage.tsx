@@ -73,7 +73,7 @@ export function MatchDetailsPage() {
 
   return (
     <div className="flex justify-center">
-      <div className="flex w-full max-w-[707px] flex-col gap-[16px]">
+      <div className="flex w-full max-w-[707px] flex-col gap-4">
         {headerEvent ? (
           <MatchDetailsHeader event={headerEvent} uiMeta={headerUiMeta} />
         ) : (

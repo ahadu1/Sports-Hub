@@ -137,7 +137,7 @@ export function HeaderDrawer({
                     onClick={onClose}
                     className={cn(
                       drawerNavItemClasses,
-                      isActive && 'border-l-2 border-app-brand-secondary bg-white/5 pl-[14px]',
+                      isActive && 'border-l-2 border-app-brand-secondary bg-white/5 pl-3.5',
                     )}
                   >
                     {content}

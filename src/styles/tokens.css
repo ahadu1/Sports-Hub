@@ -1,12 +1,3 @@
-/* src/styles/tokens.css */
-
-/*
-  Source of truth:
-  - SPORTSBOOK TOKENS / PRIMITIVES = body surfaces, panels, borders, content text, semantic states
-  - GENERAL THEME / BRAND TOKENS = global navigation and brand layer
-  - WARNING is temporary for DaisyUI compatibility only until manually verified in Figma
-*/
-
 :root,
 [data-theme='sportsbook-dark'] {
   /* Sportsbook backgrounds */

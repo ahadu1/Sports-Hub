@@ -4,6 +4,8 @@ import { LoadingState } from '@/components/ui/LoadingState';
 import { StatePanel } from '@/components/ui/StatePanel';
 import type { TimelineItem } from '@/features/match/types/match-events.types';
 import { copy } from '@/lib/constants/copy';
+import { mapMatchCornerMoments } from '@/utils/match/matchCornerMoments.utils';
+import { EventCornerMomentRow } from './EventCornerMomentRow';
 import { EventDividerRow } from './EventDividerRow';
 import { EventTimelineRow } from './EventTimelineRow';
 
@@ -58,6 +60,7 @@ export function MatchEventsSection({
   retryAttempt,
 }: MatchEventsSectionProps) {
   const hasItems = items.length > 0;
+  const cornerMoments = mapMatchCornerMoments(items);
 
   return (
     <section aria-labelledby="match-events-title" className="matchEventsSection">
@@ -70,6 +73,9 @@ export function MatchEventsSection({
         <MatchEventsState message={copy.timelineNoEventDataMessage} />
       ) : hasItems ? (
         <div className="flex w-full flex-col gap-2">
+          {cornerMoments.map((moment) => (
+            <EventCornerMomentRow key={`${moment.label}-${moment.minute}`} moment={moment} />
+          ))}
           {items.map((item) =>
             item.kind === 'divider' ? (
               <EventDividerRow key={item.id} item={item} />

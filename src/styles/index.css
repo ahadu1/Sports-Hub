@@ -48,13 +48,12 @@
   --color-error: var(--app-danger);
   --color-error-content: var(--app-text-base);
 
-  /* Conservative structure values — not final Figma shape system */
-  --radius-selector: 0.5rem;
-  --radius-field: 0.5rem;
-  --radius-box: 0.75rem;
+  --radius-selector: 8px;
+  --radius-field: 8px;
+  --radius-box: 12px;
 
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
+  --size-selector: 4px;
+  --size-field: 4px;
 
   --border: 1px;
   --depth: 0;

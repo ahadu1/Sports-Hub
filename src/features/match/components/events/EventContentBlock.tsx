@@ -61,7 +61,7 @@ export function EventContentBlock({
   );
 
   return (
-    <div className="flex max-w-full min-w-0 items-center gap-[10px]">
+    <div className="flex max-w-full min-w-0 items-center gap-2.5">
       {side === 'home' ? (
         <>
           {textBlock}

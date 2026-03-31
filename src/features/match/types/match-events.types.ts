@@ -50,7 +50,6 @@ export type MatchTimelineMapContext = {
   halftimeHomeScore?: number | null | undefined;
   halftimeAwayScore?: number | null | undefined;
   kickoffLabel?: string | undefined;
-  highlightLatestEvent?: boolean | undefined;
 };
 
 export type EventSideContent = {
