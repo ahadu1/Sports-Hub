@@ -17,6 +17,12 @@ const MatchDetailsPage = lazy(async () => {
   return { default: module.MatchDetailsPage };
 });
 
+const TopMenuComingSoonPage = lazy(async () => {
+  const module = await import('@/pages/TopMenuComingSoonPage');
+
+  return { default: module.TopMenuComingSoonPage };
+});
+
 const NotFoundPage = lazy(async () => {
   const module = await import('@/pages/NotFoundPage');
 
@@ -42,6 +48,54 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<RouteLoadingFallback />}>
             <MatchDetailsPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: routes.live,
+        element: (
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <TopMenuComingSoonPage title="Live" />
+          </Suspense>
+        ),
+      },
+      {
+        path: routes.standings,
+        element: (
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <TopMenuComingSoonPage title="Standings" />
+          </Suspense>
+        ),
+      },
+      {
+        path: routes.teams,
+        element: (
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <TopMenuComingSoonPage title="Teams" />
+          </Suspense>
+        ),
+      },
+      {
+        path: routes.comparison,
+        element: (
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <TopMenuComingSoonPage title="Comparison" />
+          </Suspense>
+        ),
+      },
+      {
+        path: routes.statistics,
+        element: (
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <TopMenuComingSoonPage title="Statistics" />
+          </Suspense>
+        ),
+      },
+      {
+        path: routes.venues,
+        element: (
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <TopMenuComingSoonPage title="Venues" />
           </Suspense>
         ),
       },

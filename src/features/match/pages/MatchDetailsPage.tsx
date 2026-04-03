@@ -1,5 +1,5 @@
 import { MAX_QUERY_RETRIES } from '@/app/config/app-config';
-import { FootballIcon } from '@/components/icons';
+import { ComingSoonCard } from '@/components/ui/ComingSoonCard';
 import { InlineErrorState } from '@/components/ui/InlineErrorState';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { StatePanel } from '@/components/ui/StatePanel';
@@ -56,15 +56,7 @@ function MatchTabPlaceholderCard({
 }) {
   const title = MATCH_HEADER_TABS.find((tab) => tab.id === activeTab)?.label ?? 'Coming Soon';
 
-  return (
-    <section className="rounded-lg border border-app-border-base bg-app-surface p-6">
-      <h2 className="text-xl font-semibold text-app-text">{title}</h2>
-      <div className="mt-6 flex items-end justify-center text-app-brand-secondary">
-        <span className="text-4xl font-bold leading-none sm:text-5xl">Coming soon</span>
-        <FootballIcon className="mb-1 ml-2 h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
-      </div>
-    </section>
-  );
+  return <ComingSoonCard title={title} />;
 }
 
 export function MatchDetailsPage() {

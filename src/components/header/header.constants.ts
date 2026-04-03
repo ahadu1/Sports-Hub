@@ -16,13 +16,13 @@ export type PrimaryNavItem = {
 };
 
 export const PRIMARY_NAV_ITEMS: readonly PrimaryNavItem[] = [
-  { key: 'live', label: 'Live' },
+  { key: 'live', label: 'Live', to: routes.live },
   { key: 'matches', label: 'Matches', to: routes.home },
   { key: 'standings', label: 'Standings', disabled: true },
-  { key: 'teams', label: 'Teams' },
-  { key: 'comparison', label: 'Comparison' },
-  { key: 'statistics', label: 'Statistics' },
-  { key: 'venues', label: 'Venues' },
+  { key: 'teams', label: 'Teams', to: routes.teams },
+  { key: 'comparison', label: 'Comparison', to: routes.comparison },
+  { key: 'statistics', label: 'Statistics', to: routes.statistics },
+  { key: 'venues', label: 'Venues', to: routes.venues },
 ];
 
 /** Wordmark in `HEADER_LOGO_SRC` (SVG ~3.33:1) */

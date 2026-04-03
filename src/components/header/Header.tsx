@@ -20,7 +20,7 @@ export function Header() {
   const { pathname } = useLocation();
   const disclosureContainerRef = useRef<HTMLDivElement>(null);
   const mobileLeagueDisclosureRef = useRef<HTMLDivElement>(null);
-  const { isMatchRoute, isMatchesActive, matchEventId } = useHeaderRouteMatch(pathname);
+  const { isMatchRoute, activePrimaryNavItem, matchEventId } = useHeaderRouteMatch(pathname);
   const matchDetailsQuery = useMatchDetailsQuery(matchEventId);
   const {
     isLeagueLoading,
@@ -197,6 +197,7 @@ export function Header() {
             <button
               type="button"
               aria-label="Open sports options"
+              disabled
               className="header__iconButton--mobile"
             >
               <img
@@ -210,6 +211,7 @@ export function Header() {
             <button
               type="button"
               aria-label="Open global options"
+              disabled
               className="header__iconButton--mobile"
             >
               <img
@@ -302,7 +304,7 @@ export function Header() {
               className="flex min-w-0 items-stretch gap-0 xl:gap-1"
             >
               {PRIMARY_NAV_ITEMS.map((item) => {
-                const isActive = item.key === 'matches' && isMatchesActive;
+                const isActive = item.key === activePrimaryNavItem;
                 const content = (
                   <HeaderNavItemContent
                     item={item}
@@ -348,7 +350,12 @@ export function Header() {
           </div>
 
           <div className="flex shrink-0 items-center gap-2 xl:gap-4">
-            <button type="button" aria-label="Open global options" className="header__iconButton">
+            <button
+              type="button"
+              aria-label="Open global options"
+              disabled
+              className="header__iconButton"
+            >
               <img
                 src={HEADER_ASSETS.globe}
                 alt=""
@@ -357,7 +364,12 @@ export function Header() {
               />
             </button>
 
-            <button type="button" aria-label="Open sports options" className="header__iconButton">
+            <button
+              type="button"
+              aria-label="Open sports options"
+              disabled
+              className="header__iconButton"
+            >
               <img
                 src={HEADER_ASSETS.football}
                 alt=""
@@ -456,7 +468,12 @@ export function Header() {
               </div>
             </div>
 
-            <button type="button" aria-label="Open locale options" className="header__iconButton">
+            <button
+              type="button"
+              aria-label="Open locale options"
+              disabled
+              className="header__iconButton"
+            >
               <img
                 src={HEADER_ASSETS.localeFlag}
                 alt=""
@@ -471,7 +488,7 @@ export function Header() {
       <HeaderDrawer
         isOpen={isDrawerOpen}
         openSection={openSection}
-        isMatchesActive={isMatchesActive}
+        activePrimaryNavItem={activePrimaryNavItem}
         leagueOptions={isMatchRoute ? matchLeagueOption : leagueOptions}
         seasonOptions={seasonOptions}
         selectedLeagueId={isMatchRoute ? matchLeagueOption[0]?.id : selectedLeagueId}

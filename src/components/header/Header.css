@@ -35,11 +35,11 @@
   }
 
   .header__iconButton {
-    @apply inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-black/15 text-white transition hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
+    @apply inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-black/15 text-white transition hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:hover:bg-black/15;
   }
 
   .header__iconButton--mobile {
-    @apply inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-black/15 text-white transition hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2;
+    @apply inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-black/15 text-white transition hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-brand-secondary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:hover:bg-black/15;
   }
 
   .header__disclosureButton {

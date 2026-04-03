@@ -2,6 +2,48 @@ import { routes } from '@/app/config/routes';
 import { useEffect, type RefObject } from 'react';
 import { matchPath } from 'react-router-dom';
 
+type ActivePrimaryNavItem =
+  | 'live'
+  | 'matches'
+  | 'standings'
+  | 'teams'
+  | 'comparison'
+  | 'statistics'
+  | 'venues'
+  | null;
+
+function getActivePrimaryNavItem(pathname: string): ActivePrimaryNavItem {
+  if (pathname === routes.home || pathname.startsWith(routes.matchPrefix)) {
+    return 'matches';
+  }
+
+  if (pathname === routes.live) {
+    return 'live';
+  }
+
+  if (pathname === routes.standings) {
+    return 'standings';
+  }
+
+  if (pathname === routes.teams) {
+    return 'teams';
+  }
+
+  if (pathname === routes.comparison) {
+    return 'comparison';
+  }
+
+  if (pathname === routes.statistics) {
+    return 'statistics';
+  }
+
+  if (pathname === routes.venues) {
+    return 'venues';
+  }
+
+  return null;
+}
+
 type HeaderBehaviorEffectsParams = {
   isDrawerOpen: boolean;
   setIsDrawerOpen: (isOpen: boolean) => void;
@@ -10,11 +52,13 @@ type HeaderBehaviorEffectsParams = {
 export function useHeaderRouteMatch(pathname: string) {
   const matchRoute = matchPath(routes.match, pathname);
   const matchEventId = matchRoute?.params.eventId?.trim() ?? '';
+  const activePrimaryNavItem = getActivePrimaryNavItem(pathname);
 
   return {
     matchEventId,
     isMatchRoute: matchEventId.length > 0,
-    isMatchesActive: pathname === routes.home || pathname.startsWith(routes.matchPrefix),
+    isMatchesActive: activePrimaryNavItem === 'matches',
+    activePrimaryNavItem,
   };
 }
 

@@ -14,7 +14,15 @@ import { NavLink } from 'react-router-dom';
 type HeaderDrawerProps = {
   isOpen: boolean;
   openSection: HeaderAccordionSection | null;
-  isMatchesActive: boolean;
+  activePrimaryNavItem:
+    | 'live'
+    | 'matches'
+    | 'standings'
+    | 'teams'
+    | 'comparison'
+    | 'statistics'
+    | 'venues'
+    | null;
   leagueOptions: readonly HeaderSelectOption[];
   seasonOptions: readonly HeaderSelectOption[];
   selectedLeagueId?: string | undefined;
@@ -31,7 +39,7 @@ const drawerNavItemClasses =
 export function HeaderDrawer({
   isOpen,
   openSection,
-  isMatchesActive,
+  activePrimaryNavItem,
   leagueOptions,
   seasonOptions,
   selectedLeagueId,
@@ -92,7 +100,7 @@ export function HeaderDrawer({
         <div className="flex flex-col gap-2 p-4">
           <nav aria-label="Mobile primary navigation" className="flex flex-col gap-2">
             {PRIMARY_NAV_ITEMS.map((item) => {
-              const isActive = item.key === 'matches' && isMatchesActive;
+              const isActive = item.key === activePrimaryNavItem;
               const content = (
                 <>
                   <span
