@@ -38,9 +38,10 @@ import { MatchHeaderTeamBadge } from './match-details-header/MatchHeaderTeamBadg
 type MatchDetailsHeaderProps = {
   event: MatchDetailsHeaderEvent;
   uiMeta: MatchDetailsHeaderUiMeta;
+  onTabChange?: (tab: MatchDetailsHeaderUiMeta['activeTab']) => void;
 };
 
-export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
+export function MatchDetailsHeader({ event, uiMeta, onTabChange }: MatchDetailsHeaderProps) {
   const navigate = useNavigate();
   const [homeCounters, awayCounters] = (() => {
     const counters = getVisibleCardCounters(uiMeta);
@@ -149,6 +150,7 @@ export function MatchDetailsHeader({ event, uiMeta }: MatchDetailsHeaderProps) {
       <MatchHeaderTabs
         activeTab={uiMeta.activeTab}
         showEventsTab={event.matchState !== 'Match Postponed'}
+        onTabChange={onTabChange}
       />
     </section>
   );

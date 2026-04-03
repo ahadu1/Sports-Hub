@@ -1,10 +1,13 @@
 import { MAX_QUERY_RETRIES } from '@/app/config/app-config';
+import { FootballIcon } from '@/components/icons';
 import { InlineErrorState } from '@/components/ui/InlineErrorState';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { StatePanel } from '@/components/ui/StatePanel';
 import type { Fixture } from '@/features/fixtures/types/fixtures.types';
 import { MatchDetailsHeader } from '@/features/match/components/MatchDetailsHeader';
 import { MatchEventsSection } from '@/features/match/components/events/MatchEventsSection';
+import { MATCH_HEADER_TABS } from '@/features/match/components/match-details-header/MatchHeaderTabs';
+import type { MatchDetailsHeaderUiMeta } from '@/features/match/components/match-details-header.types';
 import { useMatchDetailsQuery } from '@/hooks/match/useMatchDetailsQuery';
 import { useMatchTimeline } from '@/hooks/match/useMatchTimeline';
 import {
@@ -12,7 +15,7 @@ import {
   mapMatchDetailsHeaderUiMeta,
 } from '@/utils/match/matchDetailsPage.utils';
 import { copy } from '@/lib/constants/copy';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 
 function MatchDetailsHeaderState({
@@ -46,6 +49,24 @@ type MatchDetailsRouteState = {
   fixture?: Fixture;
 };
 
+function MatchTabPlaceholderCard({
+  activeTab,
+}: {
+  activeTab: Exclude<MatchDetailsHeaderUiMeta['activeTab'], 'events'>;
+}) {
+  const title = MATCH_HEADER_TABS.find((tab) => tab.id === activeTab)?.label ?? 'Coming Soon';
+
+  return (
+    <section className="rounded-lg border border-app-border-base bg-app-surface p-6">
+      <h2 className="text-xl font-semibold text-app-text">{title}</h2>
+      <div className="mt-6 flex items-end justify-center text-app-brand-secondary">
+        <span className="text-4xl font-bold leading-none sm:text-5xl">Coming soon</span>
+        <FootballIcon className="mb-1 ml-2 h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
+      </div>
+    </section>
+  );
+}
+
 export function MatchDetailsPage() {
   const { eventId = '' } = useParams<{ eventId: string }>();
   const routeEventId = eventId.trim();
@@ -69,13 +90,31 @@ export function MatchDetailsPage() {
     () => mapMatchDetailsHeaderUiMeta(matchDetail, timelineData?.items ?? [], selectedFixture),
     [matchDetail, selectedFixture, timelineData?.items],
   );
+  const [activeTab, setActiveTab] = useState<MatchDetailsHeaderUiMeta['activeTab']>(
+    headerUiMeta.activeTab,
+  );
   const matchNotStartedYet = headerEvent?.matchState === 'scheduled';
+  const showEventsTab = headerEvent?.matchState !== 'Match Postponed';
+
+  useEffect(() => {
+    setActiveTab(headerUiMeta.activeTab);
+  }, [headerUiMeta.activeTab, routeEventId]);
+
+  useEffect(() => {
+    if (!showEventsTab && activeTab === 'events') {
+      setActiveTab('details');
+    }
+  }, [activeTab, showEventsTab]);
 
   return (
     <div className="flex justify-center">
       <div className="flex w-full max-w-[707px] flex-col gap-4">
         {headerEvent ? (
-          <MatchDetailsHeader event={headerEvent} uiMeta={headerUiMeta} />
+          <MatchDetailsHeader
+            event={headerEvent}
+            uiMeta={{ ...headerUiMeta, activeTab }}
+            onTabChange={setActiveTab}
+          />
         ) : (
           <MatchDetailsHeaderState
             isLoading={matchDetailsQuery.isPending}
@@ -85,7 +124,7 @@ export function MatchDetailsPage() {
             attempt={Math.max(1, matchDetailsQuery.failureCount)}
           />
         )}
-        {headerEvent?.matchState !== 'Match Postponed' ? (
+        {activeTab === 'events' && showEventsTab ? (
           <MatchEventsSection
             isError={matchTimelineQuery.isError}
             isLoading={isTimelineLoading}
@@ -97,7 +136,9 @@ export function MatchDetailsPage() {
             }}
             retryAttempt={Math.max(1, matchTimelineQuery.failureCount)}
           />
-        ) : null}
+        ) : (
+          <MatchTabPlaceholderCard activeTab={activeTab as Exclude<typeof activeTab, 'events'>} />
+        )}
       </div>
     </div>
   );
