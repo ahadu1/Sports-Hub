@@ -13,13 +13,14 @@ import { formatLocalDateLong, formatWeekdayLong } from '@/lib/datetime/kickoff';
 import { addCalendarDays, startOfLocalDay, startOfLocalMonth } from '@/lib/datetime/date';
 import {
   filterFixturesByDate,
+  getClosestFixtureDate,
   hasFixturesForDate,
   normalizeDate,
 } from '@/utils/fixtures/date-selector.utils';
 import type { FixturesFilterKey } from '@/features/fixtures/types/fixtures.types';
 import { groupFixturesByCompetition } from '@/utils/fixtures/fixturesPage.utils';
 import { copy } from '@/lib/constants/copy';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function FixturesPage() {
   const {
@@ -34,6 +35,7 @@ export function FixturesPage() {
   const { selectedDate, setSelectedDate } = usePersistedFixturesDate();
   const [selectedFilter, setSelectedFilter] = useState<FixturesFilterKey>('all');
   const [visibleMonth, setVisibleMonth] = useState<Date>(() => startOfLocalMonth(selectedDate));
+  const [shouldAutoSelectClosestDate, setShouldAutoSelectClosestDate] = useState(true);
 
   const fixturesQuery = useFixturesQuery(selectedLeagueId, selectedSeasonId);
 
@@ -84,11 +86,40 @@ export function FixturesPage() {
   const hasFixturesOnSelectedDate = hasFixturesForDate(allSections, selectedDate);
   const selectedDateLabel = `${formatWeekdayLong(selectedDate)}, ${formatLocalDateLong(selectedDate)}`;
 
-  const syncSelectedDate = (nextDate: Date) => {
-    const normalizedDate = normalizeDate(nextDate);
-    setSelectedDate(normalizedDate);
-    setVisibleMonth(startOfLocalMonth(normalizedDate));
-  };
+  const syncSelectedDate = useCallback(
+    (nextDate: Date) => {
+      const normalizedDate = normalizeDate(nextDate);
+      setSelectedDate(normalizedDate);
+      setVisibleMonth(startOfLocalMonth(normalizedDate));
+    },
+    [setSelectedDate],
+  );
+
+  const handleSelectDate = useCallback(
+    (nextDate: Date) => {
+      setShouldAutoSelectClosestDate(false);
+      syncSelectedDate(nextDate);
+    },
+    [syncSelectedDate],
+  );
+
+  useEffect(() => {
+    setShouldAutoSelectClosestDate(true);
+  }, [selectedLeagueId, selectedSeasonId]);
+
+  useEffect(() => {
+    if (!shouldAutoSelectClosestDate || fixturesQuery.isPending || allSections.length === 0) {
+      return;
+    }
+
+    const closestFixtureDate = getClosestFixtureDate(allSections);
+    if (!closestFixtureDate) {
+      return;
+    }
+
+    syncSelectedDate(closestFixtureDate);
+    setShouldAutoSelectClosestDate(false);
+  }, [allSections, fixturesQuery.isPending, shouldAutoSelectClosestDate, syncSelectedDate]);
 
   const isInitialLoading =
     (isCompetitionLoading && (!selectedLeagueId || !selectedSeasonId)) ||
@@ -101,25 +132,9 @@ export function FixturesPage() {
       <div className="mx-auto flex max-w-[820px] flex-col gap-4 px-4 lg:w-[820px] lg:px-0">
         <h1 className="hidden text-title-md text-app-text lg:block">{copy.matchesHeading}</h1>
 
-        <FixturesDateSelector
-          selectedDate={selectedDate}
-          visibleMonth={visibleMonth}
-          onPrevious={() => syncSelectedDate(startOfLocalDay(addCalendarDays(selectedDate, -1)))}
-          onNext={() => syncSelectedDate(startOfLocalDay(addCalendarDays(selectedDate, 1)))}
-          onOpenCalendar={() => setVisibleMonth(startOfLocalMonth(selectedDate))}
-          onSelectDate={syncSelectedDate}
-          onMonthChange={setVisibleMonth}
-        />
-
-        <FixturesFilterChips
-          chipCounts={chipCounts}
-          selectedFilter={selectedFilter}
-          onSelectFilter={setSelectedFilter}
-        />
-
         {isInitialLoading ? (
-          <StatePanel>
-            <LoadingState className="justify-center" />
+          <StatePanel className="min-h-[320px]">
+            <LoadingState className="justify-center" size="large" label="Loading matches" />
           </StatePanel>
         ) : hasBlockingCompetitionError ? (
           <StatePanel>
@@ -147,19 +162,43 @@ export function FixturesPage() {
               maxAttempts={MAX_QUERY_RETRIES}
             />
           </StatePanel>
-        ) : visibleSections.length > 0 ? (
-          visibleSections.map((section) => <CompetitionCard key={section.id} section={section} />)
         ) : (
-          <StatePanel>
-            <div className="space-y-2">
-              <h2 className="text-title-md text-app-text">{copy.matchesEmptyTitle}</h2>
-              <p className="text-body-md text-app-text-muted">
-                {hasFixturesOnSelectedDate
-                  ? `No matches are available in this filter for ${selectedDateLabel}.`
-                  : `There are no scheduled fixtures for ${selectedDateLabel}.`}
-              </p>
-            </div>
-          </StatePanel>
+          <>
+            <FixturesDateSelector
+              selectedDate={selectedDate}
+              visibleMonth={visibleMonth}
+              onPrevious={() =>
+                handleSelectDate(startOfLocalDay(addCalendarDays(selectedDate, -1)))
+              }
+              onNext={() => handleSelectDate(startOfLocalDay(addCalendarDays(selectedDate, 1)))}
+              onOpenCalendar={() => setVisibleMonth(startOfLocalMonth(selectedDate))}
+              onSelectDate={handleSelectDate}
+              onMonthChange={setVisibleMonth}
+            />
+
+            <FixturesFilterChips
+              chipCounts={chipCounts}
+              selectedFilter={selectedFilter}
+              onSelectFilter={setSelectedFilter}
+            />
+
+            {visibleSections.length > 0 ? (
+              visibleSections.map((section) => (
+                <CompetitionCard key={section.id} section={section} />
+              ))
+            ) : (
+              <StatePanel>
+                <div className="space-y-2">
+                  <h2 className="text-title-md text-app-text">{copy.matchesEmptyTitle}</h2>
+                  <p className="text-body-md text-app-text-muted">
+                    {hasFixturesOnSelectedDate
+                      ? `No matches are available in this filter for ${selectedDateLabel}.`
+                      : `There are no scheduled fixtures for ${selectedDateLabel}.`}
+                  </p>
+                </div>
+              </StatePanel>
+            )}
+          </>
         )}
       </div>
     </div>

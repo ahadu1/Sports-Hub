@@ -11,7 +11,10 @@ import {
   formatMonthCaption,
   formatWeekdayShort,
   getLocalDayKey,
+  parseDayKey,
 } from '@/lib/datetime/kickoff';
+
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function normalizeDate(date: Date): Date {
   return startOfLocalDay(date);
@@ -110,4 +113,58 @@ export function hasFixturesForDate(sections: CompetitionSection[], selectedDate:
   return sections.some((section) =>
     section.fixtures.some((fixture) => fixture.kickoff.localDayKey === selectedDayKey),
   );
+}
+
+function parseLocalDayKey(dayKey: string): Date | null {
+  const parsedDay = parseDayKey(dayKey);
+  if (!parsedDay) {
+    return null;
+  }
+
+  return normalizeDate(
+    new Date(parsedDay.getUTCFullYear(), parsedDay.getUTCMonth(), parsedDay.getUTCDate()),
+  );
+}
+
+export function getClosestFixtureDate(
+  sections: CompetitionSection[],
+  referenceDate = new Date(),
+): Date | null {
+  const referenceDay = parseDayKey(getLocalDayKey(referenceDate));
+  if (!referenceDay) {
+    return null;
+  }
+
+  let closestDate: Date | null = null;
+  let closestDistance: number | null = null;
+  const seenDayKeys = new Set<string>();
+
+  sections.forEach((section) => {
+    section.fixtures.forEach((fixture) => {
+      const dayKey = fixture.kickoff.localDayKey;
+      if (!dayKey || seenDayKeys.has(dayKey)) {
+        return;
+      }
+
+      seenDayKeys.add(dayKey);
+
+      const parsedDay = parseDayKey(dayKey);
+      const localDate = parseLocalDayKey(dayKey);
+      if (!parsedDay || !localDate) {
+        return;
+      }
+
+      const distance = Math.round((parsedDay.getTime() - referenceDay.getTime()) / DAY_MS);
+      if (
+        closestDistance === null ||
+        Math.abs(distance) < Math.abs(closestDistance) ||
+        (Math.abs(distance) === Math.abs(closestDistance) && distance > closestDistance)
+      ) {
+        closestDistance = distance;
+        closestDate = localDate;
+      }
+    });
+  });
+
+  return closestDate;
 }
