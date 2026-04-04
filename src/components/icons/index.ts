@@ -1,5 +1,6 @@
 export { ArrowLeftIcon } from './ArrowLeftIcon';
 export { CalendarIcon } from './CalendarIcon';
+export { CalendarWhiteIcon } from './CalendarWhiteIcon';
 export { CheckIcon } from './CheckIcon';
 export { ChevronDownIcon, type ChevronDownIconProps } from './ChevronDownIcon';
 export { ChevronLeftIcon } from './ChevronLeftIcon';

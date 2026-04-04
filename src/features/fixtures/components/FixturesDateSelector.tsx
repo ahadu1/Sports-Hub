@@ -1,4 +1,10 @@
-import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon, CloseIcon } from '@/components/icons';
+import {
+  CalendarIcon,
+  CalendarWhiteIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CloseIcon,
+} from '@/components/icons';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { MOBILE_RIBBON_ITEM_COUNT } from '@/utils/fixtures/date-selector.constants';
 import { cn } from '@/utils/cn';
@@ -267,7 +273,7 @@ function DesktopCalendar({
           onToggle();
         }}
       >
-        <CalendarIcon className="h-6 w-6" />
+        <CalendarWhiteIcon className="h-6 w-6" />
         <span className="text-body-md-strong">{getDesktopDateLabel(selectedDate)}</span>
       </button>
 
